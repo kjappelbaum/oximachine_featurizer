@@ -24,7 +24,7 @@ class SymbolNameDict():
         """
         Iterates over keys and returns the symbol: name dict.
         """
-        for key, value in self.pt_data.iterdict():
+        for key, value in self.pt_data.items():
             if only_metal:
                 if Element(key).is_metal:
                     self.symbol_name_dict[key] = value['Name'].lower()

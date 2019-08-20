@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=relative-beyond-top-level
 """Parsing functions for the oxidation state mining project"""
 from __future__ import absolute_import
+from __future__ import print_function
 import re
 from collections import defaultdict
 import concurrent.futures
 from six.moves import zip
-from roman_numerals import convert_to_integer
+from numeral import roman2int
 from ccdc import io  # pylint: disable=import-error
-from utils import SymbolNameDict
+from .utils import SymbolNameDict
 
 
 class GetOxStatesCSD():
@@ -33,7 +35,8 @@ class GetOxStatesCSD():
         self.csd_reader = io.EntryReader('CSD')
 
     def get_symbol_ox_number(self, parsed_string):
-        """Splits a parser hit into symbol and ox nuber and returns  latter as a integer
+        """Splits a parser hit into symbol and ox nuber and returns
+        latter as a integer
 
         Args:
             parsed_string (str): regex match of the form metalname(romanoxidationstate)
@@ -43,8 +46,8 @@ class GetOxStatesCSD():
             int: oxidation number
 
         """
-        name, roman = parsed_string.strip(')').split('()')
-        return self.name_symbol_dict[name.lower()], convert_to_integer(roman)
+        name, roman = parsed_string.strip(')').split('(')
+        return self.name_symbol_dict[name.lower()], roman2int(roman)
 
     def parse_name(self, chemical_name_string):
         """Takes the chemical name string from the CSD database and returns,
@@ -61,10 +64,12 @@ class GetOxStatesCSD():
         oxidation_state_dict = defaultdict(list)
 
         matches = re.findall(self.regex, chemical_name_string)
-
         for match in matches:
             symbol, oxidation_int = self.get_symbol_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
+
+        print(oxidation_state_dict)
+        return dict(oxidation_state_dict)
 
     def parse_csd_entry(self, database_id):
         """Looks up a CSD id and runs the parsing
@@ -76,7 +81,7 @@ class GetOxStatesCSD():
             dict: symbol - oxidation state dictionary
 
         Exception:
-            returns None upon exception (if it cannot find the structure in the database)
+            returns empy dict upon exception (if it cannot find the structure in the database)
 
         """
         try:
@@ -84,9 +89,9 @@ class GetOxStatesCSD():
             name = entry_object.chemical_name
             return self.parse_name(name)
         except Exception:  # pylint: disable=broad-except
-            return None
+            return {}
 
-    def run_parsing(self, njobs=2):
+    def run_parsing(self, njobs=4):
         """Runs (concurrent) parsing over the list of database identifiers.
 
         Args:
@@ -97,7 +102,7 @@ class GetOxStatesCSD():
 
         """
         results_dict = {}
-        with concurrent.futures.ProcessPoolExecutor(max_workers=njobs) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=njobs) as executor:
             for database_id, result in zip(self.csd_ids, executor.map(self.parse_csd_entry, self.csd_ids)):
                 results_dict[database_id] = result
         return results_dict
