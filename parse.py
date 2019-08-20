@@ -8,6 +8,7 @@ from collections import defaultdict
 import concurrent.futures
 from six.moves import zip
 from numeral import roman2int
+from tqdm import tqdm
 from ccdc import io  # pylint: disable=import-error
 from .utils import SymbolNameDict
 
@@ -68,7 +69,6 @@ class GetOxStatesCSD():
             symbol, oxidation_int = self.get_symbol_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
 
-        print(oxidation_state_dict)
         return dict(oxidation_state_dict)
 
     def parse_csd_entry(self, database_id):
@@ -103,6 +103,7 @@ class GetOxStatesCSD():
         """
         results_dict = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=njobs) as executor:
-            for database_id, result in zip(self.csd_ids, executor.map(self.parse_csd_entry, self.csd_ids)):
+            for database_id, result in tqdm(zip(self.csd_ids, executor.map(self.parse_csd_entry, self.csd_ids)),
+                                            total=len(self.csd_ids)):
                 results_dict[database_id] = result
         return results_dict

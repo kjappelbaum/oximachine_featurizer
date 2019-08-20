@@ -15,6 +15,8 @@
 
 * need to export `CSD_HOME='/home/kevin/CCDC/CSD_2019` on thinkpad, run in `dimensionality` conda env
 
+* is the ditribution of MOF oxidation states different from the priors in pymatgen (global oxidation states)
+
 ## ML
 The idea is to be inspired by the bond-valence method and to use low-dimensional,
 chemically meaningful feature.
@@ -25,7 +27,8 @@ chemically meaningful feature.
 
 * should consider the chemical nature of the neighbors (e.g. electronegativity)
 
-* should encode in some way the electron configuration of the element (to, e.g., respect octet rule)
+* should encode in some way the electron configuration of the element (to, e.g., respect octet rule) or the identity to make it possible to learn for
+  the algorithm common oxidation states. There should be a unique identifier due to some exceptions but most of it should be captured by which column the element is in
 
 * a fingerprint function is probably too much in terms of dimensionality and effort, likely bond order descriptors are
   enough with local electronegativity differences. This is inspired by the bond valence method.
