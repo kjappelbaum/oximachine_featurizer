@@ -4,7 +4,7 @@
 Test the parsing class
 """
 from __future__ import absolute_import
-from ..parse import GetOxStatesCSD
+from mine_mof_oxstate.parse import GetOxStatesCSD
 
 
 def test_parser():

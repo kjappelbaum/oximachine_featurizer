@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=relative-beyond-top-level
 """Test the utils module"""
-from ..utils import SymbolNameDict
+from __future__ import absolute_import
+from mine_mof_oxstate.utils import SymbolNameDict
 
 
 def test_symbolnamedict():

@@ -5,45 +5,28 @@ Status: Dev
 Run the oxidation state mining
 """
 from __future__ import absolute_import
-import os
-from pathlib import Path
-from glob import glob
 import time
 import pickle
 import click
+from ccdc import io  # pylint: disable=import-error
 from mine_mof_oxstate.parse import GetOxStatesCSD
 
 
-def prepare_list(indir='/mnt/lsmo_databases/mof_subset_csdmay2019'):
+def run_parsing(output_name=None):
     """
 
     Args:
-        indir (str): path to input directory
-
-    Returns:
-        list: filestemms
-
-    """
-    names = glob(os.path.join(indir, '*.cif'))
-    names_cleaned = [Path(n).stem for n in names]
-    return names_cleaned
-
-
-def run_parsing(names_cleaned, output_name=None):
-    """
-
-    Args:
-        names_cleaned (list): list of CSD identifiers
         output_name (str): filestem for the output pickle file
 
     Returns:
         writes output as pickle file
 
     """
-    getoxstatesobject = GetOxStatesCSD(names_cleaned)
+    csd_reader = io.EntryReader('CSD')  # all database entries
+    getoxstatesobject = GetOxStatesCSD(csd_reader)
     if output_name is None:
         timestr = time.strftime('%Y%m%d-%H%M%S')
-        output_name = '-'.join([timestr, 'csd_ox_parse_output'])
+        output_name = '-'.join([timestr, 'csd_ox_parse_output_reference'])
 
     outputdict = getoxstatesobject.run_parsing(njobs=4)
 
@@ -52,14 +35,12 @@ def run_parsing(names_cleaned, output_name=None):
 
 
 @click.command('cli')
-@click.option('--indir', default='/mnt/lsmo_databases/mof_subset_csdmay2019')
 @click.option('--outname', default=None)
-def main(indir, outname):
+def main(outname):
     """
     CLI function
     """
-    names_cleaned = prepare_list(indir)
-    run_parsing(names_cleaned, outname)
+    run_parsing(outname)
 
 
 if __name__ == '__main__':
