@@ -7,9 +7,21 @@ Run the oxidation state mining
 from __future__ import absolute_import
 import time
 import pickle
+import random
 import click
+from six.moves import range
 from ccdc import io  # pylint: disable=import-error
 from mine_mof_oxstate.parse import GetOxStatesCSD
+
+
+def generate_id_list(num_samples=94715 * 3):
+    """Sample some random entries from the CSD"""
+    ids = []
+    csd_reader = io.EntryReader('CSD')
+    idxs = random.sample(list(range(len(csd_reader))), num_samples)
+    for idx in idxs:
+        ids.append(csd_reader[idx].identifier)
+    return ids
 
 
 def run_parsing(output_name=None):
@@ -22,8 +34,8 @@ def run_parsing(output_name=None):
         writes output as pickle file
 
     """
-    csd_reader = io.EntryReader('CSD')  # all database entries
-    getoxstatesobject = GetOxStatesCSD(csd_reader)
+    # all database entries
+    getoxstatesobject = GetOxStatesCSD(generate_id_list())
     if output_name is None:
         timestr = time.strftime('%Y%m%d-%H%M%S')
         output_name = '-'.join([timestr, 'csd_ox_parse_output_reference'])
