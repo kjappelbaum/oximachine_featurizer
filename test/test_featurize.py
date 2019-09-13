@@ -38,3 +38,7 @@ def test_get_x_y_names(provide_dataframe):
 
     assert len(X) == len(y) == len(names)
     # an interesting case is UKUDIP01 with two metals
+    ukudip01 = [n == 'UKUDIP01' for n in names]
+    assert sum(ukudip01) == 2
+    oxidation_states = [ox for i, ox in enumerate(y) if ukudip01[i]]
+    assert oxidation_states == [2, 3]

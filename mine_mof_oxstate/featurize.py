@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 from glob import glob
 import pickle
+import time
 import logging
 import warnings
 from collections import defaultdict
@@ -75,7 +76,7 @@ class GetFeatures:
             warnings.simplefilter('ignore')
             try:
                 atoms = read(self.path)
-                self.structure = AseAtomsAdaptor.get_structure(atoms)
+                self.structure = AseAtomsAdaptor.get_structure(atoms)  # ase parser is a bit more robust
                 return True
             except Exception:  # pylint: disable=broad-except
                 return False
@@ -125,18 +126,45 @@ class FeatureCollector:
     """convert features from a folder of pickle files to three
     pickle files for feature matrix, label vector and names list. """
 
-    def __init__(self, inpath: str = None, labelpath: str = None, outpath: str = None):
+    def __init__(self, inpath: str = None, labelpath: str = None, outdir: str = None):
         self.inpath = inpath
         self.labelpath = labelpath
-        self.outpath = outpath
+        self.outdir = outdir
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
-        self.FORBIDDEN_LIST = list(
+        self.forbidden_list = list(
             read_pickle(
                 '/home/kevin/Dropbox/proj62_guess_oxidation_states/oxidation_state_book/content/two_ox_states.pkl'))
         collectorlogger.info(
-            f'initialized feature collector: {len(self.FORBIDDEN_LIST)} forbidden structures, {len(self.picklefiles)} files with features'
+            f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
         )
+
+    def _featurecollection(self) -> Tuple[np.array, np.array, list]:
+        """
+        Runs the feature collection workflow.
+
+        Returns:
+            Tuple[np.array, np.array, list] -- numpy arrays of features and labels and list of names
+        """
+        feature_list = FeatureCollector.create_feature_list(self.picklefiles, self.forbidden_list)
+        label_raw = read_pickle(self.labelpath)
+        label_list = FeatureCollector.make_labels_table(label_raw)
+        df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
+        x, y, names = FeatureCollector.get_x_y_names(df)
+        return x, y, names
+
+    def dump_featurecollection(self) -> None:
+        """Collect features and write features, labels and names to seperate files
+
+        Returns:
+            None -- [description]
+        """
+        x, y, names = self._featurecollection()
+        FeatureCollector.write_output(x, y, names, self.outdir)
+
+    def return_featurecollection(self) -> Tuple[np.array, np.array, list]:
+        x, y, names = self._featurecollection()
+        return x, y, names
 
     @staticmethod
     def create_feature_list(picklefiles: list, forbidden_list: list) -> list:
@@ -246,3 +274,29 @@ class FeatureCollector:
             result_list.append(result_dict)
 
         return result_list
+
+    @staticmethod
+    def write_output(x: np.array, y: np.array, names: list, outdir: str) -> None:
+        """writes feature array, label array and name array into output files in outdir/datetime/{x,y}.npy and outdir/datetime/names.pkl
+
+        Arguments:
+            x {np.array} -- [description]
+            y {np.array} -- [description]
+            names {list} -- [description]
+            outdir {str} -- [description]
+
+        Returns:
+            None -- [description]
+        """
+        timestr = time.strftime('%Y%m%d-%H%M%S')
+        outpath_base = os.path.join(outdir, timestr)
+        if not os.path.exists:
+            os.makedirs(outpath_base)
+
+        np.save(os.path.join(outpath_base, 'features'), x)
+        np.save(os.path.join(outpath_base, 'labels'), y)
+
+        with open(os.path.join(outpath_base, 'names.pkl'), 'wb') as picklefile:
+            pickle.dump(names, picklefile)
+
+        collectorlogger.info(f'stored features, labels and names into {outpath_base}')

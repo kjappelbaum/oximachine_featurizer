@@ -18,10 +18,10 @@ REQUIRES_PYTHON = '>=3.6.0'
 VERSION = '0.1.0a1'
 
 # What packages are required for this module to be executed?
-REQUIRED = ['matminer', 'pymatgen', 'ase']
+REQUIRED = ['matminer', 'pymatgen', 'ase', 'numeral']
 
 # What packages are optional?
-EXTRAS = {'testing': ['pytest'], 'linting': ['prospector', 'pre-commit', 'pylint']}
+EXTRAS = {'testing': ['pytest'], 'linting': ['prospector', 'pre-commit', 'pylint'], 'documentation': ['sphinx']}
 
 here = os.path.abspath(os.path.dirname(__file__))
 

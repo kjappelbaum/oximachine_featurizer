@@ -8,15 +8,17 @@ Latter is important to investigate the failures manually
 
 from __future__ import absolute_import
 import click
+from mine_mof_oxstate.featurize import FeatureCollector
 
 
 @click.command('cli')
 @click.argument('inpath')
 @click.argument('labelsfile')
-@click.argument('outpath')
-def main(inpath, labelsfile, outpath):  #pylint:disable=unused-argument
+@click.argument('outdir')
+def main(inpath, labelsfile, outdir):  #pylint:disable=unused-argument
     """Run the CLI"""
-    ...
+    fc = FeatureCollector(inpath, labelsfile, outdir)  #pylint:disable=invalid-name
+    fc.dump_featurecollection()
 
 
 if __name__ == '__main__':

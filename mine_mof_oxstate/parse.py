@@ -6,6 +6,7 @@ from __future__ import print_function
 import re
 from collections import defaultdict
 import concurrent.futures
+from typing import Tuple
 from six.moves import zip
 from numeral import roman2int
 from tqdm import tqdm
@@ -16,15 +17,14 @@ from .utils import SymbolNameDict
 class GetOxStatesCSD():
     """Main parsing class"""
 
-    def __init__(self, cds_ids):
+    def __init__(self, cds_ids: list) -> None:
         """Parses CSD structures for oxidation states
 
         Args:
             cds_ids (list): list of CSD database identifiers
 
         Returns:
-
-
+            None
         """
         # Set up dictionaries and regex
         self.symbol_name_dict = SymbolNameDict().get_symbol_name_dict()
@@ -35,7 +35,7 @@ class GetOxStatesCSD():
         self.csd_ids = cds_ids
         self.csd_reader = io.EntryReader('CSD')
 
-    def get_symbol_ox_number(self, parsed_string):
+    def get_symbol_ox_number(self, parsed_string: str) -> Tuple[str, int]:
         """Splits a parser hit into symbol and ox nuber and returns
         latter as a integer
 
@@ -50,7 +50,7 @@ class GetOxStatesCSD():
         name, roman = parsed_string.strip(')').split('(')
         return self.name_symbol_dict[name.lower()], roman2int(roman)
 
-    def parse_name(self, chemical_name_string):
+    def parse_name(self, chemical_name_string: str) -> dict:
         """Takes the chemical name string from the CSD database and returns,
         if it finds it, a dictionary with the oxidation states for the metals
 
@@ -71,7 +71,7 @@ class GetOxStatesCSD():
 
         return dict(oxidation_state_dict)
 
-    def parse_csd_entry(self, database_id):
+    def parse_csd_entry(self, database_id: str) -> dict:
         """Looks up a CSD id and runs the parsing
 
         Args:
@@ -85,7 +85,7 @@ class GetOxStatesCSD():
 
         """
         try:
-            entry_object = self.csd_reader.entry(database_id)
+            entry_object = self.csd_reader.entry(database_id)  #pylint:disable=no-member
             name = entry_object.chemical_name
             return self.parse_name(name)
         except Exception:  # pylint: disable=broad-except

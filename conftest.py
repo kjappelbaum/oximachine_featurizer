@@ -231,7 +231,7 @@ def provide_dataframe():
             'metal': 'Gd',
             'coords': [1, 1, 1],
             'feature': [2, 45567, 3564, 3574],
-            'oxidationstate': 2
+            'oxidationstate': 3
         },
     ]
 
