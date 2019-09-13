@@ -6,7 +6,10 @@ from pathlib import Path
 import os
 import pickle
 import logging
-from pymatgen import Structure
+import warnings
+from collections import defaultdict
+from ase.io import read
+from pymatgen.io.ase import AseAtomsAdaptor
 from matminer.featurizers.base import MultipleFeaturizer
 from matminer.featurizers.site import (CrystalNNFingerprint, CoordinationNumber, LocalPropertyDifference,
                                        BondOrientationalParameter, GaussianSymmFunc)
@@ -34,7 +37,8 @@ class GetFeatures():
         self.path = structure
         self.structure = None
         self.metal_sites = []
-        self.features = {}
+        self.metal_indices = []
+        self.features = defaultdict(dict)
         self.outname = os.path.join(self.outpath, ''.join([Path(structure).stem, '.pkl']))
 
     def precheck(self):
@@ -44,45 +48,51 @@ class GetFeatures():
             bool: True if check ok (if pymatgen can load structure)
 
         """
-        try:
-            self.structure = Structure.from_file(self.path)
-            return True
-        except Exception:  # pylint: disable=broad-except
-            return False
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            try:
+                atoms = read(self.path)
+                self.structure = AseAtomsAdaptor.get_structure(atoms)
+                return True
+            except Exception:  # pylint: disable=broad-except
+                return False
 
     def get_metal_sites(self):
         """Stores all metal sites of structure  to list"""
-        for site in self.structure:
+        for idx, site in enumerate(self.structure):
             if site.species.elements[0].is_metal:
                 self.metal_sites.append(site)
+                self.metal_indices.append(idx)
 
     def get_feature_vectors(self, site):
         """Runs matminer on one site"""
         featurizer = MultipleFeaturizer([
-            CrystalNNFingerprint, CoordinationNumber, LocalPropertyDifference, BondOrientationalParameter,
-            GaussianSymmFunc
+            CrystalNNFingerprint.from_preset('ops'),
+            CoordinationNumber(),
+            LocalPropertyDifference(),
+            BondOrientationalParameter(),
+            GaussianSymmFunc()
         ])
 
-        X = featurizer.featurize(site, self.structure)
+        X = featurizer.featurize(self.structure, site)
         return X
 
     def dump_features(self):
         """Dumps all the features into one pickle file"""
         with open(self.outname, 'wb') as filehandle:
-            pickle.dump(self.features, filehandle)
-
-    def log_error(self):
-        """logs error message"""
-        self.logger.error('could not load {}'.format(self.path))
+            pickle.dump(dict(self.features), filehandle)
 
     def run_featurization(self):
         """loops over sites if check ok"""
         if self.precheck():
             self.get_metal_sites()
-            for metal_site in self.metal_sites:
-                self.features[metal_site.species_string]['feature'] = self.get_feature_vectors(metal_site)
-                self.features[metal_site.species_string]['coords'] = metal_site.coords
-
-            self.dump_features()
+            try:
+                for idx, metal_site in enumerate(self.metal_sites):
+                    self.features[metal_site.species_string]['feature'] = self.get_feature_vectors(
+                        self.metal_indices[idx])
+                    self.features[metal_site.species_string]['coords'] = metal_site.coords
+                self.dump_features()
+            except Exception:  # pylint: disable=broad-except
+                self.logger.error('could not featurize {}'.format(self.path))
         else:
-            self.log_error()
+            self.logger.error('could not load {}'.format(self.path))

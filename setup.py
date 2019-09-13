@@ -51,7 +51,10 @@ setup(
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
     entry_points={
-        'console_scripts': ['run_parsing=run.run_parsing:main', 'run_parsing_reference=run.run_parsing_reference:main'],
+        'console_scripts': [
+            'run_parsing=run.run_parsing:main', 'run_parsing_reference=run.run_parsing_reference:main',
+            'run_featurization=run.run_featurization:main', 'run_featurization_many=run.run_featurization_many:main'
+        ],
     },
     install_requires=REQUIRED,
     extras_require=EXTRAS,
