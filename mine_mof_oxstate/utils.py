@@ -5,8 +5,15 @@ Some general utility functions for the oxidation state mining project
 from __future__ import absolute_import
 import os
 import json
+import pickle
 from pathlib import Path
 from pymatgen.core import Element
+
+
+def read_pickle(filepath: str):
+    with open(filepath, 'rb') as fh:  # pylint: disable=invalid-name
+        result = pickle.load(fh)  # pylint: disable=invalid-name
+    return result
 
 
 class SymbolNameDict():

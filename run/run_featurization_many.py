@@ -10,7 +10,6 @@ import pickle
 import concurrent.futures
 from glob import glob
 from pathlib import Path
-import random
 from tqdm import tqdm
 from mine_mof_oxstate.featurize import GetFeatures
 
@@ -20,8 +19,8 @@ ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
 NAME_LIST = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/mine_csd/analysis/name_list.pkl'
 
 
-def load_pickle(f):
-    with open(f, 'rb') as fh:
+def load_pickle(f):  # pylint:disable=invalid-name
+    with open(f, 'rb') as fh:  # pylint:disable=invalid-name
         result = pickle.load(fh)
     return result
 

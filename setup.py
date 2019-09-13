@@ -13,19 +13,15 @@ NAME = 'mine_mof_oxstate'
 DESCRIPTION = 'Mine MOF oxidation states.'
 URL = 'https://github.com/kjappelbaum/mine_csd'
 EMAIL = 'kevin.jablonka@epfl.ch'
-AUTHOR = 'Kevin M. Jablonka'
+AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Berend Smit'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.1.0'
+VERSION = '0.1.0a1'
 
 # What packages are required for this module to be executed?
-REQUIRED = [
-    # 'requests', 'maya', 'records',
-]
+REQUIRED = ['matminer', 'pymatgen', 'ase']
 
 # What packages are optional?
-EXTRAS = {
-    # 'fancy feature': ['django'],
-}
+EXTRAS = {'testing': ['pytest'], 'linting': ['prospector', 'pre-commit', 'pylint']}
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -67,6 +63,5 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
+        'Programming Language :: Python :: 3.7',
     ])
