@@ -21,7 +21,11 @@ VERSION = '0.1.0a1'
 REQUIRED = ['matminer', 'pymatgen', 'ase', 'numeral']
 
 # What packages are optional?
-EXTRAS = {'testing': ['pytest'], 'linting': ['prospector', 'pre-commit', 'pylint'], 'documentation': ['sphinx']}
+EXTRAS = {
+    'testing': ['pytest'],
+    'linting': ['prospector', 'pre-commit', 'pylint'],
+    'documentation': ['sphinx', 'sphinx_rtd_theme', 'sphinx-autodoc-typehints']
+}
 
 here = os.path.abspath(os.path.dirname(__file__))
 

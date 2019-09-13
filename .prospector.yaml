@@ -1,8 +1,5 @@
 ignore-paths:
-    - doc
-    - examples
-    - test
-    - utils
+  - docs
 
 pylint:
   run: true
