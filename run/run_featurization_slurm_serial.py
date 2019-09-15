@@ -1,19 +1,29 @@
 # -*- coding: utf-8 -*-
+# pylint:disable = logging-format-interpolation
 """
 Status: Dev
 This runscript can be used to submit the featurizations on a HPC clusters with the SLURM workload manager.
 
-Usage: Install script in conda enviornment called mof_oxidation_state_project on cluster and then run it using the
+Usage: Install script in conda enviornment called ml on cluster and then run it using the
 the outdir, start and end indices and submit flag.
 """
 from __future__ import absolute_import
 import os
 import pickle
 import time
+import logging
 from glob import glob
 from pathlib import Path
 import subprocess
 import click
+
+featurizer = logging.getLogger('featurizer')  # pylint:disable=invalid-name
+featurizer.setLevel(logging.DEBUG)
+logging.basicConfig(
+    filename='featurizer.log',
+    format='%(filename)s: %(message)s',
+    level=logging.DEBUG,
+)
 
 THIS_DIR = os.path.dirname(__file__)
 
@@ -30,7 +40,7 @@ SUBMISSION_TEMPLATE = """#!/bin/bash -l
 #SBATCH --partition=serial
 
 source /home/kjablonk/anaconda3/bin/activate
-conda activate mof_oxidation_state_project
+conda activate ml
 
 run_featurization {structure} {outdir}
 """
@@ -53,9 +63,11 @@ def write_and_submit_slurm(workdir, name, structure, outdir, submit=False):
         for line in submission_template:
             fh.write(line)
 
+    featurizer.info('prepared {} for submission'.format(name))
     if submit:
         subprocess.call('sbatch {}'.format('{}.slurm'.format(name)), shell=True, cwd=workdir)
         time.sleep(2)
+        featurizer.info('submitted {}'.format(name))
 
 
 @click.command('cli')
@@ -71,6 +83,8 @@ def main(outdir, start, end, submit):
     structures = glob(os.path.join(CSDDIR, '*.cif'))
     structures.sort()
 
+    start = int(start)
+    end = int(end)
     for structure in structures[start:end]:
         if Path(structure).stem not in ALREADY_FEAUTRIZED:
             if Path(structure).stem in HAS_OX_NUMER:
