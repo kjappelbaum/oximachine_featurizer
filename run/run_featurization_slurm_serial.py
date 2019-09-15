@@ -17,8 +17,8 @@ import click
 
 THIS_DIR = os.path.dirname(__file__)
 
-OUTDIR = '/home/kevin/Dropbox/proj62_guess_oxidation_states/mine_csd/featurization'
-CSDDIR = '/home/kevin/lsmo_db_share/shared/db_structures/mof_subset_csdmay2019'
+OUTDIR = '/scratch/kjablonk/proj62_featurization/20190915_features'
+CSDDIR = '/work/lsmo/mof_subset_csdmay2019'
 ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
 NAME_LIST = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/mine_csd/analysis/name_list.pkl'
 
