@@ -93,7 +93,7 @@ class GetFeatures:
         featurizer = MultipleFeaturizer([
             CrystalNNFingerprint.from_preset('ops'),
             CoordinationNumber(),
-            LocalPropertyDifference(),
+            LocalPropertyDifference.from_preset('ward-prb-2017'),
             BondOrientationalParameter(),
             GaussianSymmFunc(),
         ])
