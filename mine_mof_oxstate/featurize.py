@@ -26,15 +26,6 @@ from matminer.featurizers.site import (
 )
 from .utils import read_pickle
 
-collectorlogger = logging.getLogger('FeatureCollector')
-collectorlogger.setLevel(logging.DEBUG)
-logging.basicConfig(
-    filename='featurecollector.log',
-    format='%(filename)s: %(message)s',
-    level=logging.DEBUG,
-)
-
-
 class GetFeatures:
     """Featurizer"""
 
@@ -125,6 +116,14 @@ class GetFeatures:
 class FeatureCollector:
     """convert features from a folder of pickle files to three
     pickle files for feature matrix, label vector and names list. """
+
+    collectorlogger = logging.getLogger('FeatureCollector')
+    collectorlogger.setLevel(logging.DEBUG)
+    logging.basicConfig(
+        filename='featurecollector.log',
+        format='%(filename)s: %(message)s',
+        level=logging.DEBUG,
+    )
 
     def __init__(self, inpath: str = None, labelpath: str = None, outdir: str = None):
         self.inpath = inpath
