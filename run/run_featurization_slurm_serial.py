@@ -35,6 +35,7 @@ NAME_LIST = '/scratch/kjablonk/proj62_featurization/name_list.pkl'
 SUBMISSION_TEMPLATE = """#!/bin/bash -l
 #SBATCH --chdir ./
 #SBATCH --mem       5GB
+#SBATCH --ntasks    1
 #SBATCH --job-name  {name}
 #SBATCH --time      5:00:00
 #SBATCH --partition=serial
@@ -65,7 +66,7 @@ def write_and_submit_slurm(workdir, name, structure, outdir, submit=False):
 
     featurizer.info('prepared {} for submission'.format(name))
     if submit:
-        subprocess.call('sbatch {}'.format('{}.slurm'.format(name)), shell=True, cwd=workdir)
+        subprocess.call('sbatch {}'.format('{}.slurm'.format(name)), shell=True)
         time.sleep(2)
         featurizer.info('submitted {}'.format(name))
 
@@ -85,7 +86,7 @@ def main(outdir, start, end, submit):
 
     start = int(start)
     end = int(end)
-    for structure in structures[start:end]:
+    for structure in structures[start:end:100]:
         if Path(structure).stem not in ALREADY_FEAUTRIZED:
             if Path(structure).stem in HAS_OX_NUMER:
                 name = Path(structure).stem

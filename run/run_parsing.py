@@ -52,12 +52,10 @@ def run_parsing(names_cleaned, output_name=None):
 
 
 @click.command('cli')
-@click.option('--indir', default='/mnt/lsmo_databases/mof_subset_csdmay2019')
-@click.option('--outname', default=None)
+@click.argument('indir', default='/mnt/lsmo_databases/mof_subset_csdmay2019')
+@click.argument('outname', default=None)
 def main(indir, outname):
-    """
-    CLI function
-    """
+    """CLI function"""
     names_cleaned = prepare_list(indir)
     run_parsing(names_cleaned, outname)
 

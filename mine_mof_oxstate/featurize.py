@@ -6,7 +6,6 @@ from pathlib import Path
 import os
 from glob import glob
 import pickle
-import time
 import logging
 import warnings
 from collections import defaultdict
@@ -25,6 +24,12 @@ from matminer.featurizers.site import (
     GaussianSymmFunc,
 )
 from .utils import read_pickle
+
+collectorlogger = logging.getLogger('FeatureCollector')
+collectorlogger.setLevel(logging.DEBUG)
+logging.basicConfig(format='%(filename)s: %(message)s', level=logging.DEBUG)
+collectorlogger.addHandler(logging.FileHandler('featurecollector.log', mode='w'))
+
 
 class GetFeatures:
     """Featurizer"""
@@ -117,23 +122,25 @@ class FeatureCollector:
     """convert features from a folder of pickle files to three
     pickle files for feature matrix, label vector and names list. """
 
-    collectorlogger = logging.getLogger('FeatureCollector')
-    collectorlogger.setLevel(logging.DEBUG)
-    logging.basicConfig(
-        filename='featurecollector.log',
-        format='%(filename)s: %(message)s',
-        level=logging.DEBUG,
-    )
-
-    def __init__(self, inpath: str = None, labelpath: str = None, outdir: str = None):
+    def __init__(
+            self,
+            inpath: str = None,
+            labelpath: str = None,
+            outdir_labels: str = 'data/labels',
+            outdir_features: str = 'data/features',
+            outdir_helper: str = 'data/helper',
+    ):
         self.inpath = inpath
         self.labelpath = labelpath
-        self.outdir = outdir
+        self.outdir_labels = outdir_labels
+        self.outdir_features = outdir_features
+        self.outdir_helper = outdir_helper
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
         self.forbidden_list = list(
             read_pickle(
-                '/home/kevin/Dropbox/proj62_guess_oxidation_states/oxidation_state_book/content/two_ox_states.pkl'))
+                '/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl'
+            ))
         collectorlogger.info(
             f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
         )
@@ -159,7 +166,7 @@ class FeatureCollector:
             None -- [description]
         """
         x, y, names = self._featurecollection()
-        FeatureCollector.write_output(x, y, names, self.outdir)
+        FeatureCollector.write_output(x, y, names, self.outdir_labels, self.outdir_features, self.outdir_helper)
 
     def return_featurecollection(self) -> Tuple[np.array, np.array, list]:
         x, y, names = self._featurecollection()
@@ -275,27 +282,34 @@ class FeatureCollector:
         return result_list
 
     @staticmethod
-    def write_output(x: np.array, y: np.array, names: list, outdir: str) -> None:
+    def write_output(
+            x: np.array,
+            y: np.array,
+            names: list,
+            outdir_labels: str,
+            outdir_features: str,
+            outdir_helper: str,
+    ) -> None:
         """writes feature array, label array and name array into output files in outdir/datetime/{x,y}.npy and outdir/datetime/names.pkl
 
         Arguments:
-            x {np.array} -- [description]
-            y {np.array} -- [description]
-            names {list} -- [description]
-            outdir {str} -- [description]
+            x {np.array} -- feature matrix
+            y {np.array} -- label vector
+            names {list} -- name list (csd  identifiers)
+            outdir_labels {str} -- directory into which labels are written
+            outdir_features {str} -- directory into which features are written
+            outdir_helper {str} -- directory into which names are written
 
         Returns:
-            None -- [description]
+            None --
         """
-        timestr = time.strftime('%Y%m%d-%H%M%S')
-        outpath_base = os.path.join(outdir, timestr)
-        if not os.path.exists:
-            os.makedirs(outpath_base)
+        # timestr = time.strftime('%Y%m%d-%H%M%S')
+        # outpath_base = os.path.join(outdir, timestr)
 
-        np.save(os.path.join(outpath_base, 'features'), x)
-        np.save(os.path.join(outpath_base, 'labels'), y)
+        np.save(os.path.join(outdir_labels, 'features'), x)
+        np.save(os.path.join(outdir_features, 'labels'), y)
 
-        with open(os.path.join(outpath_base, 'names.pkl'), 'wb') as picklefile:
+        with open(os.path.join(outdir_helper, 'names.pkl'), 'wb') as picklefile:
             pickle.dump(names, picklefile)
 
-        collectorlogger.info(f'stored features, labels and names into {outpath_base}')
+        collectorlogger.info('stored features into labels and names into')
