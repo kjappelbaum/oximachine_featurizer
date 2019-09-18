@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long
+# pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
 from __future__ import absolute_import
 from pathlib import Path
@@ -29,6 +29,119 @@ collectorlogger = logging.getLogger('FeatureCollector')
 collectorlogger.setLevel(logging.DEBUG)
 logging.basicConfig(format='%(filename)s: %(message)s', level=logging.DEBUG)
 collectorlogger.addHandler(logging.FileHandler('featurecollector.log', mode='w'))
+
+FEATURE_RANGES_DICT = {
+    'crystal_nn_fingerprint': (0, 61),
+    'cn': (61, 62),
+    'ward_prd': (62, 84),
+    'bond_orientational': (84, 94),
+    'behler_parinello': (94, 103),
+}
+
+FEATURE_LABELS_ALL = [
+    'wt CN_1',
+    'sgl_bd CN_1',
+    'wt CN_2',
+    'L-shaped CN_2',
+    'water-like CN_2',
+    'bent 120 degrees CN_2',
+    'bent 150 degrees CN_2',
+    'linear CN_2',
+    'wt CN_3',
+    'trigonal planar CN_3',
+    'trigonal non-coplanar CN_3',
+    'T-shaped CN_3',
+    'wt CN_4',
+    'square co-planar CN_4',
+    'tetrahedral CN_4',
+    'rectangular see-saw-like CN_4',
+    'see-saw-like CN_4',
+    'trigonal pyramidal CN_4',
+    'wt CN_5',
+    'pentagonal planar CN_5',
+    'square pyramidal CN_5',
+    'trigonal bipyramidal CN_5',
+    'wt CN_6',
+    'hexagonal planar CN_6',
+    'octahedral CN_6',
+    'pentagonal pyramidal CN_6',
+    'wt CN_7',
+    'hexagonal pyramidal CN_7',
+    'pentagonal bipyramidal CN_7',
+    'wt CN_8',
+    'body-centered cubic CN_8',
+    'hexagonal bipyramidal CN_8',
+    'wt CN_9',
+    'q2 CN_9',
+    'q4 CN_9',
+    'q6 CN_9',
+    'wt CN_10',
+    'q2 CN_10',
+    'q4 CN_10',
+    'q6 CN_10',
+    'wt CN_11',
+    'q2 CN_11',
+    'q4 CN_11',
+    'q6 CN_11',
+    'wt CN_12',
+    'cuboctahedral CN_12',
+    'q2 CN_12',
+    'q4 CN_12',
+    'q6 CN_12',
+    'wt CN_13',
+    'wt CN_14',
+    'wt CN_15',
+    'wt CN_16',
+    'wt CN_17',
+    'wt CN_18',
+    'wt CN_19',
+    'wt CN_20',
+    'wt CN_21',
+    'wt CN_22',
+    'wt CN_23',
+    'wt CN_24',
+    'CN_VoronoiNN',
+    'local difference in Number',
+    'local difference in MendeleevNumber',
+    'local difference in AtomicWeight',
+    'local difference in MeltingT',
+    'local difference in Column',
+    'local difference in Row',
+    'local difference in CovalentRadius',
+    'local difference in Electronegativity',
+    'local difference in NsValence',
+    'local difference in NpValence',
+    'local difference in NdValence',
+    'local difference in NfValence',
+    'local difference in NValence',
+    'local difference in NsUnfilled',
+    'local difference in NpUnfilled',
+    'local difference in NdUnfilled',
+    'local difference in NfUnfilled',
+    'local difference in NUnfilled',
+    'local difference in GSvolume_pa',
+    'local difference in GSbandgap',
+    'local difference in GSmagmom',
+    'local difference in SpaceGroupNumber',
+    'BOOP Q l=1',
+    'BOOP Q l=2',
+    'BOOP Q l=3',
+    'BOOP Q l=4',
+    'BOOP Q l=5',
+    'BOOP Q l=6',
+    'BOOP Q l=7',
+    'BOOP Q l=8',
+    'BOOP Q l=9',
+    'BOOP Q l=10',
+    'G2_0.05',
+    'G2_4.0',
+    'G2_20.0',
+    'G2_80.0',
+    'G4_0.005_1.0_1.0',
+    'G4_0.005_1.0_-1.0',
+    'G4_0.005_4.0_1.0',
+    'G4_0.005_4.0_-1.0',
+]
 
 
 class GetFeatures:
@@ -60,6 +173,13 @@ class GetFeatures:
         self.metal_indices = []
         self.features = defaultdict(dict)
         self.outname = os.path.join(self.outpath, ''.join([Path(structure).stem, '.pkl']))
+        self.featurizer = MultipleFeaturizer([
+            CrystalNNFingerprint.from_preset('ops'),
+            CoordinationNumber(),
+            LocalPropertyDifference.from_preset('ward-prb-2017'),
+            BondOrientationalParameter(),
+            GaussianSymmFunc(),
+        ])
 
     def precheck(self):
         """Fail early
@@ -86,15 +206,9 @@ class GetFeatures:
 
     def get_feature_vectors(self, site):
         """Runs matminer on one site"""
-        featurizer = MultipleFeaturizer([
-            CrystalNNFingerprint.from_preset('ops'),
-            CoordinationNumber(),
-            LocalPropertyDifference.from_preset('ward-prb-2017'),
-            BondOrientationalParameter(),
-            GaussianSymmFunc(),
-        ])
 
-        X = featurizer.featurize(self.structure, site)
+        X = self.featurizer.featurize(self.structure, site)
+
         return X
 
     def dump_features(self):
@@ -132,12 +246,38 @@ class FeatureCollector:
             forbidden_picklepath:
             str = '/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl',
             exclude_dir: str = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases',
+            selected_features: list = [
+                'crystal_nn_fingerprint',
+                'ward_prd',
+                'bond_orientational',
+                'behler_parinello',
+            ],
     ):
+        """Initializes a feature collector.
+
+        WARNING! The fingerprint selection function assumes that the full feature vector in the
+        pickle files has the columns as specified in FEATURE_LABELS_ALL
+
+        Keyword Arguments:
+            inpath {str} -- path to directory with one pickle file per structure (default: {None})
+            labelpath {str} -- path to picklefile with labels (default: {None})
+            outdir_labels {str} -- path to output directory for labelsfile (default: {"data/labels"})
+            outdir_features {str} -- path to output directory for featuresfile (default: {"data/features"})
+            outdir_helper {str} -- path to output directory for helper files (feature names, structure names) (default: {"data/helper"})
+            forbidden_picklepath {str} -- path to picklefile with list of forbidden CSD names (default: {"/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl"})
+            exclude_dir {str} -- path to directory with structure names are forbidden as well (default: {"/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases"})
+            selected_features {list} -- list of selected features. Available crystal_nn_fingerprint, cn, ward_prb, bond_orientational, behler_parinello
+              (default: {["crystal_nn_fingerprint","ward_prd","bond_orientational","behler_parinello",]})
+        """
         self.inpath = inpath
         self.labelpath = labelpath
         self.outdir_labels = outdir_labels
         self.outdir_features = outdir_features
         self.outdir_helper = outdir_helper
+        self.selected_features = selected_features
+
+        for feature in self.selected_features:
+            assert feature in list(FEATURE_RANGES_DICT.keys())
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
         self.forbidden_list = (read_pickle(forbidden_picklepath) if forbidden_picklepath is not None else [])
@@ -148,6 +288,19 @@ class FeatureCollector:
         collectorlogger.info(
             f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
         )
+
+    def _select_features(self, X):
+        """Selects the feature and dumps the names as pickle in the helper directory"""
+        to_hstack = []
+        featurenames = []
+        for feature in self.selected_features:
+            lower, upper = FEATURE_RANGES_DICT[feature]
+            to_hstack.append(X[lower:upper])
+            featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
+
+        with open(os.path.join(self.outdir_helper, 'feature_names.pkl', 'wb')) as fh:
+            pickle.dump(featurenames, fh)
+        return np.hstack(to_hstack)
 
     def _featurecollection(self) -> Tuple[np.array, np.array, list]:
         """
@@ -161,7 +314,8 @@ class FeatureCollector:
         label_list = FeatureCollector.make_labels_table(label_raw)
         df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
         x, y, names = FeatureCollector.get_x_y_names(df)
-        return x, y, names
+        x_selected = self._select_features(x)
+        return x_selected, y, names
 
     def dump_featurecollection(self) -> None:
         """Collect features and write features, labels and names to seperate files

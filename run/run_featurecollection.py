@@ -15,12 +15,20 @@ from mine_mof_oxstate.featurize import FeatureCollector
 @click.argument('outdir_labels')
 @click.argument('outdir_features')
 @click.argument('outdir_helper')
-def main(inpath, labelpath, outdir_labels, outdir_features, outdir_helper):
+@click.argument('features', nargs=-1)
+def main(inpath, labelpath, outdir_labels, outdir_features, outdir_helper, features):
     """
     CLI function
     """
 
-    fc = FeatureCollector(inpath, labelpath, outdir_labels, outdir_features, outdir_helper)  # pylint:disable=invalid-name
+    fc = FeatureCollector(  # pylint:disable=invalid-name
+        inpath,
+        labelpath,
+        outdir_labels,
+        outdir_features,
+        outdir_helper,
+        selected_features=features,
+    )
     fc.dump_featurecollection()
 
 
