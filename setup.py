@@ -24,7 +24,7 @@ REQUIRED = ['matminer', 'pymatgen', 'ase', 'numeral']
 EXTRAS = {
     'testing': ['pytest'],
     'linting': ['prospector', 'pre-commit', 'pylint'],
-    'documentation': ['sphinx', 'sphinx_rtd_theme', 'sphinx-autodoc-typehints']
+    'documentation': ['sphinx', 'sphinx_rtd_theme', 'sphinx-autodoc-typehints'],
 }
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -52,9 +52,12 @@ setup(
     # py_modules=['mypackage'],
     entry_points={
         'console_scripts': [
-            'run_parsing=run.run_parsing:main', 'run_parsing_reference=run.run_parsing_reference:main',
-            'run_featurization=run.run_featurization:main', 'run_featurization_many=run.run_featurization_many:main'
-        ],
+            'run_parsing=run.run_parsing:main',
+            'run_parsing_reference=run.run_parsing_reference:main',
+            'run_featurization=run.run_featurization:main',
+            'run_featurization_many=run.run_featurization_many:main',
+            'run_featurecollection=run.run_featurecollection:main',
+        ]
     },
     install_requires=REQUIRED,
     extras_require=EXTRAS,
@@ -68,4 +71,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-    ])
+    ],
+)

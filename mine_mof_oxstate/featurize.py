@@ -122,13 +122,16 @@ class FeatureCollector:
     """convert features from a folder of pickle files to three
     pickle files for feature matrix, label vector and names list. """
 
-    def __init__(
+    def __init__(  # pylint:disable=too-many-arguments
             self,
             inpath: str = None,
             labelpath: str = None,
             outdir_labels: str = 'data/labels',
             outdir_features: str = 'data/features',
             outdir_helper: str = 'data/helper',
+            forbidden_picklepath:
+            str = '/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl',
+            exclude_dir: str = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases',
     ):
         self.inpath = inpath
         self.labelpath = labelpath
@@ -137,10 +140,11 @@ class FeatureCollector:
         self.outdir_helper = outdir_helper
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
-        self.forbidden_list = list(
-            read_pickle(
-                '/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl'
-            ))
+        self.forbidden_list = (read_pickle(forbidden_picklepath) if forbidden_picklepath is not None else [])
+        if exclude_dir is not None:
+            all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))]
+            self.forbidden_list.extend(all_to_exclude)
+
         collectorlogger.info(
             f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
         )
@@ -173,6 +177,12 @@ class FeatureCollector:
         return x, y, names
 
     @staticmethod
+    def _partial_match_in_name(name: str, forbidden_list: list) -> bool:
+        """Tries to match also partial names, e.g. to ensure that  MAHSUK01 or
+        MAHSUK02 is also matched when only MAHSUK is in the forbidden list"""
+        return any(name.rstrip('1234567890') in s for s in forbidden_list)
+
+    @staticmethod
     def create_feature_list(picklefiles: list, forbidden_list: list) -> list:
         """Reads a list of pickle files into dictionary
 
@@ -189,7 +199,7 @@ class FeatureCollector:
             forbidden_list = []
 
         for pickle_file in picklefiles:
-            if Path(pickle_file).stem not in forbidden_list:
+            if not FeatureCollector._partial_match_in_name(Path(pickle_file).stem, forbidden_list):
                 result_list.extend(FeatureCollector.create_dict_for_feature_table(pickle_file))
             else:
                 collectorlogger.info(f'{pickle_file} is in forbidden list and will not be considered for X, y, names')
@@ -252,7 +262,8 @@ class FeatureCollector:
             Tuple[np.array, np.array, list] -- [description]
         """
         names = list(df['name'])
-        features = np.array(df['feature'])
+        feature_list = [l for l in df['feature']]
+        features = np.array(feature_list)
         labels = np.array(df['oxidationstate'])
         return features, labels, names
 
@@ -306,8 +317,8 @@ class FeatureCollector:
         # timestr = time.strftime('%Y%m%d-%H%M%S')
         # outpath_base = os.path.join(outdir, timestr)
 
-        np.save(os.path.join(outdir_labels, 'features'), x)
-        np.save(os.path.join(outdir_features, 'labels'), y)
+        np.save(os.path.join(outdir_features, 'features'), x)
+        np.save(os.path.join(outdir_labels, 'labels'), y)
 
         with open(os.path.join(outdir_helper, 'names.pkl'), 'wb') as picklefile:
             pickle.dump(names, picklefile)
