@@ -295,7 +295,7 @@ class FeatureCollector:
         featurenames = []
         for feature in self.selected_features:
             lower, upper = FEATURE_RANGES_DICT[feature]
-            to_hstack.append(X[lower:upper])
+            to_hstack.append(X[:, lower:upper])
             featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
         with open(os.path.join(self.outdir_helper, 'feature_names.pkl'), 'wb') as fh:
