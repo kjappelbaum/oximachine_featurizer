@@ -391,6 +391,7 @@ class FeatureCollector:
         Returns:
             pd.DataFrame -- Dataframe with each row describing a seperate metal site
         """
+        pd.options.mode.use_inf_as_na = True
         collectorlogger.info('merging labels and features')
         df_features = pd.DataFrame(feature_list)
         df_labels = pd.DataFrame(label_list)
@@ -442,7 +443,8 @@ class FeatureCollector:
                 'name': Path(picklefile).stem,
             }
 
-            result_list.append(result_dict)
+            if not np.isnan(np.array(value['feature'])).any():
+                result_list.append(result_dict)
 
         return result_list
 
