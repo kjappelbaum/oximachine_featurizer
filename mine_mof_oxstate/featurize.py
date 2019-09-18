@@ -280,7 +280,7 @@ class FeatureCollector:
             assert feature in list(FEATURE_RANGES_DICT.keys())
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
-        self.forbidden_list = (read_pickle(forbidden_picklepath) if forbidden_picklepath is not None else [])
+        self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
         if exclude_dir is not None:
             all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))]
             self.forbidden_list.extend(all_to_exclude)
@@ -298,7 +298,7 @@ class FeatureCollector:
             to_hstack.append(X[lower:upper])
             featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
-        with open(os.path.join(self.outdir_helper, 'feature_names.pkl', 'wb')) as fh:
+        with open(os.path.join(self.outdir_helper, 'feature_names.pkl'), 'wb') as fh:
             pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
 
