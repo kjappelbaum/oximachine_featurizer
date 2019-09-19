@@ -13,6 +13,7 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
 from matminer.featurizers.base import MultipleFeaturizer
@@ -232,7 +233,7 @@ class GetFeatures:
             self.logger.error('could not load {}'.format(self.path))
 
 
-class FeatureCollector:
+class FeatureCollector:  # pylint:disable=too-many-instance-attributes
     """convert features from a folder of pickle files to three
     pickle files for feature matrix, label vector and names list. """
 
@@ -243,6 +244,8 @@ class FeatureCollector:
             outdir_labels: str = 'data/labels',
             outdir_features: str = 'data/features',
             outdir_helper: str = 'data/helper',
+            percentage_holdout: float = 0,
+            outdir_holdout: str = None,
             forbidden_picklepath:
             str = '/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl',
             exclude_dir: str = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases',
@@ -264,6 +267,8 @@ class FeatureCollector:
             outdir_labels {str} -- path to output directory for labelsfile (default: {"data/labels"})
             outdir_features {str} -- path to output directory for featuresfile (default: {"data/features"})
             outdir_helper {str} -- path to output directory for helper files (feature names, structure names) (default: {"data/helper"})
+            percentage_holdout {float} -- precentage of all the data that should be put away as holdout
+            outdir_holdout {str} -- directory into which the files for the holdout set are written (names, X and y)
             forbidden_picklepath {str} -- path to picklefile with list of forbidden CSD names (default: {"/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl"})
             exclude_dir {str} -- path to directory with structure names are forbidden as well (default: {"/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases"})
             selected_features {list} -- list of selected features. Available crystal_nn_fingerprint, cn, ward_prb, bond_orientational, behler_parinello
@@ -279,6 +284,9 @@ class FeatureCollector:
         for feature in self.selected_features:
             assert feature in list(FEATURE_RANGES_DICT.keys())
 
+        self.percentage_holdout = percentage_holdout
+        self.outdir_holdout = outdir_holdout
+
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
         self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
         if exclude_dir is not None:
@@ -288,6 +296,13 @@ class FeatureCollector:
         collectorlogger.info(
             f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
         )
+        self.x = None
+        self.y = None
+        self.names = None
+
+        self.x_test = None
+        self.y_test = None
+        self.names_test = None
 
     def _select_features(self, X):
         """Selects the feature and dumps the names as pickle in the helper directory"""
@@ -313,9 +328,15 @@ class FeatureCollector:
         label_raw = read_pickle(self.labelpath)
         label_list = FeatureCollector.make_labels_table(label_raw)
         df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
-        x, y, names = FeatureCollector.get_x_y_names(df)
-        x_selected = self._select_features(x)
-        return x_selected, y, names
+        if self.percentage_holdout > 0:
+            df_train, df_test = train_test_split(df, test_size=self.percentage_holdout, stratify=df['oxidationstate'])
+            x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
+            x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(df_test)
+            self.x_test = self._select_features(x_test)
+        else:
+            x, self.y, self.names = FeatureCollector.get_x_y_names(df)
+
+        self.x = self._select_features(x)
 
     def dump_featurecollection(self) -> None:
         """Collect features and write features, labels and names to seperate files
@@ -323,12 +344,28 @@ class FeatureCollector:
         Returns:
             None -- [description]
         """
-        x, y, names = self._featurecollection()
-        FeatureCollector.write_output(x, y, names, self.outdir_labels, self.outdir_features, self.outdir_helper)
+        self._featurecollection()
+        FeatureCollector.write_output(
+            self.x,
+            self.y,
+            self.names,
+            self.outdir_labels,
+            self.outdir_features,
+            self.outdir_helper,
+        )
+        if self.x_test is not None:
+            FeatureCollector.write_output(
+                self.x_test,
+                self.y_test,
+                self.names_test,
+                self.outdir_holdout,
+                self.outdir_holdout,
+                self.outdir_holdout,
+            )
 
-    def return_featurecollection(self) -> Tuple[np.array, np.array, list]:
-        x, y, names = self._featurecollection()
-        return x, y, names
+    def return_featurecollection_train(self) -> Tuple[np.array, np.array, list]:
+        self._featurecollection()
+        return self.x, self.y, self.names
 
     @staticmethod
     def _partial_match_in_name(name: str, forbidden_list: list) -> bool:
@@ -403,6 +440,8 @@ class FeatureCollector:
             right_on=['name', 'metal'],
         )
         df_merged.dropna(inplace=True)
+        df_merged.drop_duplicates(
+            inplace=True)  # to be sure that we do not accidently have same examples in training and test set
         return df_merged
 
     @staticmethod
