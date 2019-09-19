@@ -18,8 +18,16 @@ from mine_mof_oxstate.featurize import FeatureCollector
 @click.argument('percentage_holdout')
 @click.argument('outdir_holdout')
 @click.argument('features', nargs=-1)
-def main(inpath, labelpath, outdir_labels, outdir_features, outdir_helper, percentage_holdout, outdir_holdout,
-         features):
+def main(
+        inpath,
+        labelpath,
+        outdir_labels,
+        outdir_features,
+        outdir_helper,
+        percentage_holdout,
+        outdir_holdout,
+        features,
+):
     """
     CLI function
     """
@@ -30,7 +38,7 @@ def main(inpath, labelpath, outdir_labels, outdir_features, outdir_helper, perce
         outdir_labels,
         outdir_features,
         outdir_helper,
-        percentage_holdout,
+        int(percentage_holdout),
         outdir_holdout,
         selected_features=features,
     )
