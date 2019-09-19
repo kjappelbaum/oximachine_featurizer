@@ -442,6 +442,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         )
         df_merged.dropna(inplace=True)
         print((df_merged.head()))
+        print(df_merged.iloc[1])
         df_merged.drop_duplicates(
             inplace=True)  # to be sure that we do not accidently have same examples in training and test set
         return df_merged
