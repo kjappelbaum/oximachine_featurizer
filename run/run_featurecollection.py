@@ -38,7 +38,7 @@ def main(
         outdir_labels,
         outdir_features,
         outdir_helper,
-        int(percentage_holdout),
+        float(percentage_holdout),
         outdir_holdout,
         selected_features=features,
     )

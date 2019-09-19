@@ -285,7 +285,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         for feature in self.selected_features:
             assert feature in list(FEATURE_RANGES_DICT.keys())
 
-        self.percentage_holdout = int(percentage_holdout)
+        self.percentage_holdout = float(percentage_holdout)
         self.outdir_holdout = outdir_holdout
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
