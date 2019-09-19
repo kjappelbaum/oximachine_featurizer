@@ -441,8 +441,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             right_on=['name', 'metal'],
         )
         df_merged.dropna(inplace=True)
-        print((df_merged.head()))
-        print(df_merged.iloc[1])
         df_merged.drop_duplicates(
             inplace=True)  # to be sure that we do not accidently have same examples in training and test set
         return df_merged
@@ -480,8 +478,8 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         for key, value in result.items():
             result_dict = {
                 'metal': key,
-                'coords': value['coords'],
-                'feature': value['feature'],
+                'coords': list(value['coords']),
+                'feature': list(value['feature']),
                 'name': Path(picklefile).stem,
             }
 
