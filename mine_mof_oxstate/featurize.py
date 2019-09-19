@@ -2,6 +2,7 @@
 # pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
 from __future__ import absolute_import
+from __future__ import print_function
 from pathlib import Path
 import os
 from glob import glob
@@ -440,7 +441,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             right_on=['name', 'metal'],
         )
         df_merged.dropna(inplace=True)
-        df_merged.head()
+        print((df_merged.head()))
         df_merged.drop_duplicates(
             inplace=True)  # to be sure that we do not accidently have same examples in training and test set
         return df_merged
