@@ -2,7 +2,6 @@
 # pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
 from __future__ import absolute_import
-from __future__ import print_function
 from pathlib import Path
 import os
 from glob import glob
@@ -17,6 +16,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
+from pymatgen.core import Element
 from matminer.featurizers.base import MultipleFeaturizer
 from matminer.featurizers.site import (
     CrystalNNFingerprint,
@@ -37,7 +37,10 @@ FEATURE_RANGES_DICT = {
     'cn': (61, 62),
     'ward_prd': (62, 84),
     'bond_orientational': (84, 94),
-    'behler_parinello': (94, 103),
+    'behler_parinello': (94, 102),
+    'number': (102, 103),
+    'row': (103, 104),
+    'column': (104, 105),
 }
 
 FEATURE_LABELS_ALL = [
@@ -143,6 +146,9 @@ FEATURE_LABELS_ALL = [
     'G4_0.005_1.0_-1.0',
     'G4_0.005_4.0_1.0',
     'G4_0.005_4.0_-1.0',
+    'number',
+    'row',
+    'column',
 ]
 
 
@@ -285,12 +291,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         for feature in self.selected_features:
             assert feature in list(FEATURE_RANGES_DICT.keys())
 
-        self.percentage_holdout = float(percentage_holdout)
+        self.percentage_holdout = percentage_holdout
         self.outdir_holdout = outdir_holdout
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
         self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
-        self.forbidden_list.append('BOJSUO')
         if exclude_dir is not None:
             all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))]
             self.forbidden_list.extend(all_to_exclude)
@@ -442,9 +447,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             right_on=['name', 'metal'],
         )
         df_merged.dropna(inplace=True)
-        df_clean = df_merged.iloc[df_merged.astype(str).drop_duplicates(
-        ).index]  # to be sure that we do not accidently have same examples in training and test set
-        return df_clean
+        df_merged.drop_duplicates(
+            inplace=True)  # to be sure that we do not accidently have same examples in training and test set
+        return df_merged
 
     @staticmethod
     def get_x_y_names(df: pd.DataFrame) -> Tuple[np.array, np.array, list]:
@@ -477,14 +482,18 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
 
         result_list = []
         for key, value in result.items():
+            e = Element(key)
+            metal_encoding = [e.number, e.row, e.group]
+            features = list(value['feature'])
+            features.extend(metal_encoding)
             result_dict = {
                 'metal': key,
                 'coords': value['coords'],
-                'feature': value['feature'],
+                'feature': features,
                 'name': Path(picklefile).stem,
             }
 
-            if not np.isnan(np.array(value['feature'])).any():
+            if not np.isnan(np.array(features)).any():
                 result_list.append(result_dict)
 
         return result_list

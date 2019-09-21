@@ -14,7 +14,7 @@ from ccdc import io  # pylint: disable=import-error
 from mine_mof_oxstate.parse import GetOxStatesCSD
 
 
-def generate_id_list(num_samples=94715 * 3):
+def generate_id_list(num_samples=1009141):
     """Sample some random entries from the CSD"""
     ids = []
     csd_reader = io.EntryReader('CSD')
