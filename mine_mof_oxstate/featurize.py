@@ -35,7 +35,7 @@ collectorlogger.addHandler(logging.FileHandler('featurecollector.log', mode='w')
 FEATURE_RANGES_DICT = {
     'crystal_nn_fingerprint': (0, 61),
     'cn': (61, 62),
-    'ward_prd': (62, 84),
+    'ward_prb': (62, 84),
     'bond_orientational': (84, 94),
     'behler_parinello': (94, 102),
     'number': (102, 103),
