@@ -296,6 +296,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
         self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
+        self.forbidden_list.append('BOJSUO')
         if exclude_dir is not None:
             all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))]
             self.forbidden_list.extend(all_to_exclude)
