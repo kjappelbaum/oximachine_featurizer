@@ -447,9 +447,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             right_on=['name', 'metal'],
         )
         df_merged.dropna(inplace=True)
-        df_merged.drop_duplicates(
-            inplace=True)  # to be sure that we do not accidently have same examples in training and test set
-        return df_merged
+        df_cleaned = df_merged.loc[df_merged.astype(str).drop_duplicates(
+        ).index]  # to be sure that we do not accidently have same examples in training and test set
+        return df_cleaned
 
     @staticmethod
     def get_x_y_names(df: pd.DataFrame) -> Tuple[np.array, np.array, list]:
