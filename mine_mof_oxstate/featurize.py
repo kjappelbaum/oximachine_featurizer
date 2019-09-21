@@ -323,6 +323,8 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             to_hstack.append(X[:, lower:upper])
             featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
+        collectorlogger.debug('the feature names are %s', featurenames)
+
         with open(os.path.join(self.outdir_helper, 'feature_names.pkl'), 'wb') as fh:
             pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
@@ -347,6 +349,8 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
 
         self.x = self._select_features(x)
+
+        collectorlogger.debug('the feature matrix shape is %s', self.x.shape)
 
     def dump_featurecollection(self) -> None:
         """Collect features and write features, labels and names to seperate files
@@ -452,7 +456,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         df_merged.dropna(inplace=True)
         df_cleaned = df_merged.loc[df_merged.astype(str).drop_duplicates(
         ).index]  # to be sure that we do not accidently have same examples in training and test set
-        df_cleaned['random_column'] = np.random.randint(0, 18, size=len(df_cleaned))
         return df_cleaned
 
     @staticmethod
@@ -487,7 +490,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         result_list = []
         for key, value in result.items():
             e = Element(key)
-            metal_encoding = [e.number, e.row, e.group]
+            metal_encoding = [e.number, e.row, e.group, np.random.randint(1, 18)]
             features = list(value['feature'])
             features.extend(metal_encoding)
             result_dict = {
