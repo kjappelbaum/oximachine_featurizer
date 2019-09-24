@@ -25,14 +25,14 @@ def get_chemical_formula(csd_reader, database_id):
 
 
 def main():
-    oxidation_parse_dict = load_pickle(
-        '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/explore_mof_chemistry/data/20190820-173457-csd_ox_parse_output.pkl'
-    )
+    # oxidation_parse_dict = load_pickle(
+    #   "/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/oxidation_state_book/data/20190820-173457-csd_ox_parse_output.pkl"
+    #)
     oxidation_reference_dict = load_pickle(
-        '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/explore_mof_chemistry/data/20190820-220518-csd_ox_parse_output_reference.pkl'
+        '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/mine_csd/20190921-142007-csd_ox_parse_output_reference.pkl'
     )
 
-    database_ids = list(oxidation_parse_dict.keys()) + list(oxidation_reference_dict.keys())
+    database_ids = list(oxidation_reference_dict.keys())
     csd_reader = io.EntryReader('CSD')
     formula_dicts = {}
     for database_id in database_ids:

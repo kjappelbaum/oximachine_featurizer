@@ -8,7 +8,7 @@ from glob import glob
 import pickle
 import logging
 import warnings
-from collections import defaultdict
+#from collections import defaultdict
 from typing import Tuple
 
 import numpy as np
@@ -181,7 +181,7 @@ class GetFeatures:
         self.structure = None
         self.metal_sites = []
         self.metal_indices = []
-        self.features = defaultdict(dict)
+        self.features = []
         self.outname = os.path.join(self.outpath, ''.join([Path(structure).stem, '.pkl']))
         self.featurizer = MultipleFeaturizer([
             CrystalNNFingerprint.from_preset('ops'),
@@ -224,7 +224,7 @@ class GetFeatures:
     def dump_features(self):
         """Dumps all the features into one pickle file"""
         with open(self.outname, 'wb') as filehandle:
-            pickle.dump(dict(self.features), filehandle)
+            pickle.dump(list(self.features), filehandle)
 
     def run_featurization(self):
         """loops over sites if check ok"""
@@ -232,9 +232,11 @@ class GetFeatures:
             self.get_metal_sites()
             try:
                 for idx, metal_site in enumerate(self.metal_sites):
-                    self.features[metal_site.species_string]['feature'] = self.get_feature_vectors(
-                        self.metal_indices[idx])
-                    self.features[metal_site.species_string]['coords'] = metal_site.coords
+                    self.features.append({
+                        'metal': metal_site.species_string,
+                        'feature': self.get_feature_vectors(self.metal_indices[idx]),
+                        'coords': metal_site.coords,
+                    })
                 self.dump_features()
             except Exception:  # pylint: disable=broad-except
                 self.logger.error('could not featurize {}'.format(self.path))
@@ -314,19 +316,21 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         self.y_test = None
         self.names_test = None
 
-    def _select_features(self, X):
+    @staticmethod
+    def _select_features(selected_features, X, outdir_helper=None):
         """Selects the feature and dumps the names as pickle in the helper directory"""
         to_hstack = []
         featurenames = []
-        for feature in self.selected_features:
+        for feature in selected_features:
             lower, upper = FEATURE_RANGES_DICT[feature]
             to_hstack.append(X[:, lower:upper])
             featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
         collectorlogger.debug('the feature names are %s', featurenames)
 
-        with open(os.path.join(self.outdir_helper, 'feature_names.pkl'), 'wb') as fh:
-            pickle.dump(featurenames, fh)
+        if outdir_helper is not None:
+            with open(os.path.join(outdir_helper, 'feature_names.pkl'), 'wb') as fh:
+                pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
 
     def _featurecollection(self) -> Tuple[np.array, np.array, list]:
@@ -344,11 +348,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             df_train, df_test = train_test_split(df, test_size=self.percentage_holdout, stratify=df['oxidationstate'])
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
             x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(df_test)
-            self.x_test = self._select_features(x_test)
+            self.x_test = FeatureCollector._select_features(self.selected_features, x_test, self.outdir_helper)
         else:
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
 
-        self.x = self._select_features(x)
+        self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper)
 
         collectorlogger.debug('the feature matrix shape is %s', self.x.shape)
 
@@ -488,14 +492,14 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         result = read_pickle(picklefile)
 
         result_list = []
-        for key, value in result.items():
-            e = Element(key)
+        for site in result:
+            e = Element(site['metal'])
             metal_encoding = [e.number, e.row, e.group, np.random.randint(1, 18)]
-            features = list(value['feature'])
+            features = list(site['feature'])
             features.extend(metal_encoding)
             result_dict = {
-                'metal': key,
-                'coords': value['coords'],
+                'metal': site['metal'],
+                'coords': site['coords'],
                 'feature': features,
                 'name': Path(picklefile).stem,
             }
