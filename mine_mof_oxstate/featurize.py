@@ -8,7 +8,8 @@ from glob import glob
 import pickle
 import logging
 import warnings
-#from collections import defaultdict
+
+# from collections import defaultdict
 from typing import Tuple
 
 import numpy as np
@@ -231,6 +232,7 @@ class GetFeatures:
         if self.precheck():
             self.get_metal_sites()
             try:
+                self.logger.info('iterating over {} metal sites'.format(len(self.metal_sites)))
                 for idx, metal_site in enumerate(self.metal_sites):
                     self.features.append({
                         'metal': metal_site.species_string,
@@ -238,8 +240,8 @@ class GetFeatures:
                         'coords': metal_site.coords,
                     })
                 self.dump_features()
-            except Exception:  # pylint: disable=broad-except
-                self.logger.error('could not featurize {}'.format(self.path))
+            except Exception as e:  # pylint: disable=broad-except
+                self.logger.error('could not featurize {} because of {}'.format(self.path, e))
         else:
             self.logger.error('could not load {}'.format(self.path))
 
@@ -266,6 +268,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
                 'bond_orientational',
                 'behler_parinello',
             ],
+            old_format: bool = True,
     ):
         """Initializes a feature collector.
 
@@ -284,6 +287,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             exclude_dir {str} -- path to directory with structure names are forbidden as well (default: {"/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases"})
             selected_features {list} -- list of selected features. Available crystal_nn_fingerprint, cn, ward_prb, bond_orientational, behler_parinello
               (default: {["crystal_nn_fingerprint","ward_prd","bond_orientational","behler_parinello",]})
+            old_format {bool} -- if True, it uses the old feature dictionary style (default: {True})
         """
         self.inpath = inpath
         self.labelpath = labelpath
@@ -297,10 +301,36 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
 
         self.percentage_holdout = percentage_holdout
         self.outdir_holdout = outdir_holdout
+        self.old_format = old_format
 
         self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
         self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
-        self.forbidden_list.append('BOJSUO')
+        self.forbidden_list.append('BOJSUO')  # this is te Re2O7 with dioxan
+        extra_test_set = [
+            'IDIWIB',
+            'IDIWOH',
+            'HEQWAB',
+            'HEQVUU',
+            'GUVZII',
+            'GUVZEE',
+            'COKNOH',
+            'QAMTEG',
+            'ORIVUI',
+            'KAJZIH',
+            'ZITMUN',
+            'ZITFIU',
+            'BUPVEP',
+            'MAHSUK',
+            'QIDFOB',
+            'JIZJUZ',
+            'JIZJOT',
+            'JIZJIN',
+            'JIZJEJ',
+            'JIZJAF',
+            'YAMLOQ',
+        ]
+        self.forbidden_list.extend(extra_test_set)
+        # just be double sure that we drop the ones we want to test on out
         if exclude_dir is not None:
             all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))]
             self.forbidden_list.extend(all_to_exclude)
@@ -340,7 +370,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         Returns:
             Tuple[np.array, np.array, list] -- numpy arrays of features and labels and list of names
         """
-        feature_list = FeatureCollector.create_feature_list(self.picklefiles, self.forbidden_list)
+        feature_list = FeatureCollector.create_feature_list(self.picklefiles, self.forbidden_list, self.old_format)
         label_raw = read_pickle(self.labelpath)
         label_list = FeatureCollector.make_labels_table(label_raw)
         df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
@@ -392,7 +422,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         return any(name.rstrip('1234567890') in s for s in forbidden_list)
 
     @staticmethod
-    def create_feature_list(picklefiles: list, forbidden_list: list) -> list:
+    def create_feature_list(picklefiles: list, forbidden_list: list, old_format: bool = True) -> list:
         """Reads a list of pickle files into dictionary
 
         Arguments:
@@ -409,7 +439,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
 
         for pickle_file in picklefiles:
             if not FeatureCollector._partial_match_in_name(Path(pickle_file).stem, forbidden_list):
-                result_list.extend(FeatureCollector.create_dict_for_feature_table(pickle_file))
+                if not old_format:
+                    result_list.extend(FeatureCollector.create_dict_for_feature_table(pickle_file))
+                else:
+                    result_list.extend(FeatureCollector._create_dict_for_feature_table(pickle_file))
             else:
                 collectorlogger.info(f'{pickle_file} is in forbidden list and will not be considered for X, y, names')
         return result_list
@@ -489,6 +522,39 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         Returns:
             list -- list of dicionary
         """
+        result = read_pickle(picklefile)
+
+        result_list = []
+        for site in result:
+            e = Element(site['metal'])
+            metal_encoding = [e.number, e.row, e.group, np.random.randint(1, 18)]
+            features = list(site['feature'])
+            features.extend(metal_encoding)
+            result_dict = {
+                'metal': site['metal'],
+                'coords': site['coords'],
+                'feature': features,
+                'name': Path(picklefile).stem,
+            }
+
+            if not np.isnan(np.array(features)).any():
+                result_list.append(result_dict)
+
+        return result_list
+
+    @staticmethod
+    def _create_dict_for_feature_table(picklefile: str) -> list:
+        """Reads in a pickle with features and returns a list of dictionaries with one dictionary per metal site.
+
+        Arguments:
+            picklefile {str} -- path to pickle file
+
+        Returns:
+            list -- list of dicionary
+        """
+        #warnings.DeprecationWarning(
+        #    "this is method for old feature files will be deprecated. Produce feature files in new format"
+        #)
         result = read_pickle(picklefile)
 
         result_list = []
