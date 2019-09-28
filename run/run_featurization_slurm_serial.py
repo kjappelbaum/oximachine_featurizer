@@ -19,18 +19,14 @@ import click
 
 featurizer = logging.getLogger('featurizer')  # pylint:disable=invalid-name
 featurizer.setLevel(logging.DEBUG)
-logging.basicConfig(
-    filename='featurizer.log',
-    format='%(filename)s: %(message)s',
-    level=logging.DEBUG,
-)
+logging.basicConfig(filename='featurizer.log', format='%(filename)s: %(message)s', level=logging.DEBUG)
 
 THIS_DIR = os.path.dirname(__file__)
 
-OUTDIR = '/scratch/kjablonk/proj62_featurization/20190915_features'
+OUTDIR = '/scratch/kjablonk/proj62_featurization/20190928_features'
 CSDDIR = '/work/lsmo/mof_subset_csdmay2019'
 ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
-NAME_LIST = '/scratch/kjablonk/proj62_featurization/name_list.pkl'
+NAME_LIST = '/scratch/kjablonk/proj62_featurization/names_to_sample.pkl'
 
 SUBMISSION_TEMPLATE = """#!/bin/bash -l
 #SBATCH --chdir ./
@@ -54,7 +50,7 @@ def load_pickle(f):  # pylint:disable=invalid-name
     return result
 
 
-HAS_OX_NUMER = load_pickle(NAME_LIST)
+TO_SAMPLE = load_pickle(NAME_LIST)
 
 
 def write_and_submit_slurm(workdir, name, structure, outdir, submit=False):
@@ -81,16 +77,10 @@ def main(outdir, start, end, submit):
     if not os.path.exists(outdir):
         os.mkdir(outdir)
 
-    structures = glob(os.path.join(CSDDIR, '*.cif'))
-    structures.sort()
-
-    start = int(start)
-    end = int(end)
-    for structure in structures[start:end:100]:
+    for structure in TO_SAMPLE[start:end:100]:
         if Path(structure).stem not in ALREADY_FEAUTRIZED:
-            if Path(structure).stem in HAS_OX_NUMER:
-                name = Path(structure).stem
-                write_and_submit_slurm(THIS_DIR, name, structure, outdir, submit)
+            name = Path(structure).stem
+            write_and_submit_slurm(THIS_DIR, name, os.path.join(CSDDIR, structure + '.cif'), outdir, submit)
 
 
 if __name__ == '__main__':

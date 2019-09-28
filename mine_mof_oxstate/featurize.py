@@ -21,9 +21,7 @@ from pymatgen.core import Element
 from matminer.featurizers.base import MultipleFeaturizer
 from matminer.featurizers.site import (
     CrystalNNFingerprint,
-    CoordinationNumber,
-    LocalPropertyDifference,
-    BondOrientationalParameter,
+    LocalPropertyStats,
     GaussianSymmFunc,
 )
 from .utils import read_pickle
@@ -35,14 +33,12 @@ collectorlogger.addHandler(logging.FileHandler('featurecollector.log', mode='w')
 
 FEATURE_RANGES_DICT = {
     'crystal_nn_fingerprint': (0, 61),
-    'cn': (61, 62),
-    'ward_prb': (62, 84),
-    'bond_orientational': (84, 94),
-    'behler_parinello': (94, 102),
-    'number': (102, 103),
-    'row': (103, 104),
-    'column': (104, 105),
-    'random_column': (105, 106),
+    'local_property_stats': (61, 122),
+    'behler_parinello': (122, 129),
+    'number': (129, 130),
+    'row': (130, 131),
+    'column': (131, 132),
+    'random_column': (132, 133),
 }
 
 FEATURE_LABELS_ALL = [
@@ -107,14 +103,9 @@ FEATURE_LABELS_ALL = [
     'wt CN_22',
     'wt CN_23',
     'wt CN_24',
-    'CN_VoronoiNN',
-    'local difference in Number',
     'local difference in MendeleevNumber',
-    'local difference in AtomicWeight',
-    'local difference in MeltingT',
     'local difference in Column',
     'local difference in Row',
-    'local difference in CovalentRadius',
     'local difference in Electronegativity',
     'local difference in NsValence',
     'local difference in NpValence',
@@ -126,20 +117,52 @@ FEATURE_LABELS_ALL = [
     'local difference in NdUnfilled',
     'local difference in NfUnfilled',
     'local difference in NUnfilled',
-    'local difference in GSvolume_pa',
     'local difference in GSbandgap',
-    'local difference in GSmagmom',
-    'local difference in SpaceGroupNumber',
-    'BOOP Q l=1',
-    'BOOP Q l=2',
-    'BOOP Q l=3',
-    'BOOP Q l=4',
-    'BOOP Q l=5',
-    'BOOP Q l=6',
-    'BOOP Q l=7',
-    'BOOP Q l=8',
-    'BOOP Q l=9',
-    'BOOP Q l=10',
+    'local signed difference in MendeleevNumber',
+    'local signed difference in Column',
+    'local signed difference in Row',
+    'local signed difference in Electronegativity',
+    'local signed difference in NsValence',
+    'local signed difference in NpValence',
+    'local signed difference in NdValence',
+    'local signed difference in NfValence',
+    'local signed difference in NValence',
+    'local signed difference in NsUnfilled',
+    'local signed difference in NpUnfilled',
+    'local signed difference in NdUnfilled',
+    'local signed difference in NfUnfilled',
+    'local signed difference in NUnfilled',
+    'local signed difference in GSbandgap',
+    'maximum local difference in MendeleevNumber',
+    'maximum local difference in Column',
+    'maximum local difference in Row',
+    'maximum local difference in Electronegativity',
+    'maximum local difference in NsValence',
+    'maximum local difference in NpValence',
+    'maximum local difference in NdValence',
+    'maximum local difference in NfValence',
+    'maximum local difference in NValence',
+    'maximum local difference in NsUnfilled',
+    'maximum local difference in NpUnfilled',
+    'maximum local difference in NdUnfilled',
+    'maximum local difference in NfUnfilled',
+    'maximum local difference in NUnfilled',
+    'maximum local difference in GSbandgap',
+    'mimum local difference in MendeleevNumber',
+    'mimum local difference in Column',
+    'mimum local difference in Row',
+    'mimum local difference in Electronegativity',
+    'mimum local difference in NsValence',
+    'mimum local difference in NpValence',
+    'mimum local difference in NdValence',
+    'mimum local difference in NfValence',
+    'mimum local difference in NValence',
+    'mimum local difference in NsUnfilled',
+    'mimum local difference in NpUnfilled',
+    'mimum local difference in NdUnfilled',
+    'mimum local difference in NfUnfilled',
+    'mimum local difference in NUnfilled',
+    'mimum local difference in GSbandgap',
     'G2_0.05',
     'G2_4.0',
     'G2_20.0',
@@ -186,9 +209,7 @@ class GetFeatures:
         self.outname = os.path.join(self.outpath, ''.join([Path(structure).stem, '.pkl']))
         self.featurizer = MultipleFeaturizer([
             CrystalNNFingerprint.from_preset('ops'),
-            CoordinationNumber(),
-            LocalPropertyDifference.from_preset('ward-prb-2017'),
-            BondOrientationalParameter(),
+            LocalPropertyStats.from_preset('interpretable'),
             GaussianSymmFunc(),
         ])
 
@@ -307,6 +328,34 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
         self.forbidden_list.append('BOJSUO')  # this is te Re2O7 with dioxan
         extra_test_set = [
+            'BIZLOO',
+            'ULOVAS',
+            'AFEHOL',
+            'ADASUW',
+            'FENXAY',
+            'KAWCES',
+            'AMUTEI',
+            'NEZPOA',
+            'NEZPUG',
+            'MAJLOZ',
+            'WAZKOZ',
+            'LAVYIT',
+            'EQEHUE',
+            'VOMMUH',
+            'MITSIS',
+            'WAQFAY',
+            'ARADEE',
+            'MAVLED',
+            'DIJYED',
+            'XEDJUN',
+            'TEJFOG',
+            'ZEJWOD',
+            'KEPGES',
+            'WAQKIK',
+            'ZEJXEU',
+            'REYDUX',
+            'ZARBEZ',
+            'ZEJXAQ',
             'IDIWIB',
             'IDIWOH',
             'HEQWAB',
@@ -314,6 +363,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             'GUVZII',
             'GUVZEE',
             'COKNOH',
+            'TEPWIX',
             'QAMTEG',
             'ORIVUI',
             'KAJZIH',
@@ -552,20 +602,20 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         Returns:
             list -- list of dicionary
         """
-        #warnings.DeprecationWarning(
+        # warnings.DeprecationWarning(
         #    "this is method for old feature files will be deprecated. Produce feature files in new format"
-        #)
+        # )
         result = read_pickle(picklefile)
 
         result_list = []
-        for site in result:
-            e = Element(site['metal'])
+        for key, value in result.items():
+            e = Element(key)
             metal_encoding = [e.number, e.row, e.group, np.random.randint(1, 18)]
-            features = list(site['feature'])
+            features = list(value['feature'])
             features.extend(metal_encoding)
             result_dict = {
-                'metal': site['metal'],
-                'coords': site['coords'],
+                'metal': key,
+                'coords': value['coords'],
                 'feature': features,
                 'name': Path(picklefile).stem,
             }
