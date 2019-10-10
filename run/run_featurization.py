@@ -16,7 +16,7 @@ def main(structure, outdir):
     """
     CLI function
     """
-    gf = GetFeatures(structure, outdir)  # pylint: disable=invalid-name
+    gf = GetFeatures.from_file(structure, outdir)  # pylint: disable=invalid-name
     gf.run_featurization()
 
 
