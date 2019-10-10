@@ -28,130 +28,130 @@ from matminer.featurizers.site import (
 )
 from .utils import read_pickle
 
-collectorlogger = logging.getLogger("FeatureCollector")
+collectorlogger = logging.getLogger('FeatureCollector')
 collectorlogger.setLevel(logging.DEBUG)
-logging.basicConfig(format="%(filename)s: %(message)s", level=logging.DEBUG)
-collectorlogger.addHandler(logging.FileHandler("featurecollector.log", mode="w"))
+logging.basicConfig(format='%(filename)s: %(message)s', level=logging.DEBUG)
+collectorlogger.addHandler(logging.FileHandler('featurecollector.log', mode='w'))
 
 FEATURE_RANGES_DICT = {
-    "crystal_nn_fingerprint": (0, 61),
-    "cn": (61, 62),
-    "ward_prb": (62, 84),
-    "bond_orientational": (84, 94),
-    "behler_parinello": (94, 102),
-    "number": (102, 103),
-    "row": (103, 104),
-    "column": (104, 105),
-    "random_column": (105, 106),
+    'crystal_nn_fingerprint': (0, 61),
+    'cn': (61, 62),
+    'ward_prb': (62, 84),
+    'bond_orientational': (84, 94),
+    'behler_parinello': (94, 102),
+    'number': (102, 103),
+    'row': (103, 104),
+    'column': (104, 105),
+    'random_column': (105, 106),
 }
 
 FEATURE_LABELS_ALL = [
-    "wt CN_1",
-    "sgl_bd CN_1",
-    "wt CN_2",
-    "L-shaped CN_2",
-    "water-like CN_2",
-    "bent 120 degrees CN_2",
-    "bent 150 degrees CN_2",
-    "linear CN_2",
-    "wt CN_3",
-    "trigonal planar CN_3",
-    "trigonal non-coplanar CN_3",
-    "T-shaped CN_3",
-    "wt CN_4",
-    "square co-planar CN_4",
-    "tetrahedral CN_4",
-    "rectangular see-saw-like CN_4",
-    "see-saw-like CN_4",
-    "trigonal pyramidal CN_4",
-    "wt CN_5",
-    "pentagonal planar CN_5",
-    "square pyramidal CN_5",
-    "trigonal bipyramidal CN_5",
-    "wt CN_6",
-    "hexagonal planar CN_6",
-    "octahedral CN_6",
-    "pentagonal pyramidal CN_6",
-    "wt CN_7",
-    "hexagonal pyramidal CN_7",
-    "pentagonal bipyramidal CN_7",
-    "wt CN_8",
-    "body-centered cubic CN_8",
-    "hexagonal bipyramidal CN_8",
-    "wt CN_9",
-    "q2 CN_9",
-    "q4 CN_9",
-    "q6 CN_9",
-    "wt CN_10",
-    "q2 CN_10",
-    "q4 CN_10",
-    "q6 CN_10",
-    "wt CN_11",
-    "q2 CN_11",
-    "q4 CN_11",
-    "q6 CN_11",
-    "wt CN_12",
-    "cuboctahedral CN_12",
-    "q2 CN_12",
-    "q4 CN_12",
-    "q6 CN_12",
-    "wt CN_13",
-    "wt CN_14",
-    "wt CN_15",
-    "wt CN_16",
-    "wt CN_17",
-    "wt CN_18",
-    "wt CN_19",
-    "wt CN_20",
-    "wt CN_21",
-    "wt CN_22",
-    "wt CN_23",
-    "wt CN_24",
-    "CN_VoronoiNN",
-    "local difference in Number",
-    "local difference in MendeleevNumber",
-    "local difference in AtomicWeight",
-    "local difference in MeltingT",
-    "local difference in Column",
-    "local difference in Row",
-    "local difference in CovalentRadius",
-    "local difference in Electronegativity",
-    "local difference in NsValence",
-    "local difference in NpValence",
-    "local difference in NdValence",
-    "local difference in NfValence",
-    "local difference in NValence",
-    "local difference in NsUnfilled",
-    "local difference in NpUnfilled",
-    "local difference in NdUnfilled",
-    "local difference in NfUnfilled",
-    "local difference in NUnfilled",
-    "local difference in GSvolume_pa",
-    "local difference in GSbandgap",
-    "local difference in GSmagmom",
-    "local difference in SpaceGroupNumber",
-    "BOOP Q l=1",
-    "BOOP Q l=2",
-    "BOOP Q l=3",
-    "BOOP Q l=4",
-    "BOOP Q l=5",
-    "BOOP Q l=6",
-    "BOOP Q l=7",
-    "BOOP Q l=8",
-    "BOOP Q l=9",
-    "BOOP Q l=10",
-    "G2_0.05",
-    "G2_4.0",
-    "G2_20.0",
-    "G2_80.0",
-    "G4_0.005_1.0_1.0",
-    "G4_0.005_1.0_-1.0",
-    "G4_0.005_4.0_1.0",
-    "G4_0.005_4.0_-1.0",
-    "number",
-    "row",
-    "column",
-    "random_column",
+    'wt CN_1',
+    'sgl_bd CN_1',
+    'wt CN_2',
+    'L-shaped CN_2',
+    'water-like CN_2',
+    'bent 120 degrees CN_2',
+    'bent 150 degrees CN_2',
+    'linear CN_2',
+    'wt CN_3',
+    'trigonal planar CN_3',
+    'trigonal non-coplanar CN_3',
+    'T-shaped CN_3',
+    'wt CN_4',
+    'square co-planar CN_4',
+    'tetrahedral CN_4',
+    'rectangular see-saw-like CN_4',
+    'see-saw-like CN_4',
+    'trigonal pyramidal CN_4',
+    'wt CN_5',
+    'pentagonal planar CN_5',
+    'square pyramidal CN_5',
+    'trigonal bipyramidal CN_5',
+    'wt CN_6',
+    'hexagonal planar CN_6',
+    'octahedral CN_6',
+    'pentagonal pyramidal CN_6',
+    'wt CN_7',
+    'hexagonal pyramidal CN_7',
+    'pentagonal bipyramidal CN_7',
+    'wt CN_8',
+    'body-centered cubic CN_8',
+    'hexagonal bipyramidal CN_8',
+    'wt CN_9',
+    'q2 CN_9',
+    'q4 CN_9',
+    'q6 CN_9',
+    'wt CN_10',
+    'q2 CN_10',
+    'q4 CN_10',
+    'q6 CN_10',
+    'wt CN_11',
+    'q2 CN_11',
+    'q4 CN_11',
+    'q6 CN_11',
+    'wt CN_12',
+    'cuboctahedral CN_12',
+    'q2 CN_12',
+    'q4 CN_12',
+    'q6 CN_12',
+    'wt CN_13',
+    'wt CN_14',
+    'wt CN_15',
+    'wt CN_16',
+    'wt CN_17',
+    'wt CN_18',
+    'wt CN_19',
+    'wt CN_20',
+    'wt CN_21',
+    'wt CN_22',
+    'wt CN_23',
+    'wt CN_24',
+    'CN_VoronoiNN',
+    'local difference in Number',
+    'local difference in MendeleevNumber',
+    'local difference in AtomicWeight',
+    'local difference in MeltingT',
+    'local difference in Column',
+    'local difference in Row',
+    'local difference in CovalentRadius',
+    'local difference in Electronegativity',
+    'local difference in NsValence',
+    'local difference in NpValence',
+    'local difference in NdValence',
+    'local difference in NfValence',
+    'local difference in NValence',
+    'local difference in NsUnfilled',
+    'local difference in NpUnfilled',
+    'local difference in NdUnfilled',
+    'local difference in NfUnfilled',
+    'local difference in NUnfilled',
+    'local difference in GSvolume_pa',
+    'local difference in GSbandgap',
+    'local difference in GSmagmom',
+    'local difference in SpaceGroupNumber',
+    'BOOP Q l=1',
+    'BOOP Q l=2',
+    'BOOP Q l=3',
+    'BOOP Q l=4',
+    'BOOP Q l=5',
+    'BOOP Q l=6',
+    'BOOP Q l=7',
+    'BOOP Q l=8',
+    'BOOP Q l=9',
+    'BOOP Q l=10',
+    'G2_0.05',
+    'G2_4.0',
+    'G2_20.0',
+    'G2_80.0',
+    'G4_0.005_1.0_1.0',
+    'G4_0.005_1.0_-1.0',
+    'G4_0.005_4.0_1.0',
+    'G4_0.005_4.0_-1.0',
+    'number',
+    'row',
+    'column',
+    'random_column',
 ]
 
 
@@ -168,11 +168,11 @@ class GetFeatures:
         Returns:
 
         """
-        featurizelogger = logging.getLogger("Featurize")
+        featurizelogger = logging.getLogger('Featurize')
         featurizelogger.setLevel(logging.DEBUG)
         logging.basicConfig(
-            filename="featurize.log",
-            format="%(filename)s: %(message)s",
+            filename='featurize.log',
+            format='%(filename)s: %(message)s',
             level=logging.DEBUG,
         )
 
@@ -184,13 +184,13 @@ class GetFeatures:
         self.metal_indices = []
         self.features = []
         self.outname = os.path.join(
-            self.outpath, "".join([Path(structure).stem, ".pkl"])
+            self.outpath, ''.join([Path(structure).stem, '.pkl'])
         )
         self.featurizer = MultipleFeaturizer(
             [
-                CrystalNNFingerprint.from_preset("ops"),
+                CrystalNNFingerprint.from_preset('ops'),
                 CoordinationNumber(),
-                LocalPropertyDifference.from_preset("ward-prb-2017"),
+                LocalPropertyDifference.from_preset('ward-prb-2017'),
                 BondOrientationalParameter(),
                 GaussianSymmFunc(),
             ]
@@ -204,7 +204,7 @@ class GetFeatures:
 
         """
         with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
+            warnings.simplefilter('ignore')
             try:
                 atoms = read(self.path)
                 self.structure = AseAtomsAdaptor.get_structure(
@@ -230,7 +230,7 @@ class GetFeatures:
 
     def dump_features(self):
         """Dumps all the features into one pickle file"""
-        with open(self.outname, "wb") as filehandle:
+        with open(self.outname, 'wb') as filehandle:
             pickle.dump(list(self.features), filehandle)
 
     def run_featurization(self):
@@ -239,25 +239,25 @@ class GetFeatures:
             self.get_metal_sites()
             try:
                 self.logger.info(
-                    "iterating over {} metal sites".format(len(self.metal_sites))
+                    'iterating over {} metal sites'.format(len(self.metal_sites))
                 )
                 for idx, metal_site in enumerate(self.metal_sites):
                     self.features.append(
                         {
-                            "metal": metal_site.species_string,
-                            "feature": self.get_feature_vectors(
+                            'metal': metal_site.species_string,
+                            'feature': self.get_feature_vectors(
                                 self.metal_indices[idx]
                             ),
-                            "coords": metal_site.coords,
+                            'coords': metal_site.coords,
                         }
                     )
                 self.dump_features()
             except Exception as e:  # pylint: disable=broad-except
                 self.logger.error(
-                    "could not featurize {} because of {}".format(self.path, e)
+                    'could not featurize {} because of {}'.format(self.path, e)
                 )
         else:
-            self.logger.error("could not load {}".format(self.path))
+            self.logger.error('could not load {}'.format(self.path))
 
 
 class FeatureCollector:  # pylint:disable=too-many-instance-attributes
@@ -268,18 +268,18 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         self,
         inpath: str = None,
         labelpath: str = None,
-        outdir_labels: str = "data/labels",
-        outdir_features: str = "data/features",
-        outdir_helper: str = "data/helper",
+        outdir_labels: str = 'data/labels',
+        outdir_features: str = 'data/features',
+        outdir_helper: str = 'data/helper',
         percentage_holdout: float = 0,
         outdir_holdout: str = None,
-        forbidden_picklepath: str = "/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl",
-        exclude_dir: str = "/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases",
+        forbidden_picklepath: str = '/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl',
+        exclude_dir: str = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases',
         selected_features: list = [
-            "crystal_nn_fingerprint",
-            "ward_prd",
-            "bond_orientational",
-            "behler_parinello",
+            'crystal_nn_fingerprint',
+            'ward_prd',
+            'bond_orientational',
+            'behler_parinello',
         ],
         old_format: bool = True,
     ):
@@ -316,46 +316,46 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         self.outdir_holdout = outdir_holdout
         self.old_format = old_format
 
-        self.picklefiles = glob(os.path.join(inpath, "*.pkl"))
+        self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
         self.forbidden_list = (
             list(read_pickle(forbidden_picklepath))
             if forbidden_picklepath is not None
             else []
         )
-        self.forbidden_list.append("BOJSUO")  # this is te Re2O7 with dioxan
+        self.forbidden_list.append('BOJSUO')  # this is te Re2O7 with dioxan
         extra_test_set = [
-            "IDIWIB",
-            "IDIWOH",
-            "HEQWAB",
-            "HEQVUU",
-            "GUVZII",
-            "GUVZEE",
-            "COKNOH",
-            "QAMTEG",
-            "ORIVUI",
-            "KAJZIH",
-            "ZITMUN",
-            "ZITFIU",
-            "BUPVEP",
-            "MAHSUK",
-            "QIDFOB",
-            "JIZJUZ",
-            "JIZJOT",
-            "JIZJIN",
-            "JIZJEJ",
-            "JIZJAF",
-            "YAMLOQ",
+            'IDIWIB',
+            'IDIWOH',
+            'HEQWAB',
+            'HEQVUU',
+            'GUVZII',
+            'GUVZEE',
+            'COKNOH',
+            'QAMTEG',
+            'ORIVUI',
+            'KAJZIH',
+            'ZITMUN',
+            'ZITFIU',
+            'BUPVEP',
+            'MAHSUK',
+            'QIDFOB',
+            'JIZJUZ',
+            'JIZJOT',
+            'JIZJIN',
+            'JIZJEJ',
+            'JIZJAF',
+            'YAMLOQ',
         ]
         self.forbidden_list.extend(extra_test_set)
         # just be double sure that we drop the ones we want to test on out
         if exclude_dir is not None:
             all_to_exclude = [
-                Path(p).stem for p in glob(os.path.join(exclude_dir, "*.cif"))
+                Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))
             ]
             self.forbidden_list.extend(all_to_exclude)
 
         collectorlogger.info(
-            f"initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features"
+            f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
         )
         self.x = None
         self.y = None
@@ -375,10 +375,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             to_hstack.append(X[:, lower:upper])
             featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
-        collectorlogger.debug("the feature names are %s", featurenames)
+        collectorlogger.debug('the feature names are %s', featurenames)
 
         if outdir_helper is not None:
-            with open(os.path.join(outdir_helper, "feature_names.pkl"), "wb") as fh:
+            with open(os.path.join(outdir_helper, 'feature_names.pkl'), 'wb') as fh:
                 pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
 
@@ -397,7 +397,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
         if self.percentage_holdout > 0:
             df_train, df_test = train_test_split(
-                df, test_size=self.percentage_holdout, stratify=df["oxidationstate"]
+                df, test_size=self.percentage_holdout, stratify=df['oxidationstate']
             )
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
             x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(
@@ -413,7 +413,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             self.selected_features, x, self.outdir_helper
         )
 
-        collectorlogger.debug("the feature matrix shape is %s", self.x.shape)
+        collectorlogger.debug('the feature matrix shape is %s', self.x.shape)
 
     def dump_featurecollection(self) -> None:
         """Collect features and write features, labels and names to seperate files
@@ -448,7 +448,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
     def _partial_match_in_name(name: str, forbidden_list: list) -> bool:
         """Tries to match also partial names, e.g. to ensure that  MAHSUK01 or
         MAHSUK02 is also matched when only MAHSUK is in the forbidden list"""
-        return any(name.rstrip("1234567890") in s for s in forbidden_list)
+        return any(name.rstrip('1234567890') in s for s in forbidden_list)
 
     @staticmethod
     def create_feature_list(
@@ -463,7 +463,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         Returns:
             list -- parsed pickle contents
         """
-        collectorlogger.info("reading pickle files with features")
+        collectorlogger.info('reading pickle files with features')
         result_list = []
         if not isinstance(forbidden_list, list):
             forbidden_list = []
@@ -482,7 +482,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
                     )
             else:
                 collectorlogger.info(
-                    f"{pickle_file} is in forbidden list and will not be considered for X, y, names"
+                    f'{pickle_file} is in forbidden list and will not be considered for X, y, names'
                 )
         return result_list
 
@@ -500,15 +500,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             list -- list of dictionaries of the form [{'name':, 'metal':, 'oxidationstate':}]
         """
         collectorlogger.info(
-            "converting raw list of features into list of site dictionaries"
+            'converting raw list of features into list of site dictionaries'
         )
         result_list = []
         for key, value in raw_labels.items():
             for metal, oxstate in value.items():
                 result_list.append(
-                    {"name": key, "metal": metal, "oxidationstate": oxstate[0]}
+                    {'name': key, 'metal': metal, 'oxidationstate': oxstate[0]}
                 )
-        collectorlogger.info(f"collected {len(result_list)} features")
+        collectorlogger.info(f'collected {len(result_list)} features')
         return result_list
 
     @staticmethod
@@ -523,15 +523,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             pd.DataFrame -- Dataframe with each row describing a seperate metal site
         """
         pd.options.mode.use_inf_as_na = True
-        collectorlogger.info("merging labels and features")
+        collectorlogger.info('merging labels and features')
         df_features = pd.DataFrame(feature_list)
         df_labels = pd.DataFrame(label_list)
 
         df_merged = pd.merge(
             df_features,
             df_labels,
-            left_on=["name", "metal"],
-            right_on=["name", "metal"],
+            left_on=['name', 'metal'],
+            right_on=['name', 'metal'],
         )
         df_merged.dropna(inplace=True)
         df_cleaned = df_merged.loc[
@@ -550,10 +550,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         Returns:
             Tuple[np.array, np.array, list] -- [description]
         """
-        names = list(df["name"])
-        feature_list = [l for l in df["feature"]]
+        names = list(df['name'])
+        feature_list = [l for l in df['feature']]
         features = np.array(feature_list)
-        labels = np.array(df["oxidationstate"])
+        labels = np.array(df['oxidationstate'])
         return features, labels, names
 
     @staticmethod
@@ -570,15 +570,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
 
         result_list = []
         for site in result:
-            e = Element(site["metal"])
+            e = Element(site['metal'])
             metal_encoding = [e.number, e.row, e.group, np.random.randint(1, 18)]
-            features = list(site["feature"])
+            features = list(site['feature'])
             features.extend(metal_encoding)
             result_dict = {
-                "metal": site["metal"],
-                "coords": site["coords"],
-                "feature": features,
-                "name": Path(picklefile).stem,
+                'metal': site['metal'],
+                'coords': site['coords'],
+                'feature': features,
+                'name': Path(picklefile).stem,
             }
 
             if not np.isnan(np.array(features)).any():
@@ -597,7 +597,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             list -- list of dicionary
         """
         warnings.DeprecationWarning(
-            "this is method for old feature files will be deprecated. Produce feature files in new format"
+            'this is method for old feature files will be deprecated. Produce feature files in new format'
         )
         result = read_pickle(picklefile)
 
@@ -606,13 +606,13 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             e = Element(key)
 
             metal_encoding = [e.number, e.row, e.group, np.random.randint(1, 18)]
-            features = list(value["feature"])
+            features = list(value['feature'])
             features.extend(metal_encoding)
             result_dict = {
-                "metal": key,
-                "coords": value["coords"],
-                "feature": features,
-                "name": Path(picklefile).stem,
+                'metal': key,
+                'coords': value['coords'],
+                'feature': features,
+                'name': Path(picklefile).stem,
             }
 
             if not np.isnan(np.array(features)).any():
@@ -645,11 +645,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         # timestr = time.strftime('%Y%m%d-%H%M%S')
         # outpath_base = os.path.join(outdir, timestr)
 
-        np.save(os.path.join(outdir_features, "features"), x)
-        np.save(os.path.join(outdir_labels, "labels"), y)
+        np.save(os.path.join(outdir_features, 'features'), x)
+        np.save(os.path.join(outdir_labels, 'labels'), y)
 
-        with open(os.path.join(outdir_helper, "names.pkl"), "wb") as picklefile:
+        with open(os.path.join(outdir_helper, 'names.pkl'), 'wb') as picklefile:
             pickle.dump(names, picklefile)
 
-        collectorlogger.info("stored features into labels and names into")
-
+        collectorlogger.info('stored features into labels and names into')

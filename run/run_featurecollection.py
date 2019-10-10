@@ -9,16 +9,16 @@ import click
 from mine_mof_oxstate.featurize import FeatureCollector
 
 
-@click.command("cli")
-@click.argument("inpath")
-@click.argument("labelpath")
-@click.argument("outdir_labels")
-@click.argument("outdir_features")
-@click.argument("outdir_helper")
-@click.argument("percentage_holdout")
-@click.argument("outdir_holdout")
-@click.argument("training_set_size")
-@click.argument("features", nargs=-1)
+@click.command('cli')
+@click.argument('inpath')
+@click.argument('labelpath')
+@click.argument('outdir_labels')
+@click.argument('outdir_features')
+@click.argument('outdir_helper')
+@click.argument('percentage_holdout')
+@click.argument('outdir_holdout')
+@click.argument('training_set_size')
+@click.argument('features', nargs=-1)
 def main(
     inpath,
     labelpath,
@@ -54,5 +54,5 @@ def main(
     fc.dump_featurecollection()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()  # pylint: disable=no-value-for-parameter
