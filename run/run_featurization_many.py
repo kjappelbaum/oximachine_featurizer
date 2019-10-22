@@ -31,7 +31,7 @@ HAS_OX_NUMER = load_pickle(NAME_LIST)
 def featurize_single(structure, outdir=OUTDIR):
     if Path(structure).stem not in ALREADY_FEAUTRIZED:
         if Path(structure).stem in HAS_OX_NUMER:
-            gf = GetFeatures(structure, outdir)  # pylint:disable=invalid-name
+            gf = GetFeatures.from_file(structure, outdir)  # pylint:disable=invalid-name
             gf.run_featurization()
 
 
