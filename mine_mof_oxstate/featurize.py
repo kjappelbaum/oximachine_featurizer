@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value
+# pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value, too-many-lines
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
 from __future__ import absolute_import
 from pathlib import Path
@@ -195,6 +195,49 @@ FEATURE_LABELS_ALL = [
     'random_column',
 ]
 
+SELECTED_RACS = [
+    'D_mc-I-0-all',
+    'D_mc-I-1-all',
+    'D_mc-I-2-all',
+    'D_mc-I-3-all',
+    'D_mc-S-0-all',
+    'D_mc-S-1-all',
+    'D_mc-S-2-all',
+    'D_mc-S-3-all',
+    'D_mc-T-0-all',
+    'D_mc-T-1-all',
+    'D_mc-T-2-all',
+    'D_mc-T-3-all',
+    'D_mc-Z-0-all',
+    'D_mc-Z-1-all',
+    'D_mc-Z-2-all',
+    'D_mc-Z-3-all',
+    'D_mc-chi-0-all',
+    'D_mc-chi-1-all',
+    'D_mc-chi-2-all',
+    'D_mc-chi-3-all',
+    'mc-I-0-all',
+    'mc-I-1-all',
+    'mc-I-2-all',
+    'mc-I-3-all',
+    'mc-S-0-all',
+    'mc-S-1-all',
+    'mc-S-2-all',
+    'mc-S-3-all',
+    'mc-T-0-all',
+    'mc-T-1-all',
+    'mc-T-2-all',
+    'mc-T-3-all',
+    'mc-Z-0-all',
+    'mc-Z-1-all',
+    'mc-Z-2-all',
+    'mc-Z-3-all',
+    'mc-chi-0-all',
+    'mc-chi-1-all',
+    'mc-chi-2-all',
+    'mc-chi-3-all',
+]
+
 
 class GetFeatures:
     """Featurizer"""
@@ -341,6 +384,8 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             ],
             old_format: bool = False,
             training_set_size: int = None,
+            racsfile: str = None,
+            selectedracs: list = SELECTED_RACS,
     ):
         """Initializes a feature collector.
 
@@ -361,6 +406,8 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
               (default: {["crystal_nn_fingerprint","ward_prd","bond_orientational","behler_parinello",]})
             old_format {bool} -- if True, it uses the old feature dictionary style (default: {True})
             training_set_size {int} -- if set to an int, it set an upper limit of the number of training points and uses farthest point sampling to select them
+            racsfile {str} -- path to file with
+            selectedracs {list} -- list of selected RACs
         """
         self.inpath = inpath
         self.labelpath = labelpath
@@ -580,17 +627,36 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         self.y_valid = None
         self.names_valid = None
 
+        # RACs
+        self.racsdf = None
+        self.selected_racs = selectedracs
+        if (racsfile is not None) and (racsfile.endswith('.csv')):
+            collectorlogger.info('Using RACs, now reading them and adding them to the feature names')
+            collectorlogger.warning('Be carful, RACs and their implementation in this code are not thoroughly tested!')
+            self.racsdf = pd.read_csv(racsfile)
+            self.selected_features = (self.selected_racs + self.selected_features)  # to get the correct ordering
+
     @staticmethod
-    def _select_features(selected_features, X, outdir_helper=None):
-        """Selects the feature and dumps the names as pickle in the helper directory"""
+    def _select_features(selected_features, X, outdir_helper=None, offset=0):
+        """Selects the feature and dumps the names as pickle in the helper directory.
+        Offset to be used if RACs are used"""
         to_hstack = []
         featurenames = []
         for feature in selected_features:
             featureranges = FEATURE_RANGES_DICT[feature]
             for featurerange in featureranges:
                 lower, upper = featurerange
+                # adding the offset to account for RACS from seperate file
+                # that are added at the start of the feature list
+                lower += offset
+                upper += offset
                 to_hstack.append(X[:, lower:upper])
                 featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
+
+        # now consider the case of RACs, i.e. offset > 0
+        if offset > 0:
+            to_hstack.append(X[:, :offset])
+            featurenames.extend(FEATURE_LABELS_ALL[:offset])
 
         collectorlogger.debug('the feature names are %s', featurenames)
 
@@ -610,7 +676,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         label_raw = read_pickle(self.labelpath)
         label_list = FeatureCollector.make_labels_table(label_raw)
         df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
-        df = df.sample(frac=1).reset_index(drop=True)  # shuffle dataframe for the next steps to ensure randomization
+
+        # shuffle dataframe for the next steps to ensure randomization
+        df = df.sample(frac=1).reset_index(drop=True)
+
+        # set offset of select features
+        offset = 0
+        if self.racsdf is not None:
+            offset = len(self.selected_racs)
+            df = FeatureCollector.merge_racs_frame(df, self.racsdf, self.selected_racs)
 
         if self.percentage_holdout > 0:
             # Make stratified split that also makes sure that no structure from the training set is in the test set
@@ -630,10 +704,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             df_test = df[df['base_name'].isin(test_names)]
 
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper)
+            self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
 
             x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(df_test)
-            self.x_test = FeatureCollector._select_features(self.selected_features, x_test, self.outdir_helper)
+            self.x_test = FeatureCollector._select_features(self.selected_features, x_test, self.outdir_helper, offset)
 
         else:  # no seperate holdout set
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
@@ -643,7 +717,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             assert self.training_set_size < len(df_train)
 
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper)
+            x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
 
             # indices = greedy_farthest_point_samples(x, self.training_set_size)
             indices = apricot_select(x, self.training_set_size)
@@ -657,9 +731,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             df_validation = _df_train[~good_indices]
             x_valid, self.y_valid, self.names_valid = FeatureCollector.get_x_y_names(df_validation)
 
-            self.x_valid = FeatureCollector._select_features(self.selected_features, x_valid, self.outdir_helper)
+            self.x_valid = FeatureCollector._select_features(self.selected_features, x_valid, self.outdir_helper,
+                                                             offset)
 
-        self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper)
+        self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
         collectorlogger.debug('the feature matrix shape is %s', self.x.shape)
 
     def dump_featurecollection(self) -> None:
@@ -703,6 +778,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
     def return_featurecollection_train(self) -> Tuple[np.array, np.array, list]:
         self._featurecollection()
         return self.x, self.y, self.names
+
+    @staticmethod
+    def selectracs(df, columns=SELECTED_RACS):
+        selected_columns = columns + ['name', 'metal']
+        return df[selected_columns]
 
     @staticmethod
     def _partial_match_in_name(name: str, forbidden_list: list) -> bool:
@@ -756,6 +836,29 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
                 result_list.append({'name': key, 'metal': metal, 'oxidationstate': oxstate[0]})
         collectorlogger.info(f'collected {len(result_list)} labelsƒ')
         return result_list
+
+    @staticmethod
+    def merge_racs_frame(df_features, df_racs, selectedracs):
+        """Merges the selected RACs features to the list of features
+        """
+        collectorlogger.info('Merging RACs into other features')
+        df_selected_racs = FeatureCollector.selectracs(df_racs, selectedracs)
+        df_merged = pd.merged(
+            df_features,
+            df_selected_racs,
+            left_on=['name', 'metal'],
+            right_on=['name', 'metal'],
+        )
+
+        new_feature_columns = []
+        for _, row in df_merged.iterrows():
+            new_feature_column = row['feature']
+            racs = row[selectedracs]
+            racs.extend(new_feature_column)
+            new_feature_columns.append(racs)
+
+        df_merged.drop(columns=['feature'], inplace=True)
+        df_merged['feature'] = new_feature_column
 
     @staticmethod
     def create_clean_dataframe(feature_list: list, label_list: list) -> pd.DataFrame:

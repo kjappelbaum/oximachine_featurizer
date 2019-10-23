@@ -9,7 +9,6 @@ from __future__ import absolute_import
 from __future__ import print_function
 from itertools import product
 import os
-import numbers
 from pymatgen import MPRester
 import pandas as pd
 from tqdm import tqdm
@@ -84,6 +83,8 @@ metals = [  # pylint:disable=invalid-name
     'Ho',
     'Er',
     'Tm',
+    'U',
+    'Pu',
 ]
 
 anions = list(anions_dict.keys())  # pylint:disable=invalid-name
@@ -110,8 +111,7 @@ def get_binary_combinations(  # pylint:disable=dangerous-default-value, redefine
 def _check_consistency_ox_state(formula, oxidationstate, metal, anion):
     """Check if oxidation state is integer and makes sense in terms of charge neutrality"""
     check0 = formula[metal] * oxidationstate + formula[anion] * anions_dict[anion] == 0
-    check1 = isinstance(oxidationstate, numbers.Real)
-
+    check1 = (oxidationstate).is_integer()
     return check0 * check1
 
 
@@ -121,7 +121,7 @@ def _figure_out_oxidation_state(formula, metal, anion):
     positive_charge = -1 * negative_charge
     oxidation_state_guess = positive_charge / formula[metal]
 
-    return oxidation_state_guess
+    return float(oxidation_state_guess)
 
 
 def calculate_metal_oxidation_state(formula: dict, metal: str, anion: str):
@@ -130,10 +130,10 @@ def calculate_metal_oxidation_state(formula: dict, metal: str, anion: str):
     oxidationstate = None
     if metal in ['Li', 'Na', 'K', 'Rb', 'Cs']:
         if _check_consistency_ox_state(formula, 1, metal, anion):
-            oxidationstate = 1
+            oxidationstate = 1.0
     elif metal in ['Be', 'Mg', 'Ca', 'Sr', 'Ba']:
         if _check_consistency_ox_state(formula, 2, metal, anion):
-            oxidationstate = 2
+            oxidationstate = 2.0
     else:
         guess = _figure_out_oxidation_state(formula, metal, anion)
         print(guess)
@@ -146,7 +146,7 @@ def calculate_metal_oxidation_state(formula: dict, metal: str, anion: str):
 def which_is_the_metal(  # pylint:disable=dangerous-default-value
         formula,
         metals=metals,  # pylint:disable=redefined-outer-name
-        anions=anions  # pylint:disable=redefined-outer-name
+        anions=anions,  # pylint:disable=redefined-outer-name
 ):
     """Return metal, anion to have quicker access to the relevant keys of the formula dictionary"""
     metal = None
