@@ -129,10 +129,10 @@ def calculate_metal_oxidation_state(formula: dict, metal: str, anion: str):
     # first check if first or second group, always set them to +1 and +2, respectively and see
     oxidationstate = None
     if metal in ['Li', 'Na', 'K', 'Rb', 'Cs']:
-        if _check_consistency_ox_state(formula, 1, metal, anion):
+        if _check_consistency_ox_state(formula, 1.0, metal, anion):
             oxidationstate = 1.0
     elif metal in ['Be', 'Mg', 'Ca', 'Sr', 'Ba']:
-        if _check_consistency_ox_state(formula, 2, metal, anion):
+        if _check_consistency_ox_state(formula, 2.0, metal, anion):
             oxidationstate = 2.0
     else:
         guess = _figure_out_oxidation_state(formula, metal, anion)
@@ -178,7 +178,7 @@ def collect_for_id(entry_id, outdir='mp_structures'):
     name = entry_id + formula_string.replace(' ', '_')
     outdict['name'] = name
     if oxidationstate is not None:
-        s.to(file=os.path.join(outdir, name + '.cif'))
+        s.to(filename=os.path.join(outdir, name + '.cif'))
     return outdict
 
 

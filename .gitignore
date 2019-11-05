@@ -272,5 +272,6 @@ tags
 [._]*.un~
 
 featurization/*.pkl
-
+*.pkl
+*.csv
 # End of https://www.gitignore.io/api/vim,linux,macos,python,pycharm

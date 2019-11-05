@@ -2,6 +2,7 @@
 # pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value, too-many-lines
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
 from __future__ import absolute_import
+from __future__ import print_function
 from pathlib import Path
 import os
 from glob import glob
@@ -192,6 +193,11 @@ FEATURE_LABELS_ALL = [
     'number',
     'row',
     'column',
+    'valenceelectrons',
+    'diffto18electrons',
+    'sunfilled',
+    'punfilled',
+    'dunfilled',
     'random_column',
 ]
 
@@ -253,11 +259,11 @@ class GetFeatures:
 
         """
         featurizelogger = logging.getLogger('Featurize')
-        featurizelogger.setLevel(logging.DEBUG)
+        featurizelogger.setLevel(logging.INFO)
         logging.basicConfig(
-            filename='featurize.log',
+            # filename="featurize.log",
             format='%(filename)s: %(message)s',
-            level=logging.DEBUG,
+            level=logging.INFO,
         )
 
         self.outpath = outpath
@@ -360,7 +366,7 @@ class GetFeatures:
             self.logger.error('could not featurize {} because of {}'.format(self.path, e))
 
 
-class FeatureCollector:  # pylint:disable=too-many-instance-attributes
+class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-locals
     """convert features from a folder of pickle files to three
     pickle files for feature matrix, label vector and names list. """
 
@@ -373,9 +379,8 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             outdir_helper: str = 'data/helper',
             percentage_holdout: float = 0,
             outdir_holdout: str = None,
-            forbidden_picklepath:
-            str = '/home/kevin/Dropbox/proj62_guess_oxidation_states/machine_learn_oxstates/data/helper/two_ox_states.pkl',
-            exclude_dir: str = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/test_structures/showcases',
+            forbidden_picklepath: str = 'data/helper/two_ox_states.pkl',
+            exclude_dir: str = '../test_structures/showcases',
             selected_features: list = [
                 'crystal_nn_fingerprint',
                 'ward_prd',
@@ -634,7 +639,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             collectorlogger.info('Using RACs, now reading them and adding them to the feature names')
             collectorlogger.warning('Be carful, RACs and their implementation in this code are not thoroughly tested!')
             self.racsdf = pd.read_csv(racsfile)
-            self.selected_features = (self.selected_racs + self.selected_features)  # to get the correct ordering
+            self.selected_features = list(self.selected_racs) + list(
+                self.selected_features)  # to get the correct ordering
+            for i, feature in enumerate(self.selected_racs):
+                FEATURE_RANGES_DICT[feature] = [(i, i + 1)]
 
     @staticmethod
     def _select_features(selected_features, X, outdir_helper=None, offset=0):
@@ -642,6 +650,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         Offset to be used if RACs are used"""
         to_hstack = []
         featurenames = []
+        # RACs are naturally considered
         for feature in selected_features:
             featureranges = FEATURE_RANGES_DICT[feature]
             for featurerange in featureranges:
@@ -652,11 +661,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
                 upper += offset
                 to_hstack.append(X[:, lower:upper])
                 featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
-
-        # now consider the case of RACs, i.e. offset > 0
-        if offset > 0:
-            to_hstack.append(X[:, :offset])
-            featurenames.extend(FEATURE_LABELS_ALL[:offset])
 
         collectorlogger.debug('the feature names are %s', featurenames)
 
@@ -674,6 +678,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         """
         feature_list = FeatureCollector.create_feature_list(self.picklefiles, self.forbidden_list, self.old_format)
         label_raw = read_pickle(self.labelpath)
+        collectorlogger.info(f'found {len(label_raw)} labels')
         label_list = FeatureCollector.make_labels_table(label_raw)
         df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
 
@@ -711,7 +716,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
 
         else:  # no seperate holdout set
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
-        if self.training_set_size:  # perform farthest point sampling to selet a fixed number of training points
+        if (self.training_set_size):  # perform farthest point sampling to selet a fixed number of training points
             collectorlogger.debug('will now perform farthest point sampling on the feature matrix')
             # Write one additional holdout set
             assert self.training_set_size < len(df_train)
@@ -781,7 +786,13 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
 
     @staticmethod
     def selectracs(df, columns=SELECTED_RACS):
-        selected_columns = columns + ['name', 'metal']
+        selected_columns = columns + [
+            'name',
+            'metal',
+            'coordinate_x',
+            'coordinate_y',
+            'coordinate_z',
+        ]
         return df[selected_columns]
 
     @staticmethod
@@ -843,22 +854,35 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         """
         collectorlogger.info('Merging RACs into other features')
         df_selected_racs = FeatureCollector.selectracs(df_racs, selectedracs)
-        df_merged = pd.merged(
+        df_selected_racs['coordinate_x'] = df_selected_racs['coordinate_x'].astype(np.int32)
+        df_selected_racs['coordinate_y'] = df_selected_racs['coordinate_y'].astype(np.int32)
+        df_selected_racs['coordinate_z'] = df_selected_racs['coordinate_z'].astype(np.int32)
+
+        df_features['coordinate_x'] = df_features['coordinate_x'].astype(np.int32)
+        df_features['coordinate_y'] = df_features['coordinate_y'].astype(np.int32)
+        df_features['coordinate_z'] = df_features['coordinate_z'].astype(np.int32)
+
+        df_merged = pd.merge(
             df_features,
             df_selected_racs,
-            left_on=['name', 'metal'],
-            right_on=['name', 'metal'],
+            left_on=['name', 'metal', 'coordinate_x', 'coordinate_y', 'coordinate_z'],
+            right_on=['name', 'metal', 'coordinate_x', 'coordinate_y', 'coordinate_z'],
         )
+        df_merged.dropna(inplace=True)
+        df_merged = df_merged.loc[df_merged.astype(str).drop_duplicates().index]
 
         new_feature_columns = []
+        print((df_merged.shape))
         for _, row in df_merged.iterrows():
             new_feature_column = row['feature']
-            racs = row[selectedracs]
+            racs = list(row[selectedracs])
             racs.extend(new_feature_column)
             new_feature_columns.append(racs)
-
+        print((len(new_feature_columns)))
         df_merged.drop(columns=['feature'], inplace=True)
-        df_merged['feature'] = new_feature_column
+        df_merged['feature'] = new_feature_columns
+
+        return df_merged
 
     @staticmethod
     def create_clean_dataframe(feature_list: list, label_list: list) -> pd.DataFrame:
@@ -875,7 +899,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
         collectorlogger.info('merging labels and features')
         df_features = pd.DataFrame(feature_list)
         df_labels = pd.DataFrame(label_list)
-
         df_merged = pd.merge(
             df_features,
             df_labels,
@@ -943,7 +966,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes
             features.extend(metal_encoding)
             result_dict = {
                 'metal': site['metal'],
-                'coords': site['coords'],
+                'coordinate_x': int(site['coords'][0]),
+                'coordinate_y': int(site['coords'][1]),
+                'coordinate_z': int(site['coords'][2]),
                 'feature': features,
                 'name': Path(picklefile).stem,
             }

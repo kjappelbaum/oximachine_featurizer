@@ -5,30 +5,35 @@ Status: Dev
 Run the featurization on one structure
 """
 from __future__ import absolute_import
+import os
 import click
 from mine_mof_oxstate.featurize import FeatureCollector
 
 
 @click.command('cli')
-@click.argument('inpath')
-@click.argument('labelpath')
-@click.argument('outdir_labels')
-@click.argument('outdir_features')
-@click.argument('outdir_helper')
+@click.argument('inpath', type=click.Path(exists=True))
+@click.argument('labelpath', type=click.Path(exists=True))
+@click.argument('outdir_labels', type=click.Path(exists=True))
+@click.argument('outdir_features', type=click.Path(exists=True))
+@click.argument('outdir_helper', type=click.Path(exists=True))
 @click.argument('percentage_holdout')
-@click.argument('outdir_holdout')
+@click.argument('outdir_holdout', type=click.Path(exists=True))
 @click.argument('training_set_size')
+@click.argument('racsfile')
 @click.argument('features', nargs=-1)
+@click.option('--only_racs', is_flag=True)
 def main(
-    inpath,
-    labelpath,
-    outdir_labels,
-    outdir_features,
-    outdir_helper,
-    percentage_holdout,
-    outdir_holdout,
-    training_set_size,
-    features,
+        inpath,
+        labelpath,
+        outdir_labels,
+        outdir_features,
+        outdir_helper,
+        percentage_holdout,
+        outdir_holdout,
+        training_set_size,
+        racsfile,
+        features,
+        only_racs,
 ):
     """
     CLI function
@@ -36,9 +41,15 @@ def main(
 
     try:
         training_set_size = int(training_set_size)
-    except Exception:
+    except Exception:  # pylint:disable=broad-except
         # if it is None, it will not use farthest point sampling to create a smaller set
         training_set_size = None
+
+    if not os.path.exists(racsfile):
+        racsfile = None
+
+    if only_racs:
+        features = []
 
     fc = FeatureCollector(  # pylint:disable=invalid-name
         inpath,
@@ -49,6 +60,7 @@ def main(
         float(percentage_holdout),
         outdir_holdout,
         training_set_size=training_set_size,
+        racsfile=racsfile,
         selected_features=features,
     )
     fc.dump_featurecollection()

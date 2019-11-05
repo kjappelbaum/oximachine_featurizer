@@ -49,7 +49,7 @@ def diff_to_18e(nvalence):
     return min(np.abs(nvalence - 18), nvalence)
 
 
-def apricot_select(data, k, standardize=True):
+def apricot_select(data, k, standardize=True, chunksize=20000):
     """Does 'farthest point sampling' with apricot.
     For memory limitation reasons it is chunked with a hardcoded chunksize. """
     if standardize:
@@ -57,8 +57,14 @@ def apricot_select(data, k, standardize=True):
         data = StandardScaler().fit_transform(data)
 
     data = data.astype(np.float64)
-    num_chunks = int(data.shape[0] * data.shape[1] / 2500000)
-    chunksize = int(data.shape[0] / num_chunks)
+
+    num_chunks = int(data.shape[0] / chunksize)
+
+    if num_chunks > 1:
+        chunksize = int(data.shape[0] / num_chunks)
+    else:
+        num_chunks = 1
+        chunksize = len(data)
 
     # This assumes shuffled data and is used to make stuff a bit less
     # memory intensive
@@ -70,9 +76,12 @@ def apricot_select(data, k, standardize=True):
     for d_ in tqdm(chunks(data, chunksize)):
         print(('Current chunk has size {}'.format(len(d_))))
         if len(d_) > to_select:  # otherwise it makes no sense to select something
-            X_subset = FacilityLocationSelection(to_select).fit_transform(d_)
-            chunklist.append(X_subset)
-
+            try:
+                X_subset = FacilityLocationSelection(to_select).fit_transform(d_)
+                chunklist.append(X_subset)
+            except Exception:  # pylint:disable=broad-except
+                X_subset = _greedy_loop(d_, to_select, 'euclidean')
+                chunklist.append(X_subset)
     greedy_indices = []
     subset = np.vstack(chunklist)
 
@@ -91,12 +100,17 @@ def apricot_select(data, k, standardize=True):
 
 def _greedy_loop(remaining, k, metric):
     """Doing it chunked"""
-    greedy_data = []
-    for _ in range(int(k) - 1):
+    greedy_data = np.zeros((k, remaining.shape[1]))
+
+    greedy_index = np.random.randint(0, len(remaining))
+    greedy_data[0] = remaining[greedy_index]
+    remaining = np.delete(remaining, greedy_index, 0)
+
+    for i in range(int(k) - 1):
         dist = distance.cdist(remaining, greedy_data, metric)
         greedy_index = np.argmax(np.argmax(np.min(dist, axis=0)))
 
-        greedy_data.append(remaining[greedy_index])
+        greedy_data[i + 1] = remaining[greedy_index]
         remaining = np.delete(remaining, greedy_index, 0)
 
     return greedy_data
