@@ -15,11 +15,11 @@ URL = 'https://github.com/kjappelbaum/mine_csd'
 EMAIL = 'kevin.jablonka@epfl.ch'
 AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Berend Smit'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.2.0a1'
+VERSION = '0.2.0.-alpha'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'matminer',
+    'matminer==0.6.0',
     'pymatgen',
     'ase',
     'numeral',
@@ -50,7 +50,7 @@ except FileNotFoundError:
 
 setup(
     name=NAME,
-    version='0.0.1',
+    version=VERSION,
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -58,6 +58,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
+    dependency_links=['https://github.com/kjappelbaum/matminer.git@localpropertystats#egg=matminer-0.6.0'],
     packages=find_packages(exclude=['tests', '*.tests', '*.tests.*', 'tests.*']),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
