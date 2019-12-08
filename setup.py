@@ -19,15 +19,7 @@ VERSION = '0.2.0a1'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'matminer',
-    'pymatgen',
-    'ase',
-    'numeral',
-    'apricot-select',
-    'tqdm',
-    'click',
-    'pandas',
-    'sklearn',
+    'matminer', 'pymatgen', 'ase', 'numeral', 'apricot-select', 'tqdm', 'click', 'pandas', 'sklearn', 'skmultilearn'
 ]
 
 # What packages are optional?
