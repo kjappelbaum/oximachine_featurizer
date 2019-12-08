@@ -6,6 +6,7 @@ Some general utility functions for the oxidation state mining project
 from __future__ import absolute_import
 from __future__ import print_function
 import os
+import warnings
 from pathlib import Path
 import json
 import pickle
@@ -73,6 +74,8 @@ def apricot_select(data, k, standardize=True, chunksize=20000):
     to_select = int(k / num_chunks)
 
     print(('Will use {} chunks of size {}'.format(num_chunks, chunksize)))
+    num_except = 0
+
     for d_ in tqdm(chunks(data, chunksize)):
         print(('Current chunk has size {}'.format(len(d_))))
         if len(d_) > to_select:  # otherwise it makes no sense to select something
@@ -80,8 +83,15 @@ def apricot_select(data, k, standardize=True, chunksize=20000):
                 X_subset = FacilityLocationSelection(to_select).fit_transform(d_)
                 chunklist.append(X_subset)
             except Exception:  # pylint:disable=broad-except
-                X_subset = _greedy_loop(d_, to_select, 'euclidean')
-                chunklist.append(X_subset)
+                num_except += 1
+                if num_except > 1:  # pylint:disable=no-else-return
+                    warnings.warn(
+                        'Could not perform diverse set selection for two attempts, will perform random choice')
+                    return np.random.choice(len(data), k, replace=False)
+                else:
+                    print('will use greedy select now')
+                    X_subset = _greedy_loop(d_, to_select, 'euclidean')
+                    chunklist.append(X_subset)
     greedy_indices = []
     subset = np.vstack(chunklist)
 

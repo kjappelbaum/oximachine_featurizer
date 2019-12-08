@@ -15,7 +15,7 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from skmultilearn.model_selection import IterativeStratification
 from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.core import Element
@@ -391,6 +391,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             training_set_size: int = None,
             racsfile: str = None,
             selectedracs: list = SELECTED_RACS,
+            drop_duplicates: bool = True,
     ):
         """Initializes a feature collector.
 
@@ -610,6 +611,28 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             'ZIFTIU',
             'ZITFIU',
             'ZITMUN',
+            'MELNEZ',
+            'TCAZCO',
+            'JAPYEH',
+            'TAZGEG',
+            'ROCKEZ',
+            'ENATUJ',
+            'TICMEY',
+            'OJANES',
+            'FIGTUL',
+            'KEPGIW',
+            'COXQOV',
+            'HAWVUZ',
+            'MOBBOU',
+            'IDIXID',
+            'LIDWAX',
+            'SIYXIH',
+            'VIGCET',
+            'MELNEZ',
+            'TCAZCO',
+            'JAPYEH',
+            'TAZGEG',
+            'ROCKEZ',
         ]
         self.forbidden_list.extend(extra_test_set)
         # just be double sure that we drop the ones we want to test on out
@@ -643,6 +666,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 self.selected_features)  # to get the correct ordering
             for i, feature in enumerate(self.selected_racs):
                 FEATURE_RANGES_DICT[feature] = [(i, i + 1)]
+
+        # If we encode with only metal centre, we cannot drop duplicates
+        self.drop_duplicates = drop_duplicates
 
     @staticmethod
     def _select_features(selected_features, X, outdir_helper=None, offset=0):
@@ -680,7 +706,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         label_raw = read_pickle(self.labelpath)
         collectorlogger.info(f'found {len(label_raw)} labels')
         label_list = FeatureCollector.make_labels_table(label_raw)
-        df = FeatureCollector.create_clean_dataframe(feature_list, label_list)
+        df = FeatureCollector.create_clean_dataframe(feature_list, label_list, self.drop_duplicates)
 
         # shuffle dataframe for the next steps to ensure randomization
         df = df.sample(frac=1).reset_index(drop=True)
@@ -697,11 +723,20 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             # We do not want to leak this information from training into test set
             df['base_name'] = [n.strip('0123456789') for n in df['name']]
             df_name_select = df.drop_duplicates(subset=['base_name'])
-            train_names, test_names = train_test_split(
-                df_name_select,
-                test_size=self.percentage_holdout,
-                stratify=df_name_select['oxidationstate'],
+            df_name_select['numbers'] = (df_name_select['metal'].astype('category').cat.codes)
+            stratifier = IterativeStratification(
+                n_splits=2,
+                order=2,
+                sample_distribution_per_fold=[
+                    self.percentage_holdout,
+                    1.0 - self.percentage_holdout,
+                ],
             )
+            train_indexes, test_indexes = next(
+                stratifier.split(df_name_select, df_name_select[['oxidationstate', 'numbers']]))
+
+            train_names = df_name_select.iloc[train_indexes]
+            test_names = df_name_select.iloc[test_indexes]
             train_names = list(train_names['base_name'])
             test_names = list(test_names['base_name'])
 
@@ -716,7 +751,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
         else:  # no seperate holdout set
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
-        if (self.training_set_size):  # perform farthest point sampling to selet a fixed number of training points
+        if self.training_set_size:  # perform farthest point sampling to selet a fixed number of training points
             collectorlogger.debug('will now perform farthest point sampling on the feature matrix')
             # Write one additional holdout set
             assert self.training_set_size < len(df_train)
@@ -786,6 +821,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
     @staticmethod
     def selectracs(df, columns=SELECTED_RACS):
+        """select the RACs columns from the dataframe"""
         selected_columns = columns + [
             'name',
             'metal',
@@ -869,6 +905,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             right_on=['name', 'metal', 'coordinate_x', 'coordinate_y', 'coordinate_z'],
         )
         df_merged.dropna(inplace=True)
+
         df_merged = df_merged.loc[df_merged.astype(str).drop_duplicates().index]
 
         new_feature_columns = []
@@ -885,13 +922,13 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return df_merged
 
     @staticmethod
-    def create_clean_dataframe(feature_list: list, label_list: list) -> pd.DataFrame:
+    def create_clean_dataframe(feature_list: list, label_list: list, drop_duplicates: bool = True) -> pd.DataFrame:
         """Merge the features and the labels on names and metals and drop entry rows
 
         Arguments:
             feature_list {list} --  list of dictionaries of the features, names and metals
             label_list {list} -- list of dicionaries with names, metals and labels
-
+            drop_duplicates {bool} -- drops duplicates if True
         Returns:
             pd.DataFrame -- Dataframe with each row describing a seperate metal site
         """
@@ -910,8 +947,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             'the length of the feature df is {} the length of the label df is {} and the merged one is {}'.format(
                 len(df_features), len(df_labels), len(df_merged)))
         df_merged.dropna(inplace=True)
-        df_cleaned = df_merged.loc[df_merged.astype(str).drop_duplicates(
-        ).index]  # to be sure that we do not accidently have same examples in training and test set
+        if drop_duplicates:
+            df_cleaned = df_merged.loc[df_merged.astype(str).drop_duplicates(
+            ).index]  # to be sure that we do not accidently have same examples in training and test set
+        else:
+            df_cleaned = df_merged
         return df_cleaned
 
     @staticmethod

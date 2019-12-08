@@ -22,6 +22,7 @@ from mine_mof_oxstate.featurize import FeatureCollector
 @click.argument('racsfile')
 @click.argument('features', nargs=-1)
 @click.option('--only_racs', is_flag=True)
+@click.option('--do_not_drop_duplicates', is_flag=True)
 def main(
         inpath,
         labelpath,
@@ -34,10 +35,13 @@ def main(
         racsfile,
         features,
         only_racs,
+        do_not_drop_duplicates,
 ):
     """
     CLI function
     """
+
+    do_not_drop_duplicates = not do_not_drop_duplicates
 
     try:
         training_set_size = int(training_set_size)
@@ -62,6 +66,7 @@ def main(
         training_set_size=training_set_size,
         racsfile=racsfile,
         selected_features=features,
+        drop_duplicates=do_not_drop_duplicates,
     )
     fc.dump_featurecollection()
 
