@@ -5,8 +5,34 @@
 from __future__ import absolute_import
 import io
 import os
+import sys
+import subprocess
 
 from setuptools import find_packages, setup
+
+git_rpmfile = 'git+https://github.com/kjappelbaum/matminer.git@localpropertystats'
+
+try:
+    import rpmfile  # pylint:disable=unused-import
+except (ModuleNotFoundError, ImportError):
+    if '--user' in sys.argv:
+        subprocess.run(
+            [
+                sys.executable,
+                '-m',
+                'pip',
+                'install',
+                '--upgrade',
+                '--user',
+                git_rpmfile,
+            ],
+            check=False,
+        )
+    else:
+        subprocess.run(
+            [sys.executable, '-m', 'pip', 'install', '--upgrade', git_rpmfile],
+            check=False,
+        )
 
 # Package meta-data.
 NAME = 'mine_mof_oxstate'
@@ -19,7 +45,6 @@ VERSION = '0.2.0.-alpha'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'matminer==0.6.0',
     'pymatgen',
     'ase',
     'numeral',
@@ -58,10 +83,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    dependency_links=['git+https://github.com/kjappelbaum/matminer.git@localpropertystats#egg=matminer-0.6.0'],
     packages=find_packages(exclude=['tests', '*.tests', '*.tests.*', 'tests.*']),
-    # If your package is a single module, use this instead of 'packages':
-    # py_modules=['mypackage'],
     entry_points={
         'console_scripts': [
             'run_parsing=run.run_parsing:main',
