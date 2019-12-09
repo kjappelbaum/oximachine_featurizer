@@ -58,7 +58,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    dependency_links=['https://github.com/kjappelbaum/matminer.git@localpropertystats#egg=matminer-0.6.0'],
+    dependency_links=['git+https://github.com/kjappelbaum/matminer.git@localpropertystats#egg=matminer-0.6.0'],
     packages=find_packages(exclude=['tests', '*.tests', '*.tests.*', 'tests.*']),
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
