@@ -13,14 +13,14 @@ from setuptools import find_packages, setup
 git_rpmfile = 'git+https://github.com/kjappelbaum/matminer.git@localpropertystats'
 
 try:
-    import rpmfile  # pylint:disable=unused-import
+    import matminer  # pylint:disable=unused-import
 except (ModuleNotFoundError, ImportError):
     if '--user' in sys.argv:
         subprocess.run(
             [
                 sys.executable,
                 '-m',
-                'pip',
+                'pip3',
                 'install',
                 '--upgrade',
                 '--user',
@@ -30,7 +30,7 @@ except (ModuleNotFoundError, ImportError):
         )
     else:
         subprocess.run(
-            [sys.executable, '-m', 'pip', 'install', '--upgrade', git_rpmfile],
+            [sys.executable, '-m', 'pip3', 'install', '--upgrade', git_rpmfile],
             check=False,
         )
 
