@@ -20,7 +20,7 @@ except (ModuleNotFoundError, ImportError):
             [
                 sys.executable,
                 '-m',
-                'pip3',
+                'pip',
                 'install',
                 '--upgrade',
                 '--user',
@@ -30,7 +30,7 @@ except (ModuleNotFoundError, ImportError):
         )
     else:
         subprocess.run(
-            [sys.executable, '-m', 'pip3', 'install', '--upgrade', git_rpmfile],
+            [sys.executable, '-m', 'pip', 'install', '--upgrade', git_rpmfile],
             check=False,
         )
 
