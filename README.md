@@ -1,7 +1,8 @@
-# Exploring oxidation states in MOFs
+# mine_mof_oxstate
 
 [![Actions Status](https://github.com/kjappelbaum/mof_oxidation_states/workflows/Python%20package/badge.svg)](https://github.com/kjappelbaum/mof_oxidation_states/actions)
 [![](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/download/releases/3.6.0/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3567274.svg)](https://doi.org/10.5281/zenodo.3567274)
 
 Mine oxidations states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps.
 
