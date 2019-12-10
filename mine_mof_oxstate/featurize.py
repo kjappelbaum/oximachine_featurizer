@@ -350,6 +350,23 @@ class GetFeatures:
         with open(self.outname, 'wb') as filehandle:
             pickle.dump(list(self.features), filehandle)
 
+    def return_features(self):
+        """Runs featurization and return np array with features.
+        """
+        self.get_metal_sites()
+        try:
+            self.logger.info('iterating over {} metal sites'.format(len(self.metal_sites)))
+            for idx, metal_site in enumerate(self.metal_sites):
+                self.features.append({
+                    'metal': metal_site.species_string,
+                    'feature': self.get_feature_vectors(self.metal_indices[idx]),
+                    'coords': metal_site.coords,
+                })
+        except Exception as e:  # pylint: disable=broad-except
+            self.logger.error('could not featurize {} because of {}'.format(self.path, e))
+
+        return self.features
+
     def run_featurization(self):
         """loops over sites if check ok"""
         self.get_metal_sites()
