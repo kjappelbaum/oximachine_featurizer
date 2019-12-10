@@ -712,6 +712,28 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
 
+    @staticmethod
+    def _select_features_return_names(selected_features, X, offset=0):
+        """Selects the feature and dumps the names as pickle in the helper directory.
+        Offset to be used if RACs are used"""
+        to_hstack = []
+        featurenames = []
+        # RACs are naturally considered
+        for feature in selected_features:
+            featureranges = FEATURE_RANGES_DICT[feature]
+            for featurerange in featureranges:
+                lower, upper = featurerange
+                # adding the offset to account for RACS from seperate file
+                # that are added at the start of the feature list
+                lower += offset
+                upper += offset
+                to_hstack.append(X[:, lower:upper])
+                featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
+
+        collectorlogger.debug('the feature names are %s', featurenames)
+
+        return np.hstack(to_hstack), featurenames
+
     def _featurecollection(self) -> Tuple[np.array, np.array, list]:
         """
         Runs the feature collection workflow.
