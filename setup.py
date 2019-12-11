@@ -40,7 +40,7 @@ DESCRIPTION = 'Mine MOF oxidation states.'
 URL = 'https://github.com/kjappelbaum/mine_csd'
 EMAIL = 'kevin.jablonka@epfl.ch'
 AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Berend Smit'
-REQUIRES_PYTHON = '>=3.6.0'
+REQUIRES_PYTHON = '>=3.5.0'
 VERSION = '0.2.0.-alpha'
 
 # What packages are required for this module to be executed?
