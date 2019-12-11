@@ -14,7 +14,7 @@ git_rpmfile = 'git+https://github.com/kjappelbaum/matminer.git@localpropertystat
 
 try:
     import matminer  # pylint:disable=unused-import
-except (ModuleNotFoundError, ImportError):
+except Exception:  # pylint:disable=broad-except
     if '--user' in sys.argv:
         subprocess.run(
             [

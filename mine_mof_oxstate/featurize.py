@@ -363,7 +363,7 @@ class GetFeatures:
                     'coords': metal_site.coords,
                 })
         except Exception as e:  # pylint: disable=broad-except
-            self.logger.error('could not featurize {} because of {}'.format(self.path, e))
+            self.logger.error('could not featurize because of {}'.format(e))
 
         return self.features
 
@@ -790,7 +790,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
         else:  # no seperate holdout set
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
-        if self.training_set_size:  # perform farthest point sampling to selet a fixed number of training points
+        if (self.training_set_size):  # perform farthest point sampling to selet a fixed number of training points
             collectorlogger.debug('will now perform farthest point sampling on the feature matrix')
             # Write one additional holdout set
             assert self.training_set_size < len(df_train)
@@ -1050,6 +1050,52 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 'coordinate_z': int(site['coords'][2]),
                 'feature': features,
                 'name': Path(picklefile).stem,
+            }
+
+            if not np.isnan(np.array(features)).any():
+                result_list.append(result_dict)
+
+        return result_list
+
+    @staticmethod
+    def create_dict_for_feature_table_from_dict(d) -> list:
+        """Reads in a pickle with features and returns a list of dictionaries with one dictionary per metal site.
+
+        Arguments:
+            d {dict} -- dictionary
+
+        Returns:
+            list -- list of dicionary
+        """
+        mpd = MagpieData()
+        result_list = []
+        for site in d:
+            e = Element(site['metal'])
+            valence_electrons = mpd.get_elemental_properties([e], 'NValence')[0]
+            valence_to_donate = diff_to_18e(valence_electrons)
+            sunfilled = mpd.get_elemental_properties([e], 'NsUnfilled')[0]
+            dunfilled = mpd.get_elemental_properties([e], 'NdUnfilled')[0]
+            punfilled = mpd.get_elemental_properties([e], 'NpUnfilled')[0]
+            metal_encoding = [
+                e.number,
+                e.row,
+                e.group,
+                valence_electrons,
+                valence_to_donate,
+                sunfilled,
+                punfilled,
+                dunfilled,
+                np.random.randint(1, 18),
+            ]
+            features = list(site['feature'])
+            features.extend(metal_encoding)
+            result_dict = {
+                'metal': site['metal'],
+                'coordinate_x': int(site['coords'][0]),
+                'coordinate_y': int(site['coords'][1]),
+                'coordinate_z': int(site['coords'][2]),
+                'feature': features,
+                'name': 'noname',
             }
 
             if not np.isnan(np.array(features)).any():
