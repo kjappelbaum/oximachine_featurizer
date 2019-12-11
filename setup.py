@@ -52,7 +52,7 @@ REQUIRED = [
     'tqdm',
     'click',
     'pandas',
-    'sklearn',
+    'scikit-learn==0.21.3',
     'scikit-multilearn',
 ]
 
