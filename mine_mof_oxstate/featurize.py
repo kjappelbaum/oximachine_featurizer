@@ -657,9 +657,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))]
             self.forbidden_list.extend(all_to_exclude)
 
-        collectorlogger.info(
-            f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
-        )
+        # collectorlogger.info(
+        #     f'initialized feature collector: {len(self.forbidden_list)} forbidden structures, {len(self.picklefiles)} files with features'
+        # )
         self.x = None
         self.y = None
         self.names = None
@@ -743,7 +743,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         """
         feature_list = FeatureCollector.create_feature_list(self.picklefiles, self.forbidden_list, self.old_format)
         label_raw = read_pickle(self.labelpath)
-        collectorlogger.info(f'found {len(label_raw)} labels')
+        # collectorlogger.info(f'found {len(label_raw)} labels')
         label_list = FeatureCollector.make_labels_table(label_raw)
         df = FeatureCollector.create_clean_dataframe(feature_list, label_list, self.drop_duplicates)
 
@@ -899,7 +899,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 else:
                     result_list.extend(FeatureCollector._create_dict_for_feature_table(pickle_file))
             else:
-                collectorlogger.info(f'{pickle_file} is in forbidden list and will not be considered for X, y, names')
+                collectorlogger.info('{} is in forbidden list and will not be considered for X, y, names'.format(pickle_file))
         return result_list
 
     @staticmethod
@@ -920,7 +920,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         for key, value in raw_labels.items():
             for metal, oxstate in value.items():
                 result_list.append({'name': key, 'metal': metal, 'oxidationstate': oxstate[0]})
-        collectorlogger.info(f'collected {len(result_list)} labelsƒ')
+        # collectorlogger.info(f'collected {len(result_list)} labels')
         return result_list
 
     @staticmethod

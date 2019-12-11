@@ -194,7 +194,7 @@ def collect_entries():
         print(f"Worked on {outdict['name']}")
 
     print('*** Finished datacollection ***')
-    print(f'found {len(results)} materials')
+    print('found {} materials'.format(len(results)))
 
     df = pd.DataFrame(results)  # pylint:disable=invalid-name
     df.to_csv('mp_parsing_results.csv')
