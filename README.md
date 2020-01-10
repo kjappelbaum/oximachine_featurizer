@@ -40,7 +40,7 @@ for each metal center this should take seconds if there is no disorder.
 - To collect separate files with features into one file for the feature matrix, you can use the featurecollector, e.g.
 
 ```bash
-run_featurecollection --only_racs {FEATURESPATH}  {LABELSPATH} {labelsoutpath} {featureoutspath} {helperoutpath} 0.2 {holdoutpath} 60000 {RACSDATAPATH} column row crystal_nn_no_steinhardt'
+run_featurecollection --only_racs {FEATURESPATH}  {LABELSPATH} {labelsoutpath} {featureoutspath} {helperoutpath} 0.2 {holdoutpath} 60000 {RACSDATAPATH} column row crystal_nn_no_steinhardt
 ```
 
 The bottleneck of this approach is that it currently checks for each name if we exclude it (e.g., due to wrong assignments). One should expect a runtime in the order of several minutes for several structures.
