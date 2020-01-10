@@ -46,3 +46,8 @@ run_featurecollection --only_racs {FEATURESPATH}  {LABELSPATH} {labelsoutpath} {
 The bottleneck of this approach is that it currently checks for each name if we exclude it (e.g., due to wrong assignments). One should expect a runtime in the order of several minutes for several structures.
 
 Some output can be found on the [MaterialsCloud Archive (doi: 10.24435/materialscloud:2019.0085/v1 )](https://doi.org/10.24435/materialscloud:2019.0085/v1).
+
+## Example usage
+
+The use of the main functions of this package is shown in the Jupyter Notebook in the example directory.
+It contains some example structures and the output, which should be produces in seconds.
