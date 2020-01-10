@@ -4,6 +4,7 @@
 [![](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/download/releases/3.6.0/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3567274.svg)](https://doi.org/10.5281/zenodo.3567274)
 [![Maintainability](https://api.codeclimate.com/v1/badges/936cc6cc791f8bf352c6/maintainability)](https://codeclimate.com/github/kjappelbaum/mof_oxidation_states/maintainability)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Mine oxidations states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps.
 
@@ -13,6 +14,18 @@ Mine oxidations states for structures from the (MOF) subset of the CSD and calcu
 You need to export the `CSD_HOME` path. Due to the licensing issues, this cannot be done automatically.
 
 ## Installation
+
+To install the software with all dependencies, you can use
+
+```bash
+pip install git+https://github.com/kjappelbaum/mof_oxidation_states.git
+```
+
+This should, for appropriate versions of pip (`pip>=18.1`), also install [our fork of matminer from the correct branch](https://github.com/kjappelbaum/matminer.git@localpropertystats).
+This automatically installs several command-line tools (CLI) which are detailed below.
+
+The full process should take some seconds.
+
 
 
 ## How to use it
