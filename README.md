@@ -11,7 +11,7 @@ Mine oxidations states for structures from the (MOF) subset of the CSD and calcu
 > ⚠️ **Warning**: Some parts of the code require some modifications in the dependencies, for which I did not make PRs so far. You need to use my forks. You need `pip>=18.1` for this to be set up automatically. More details can be found below.
 
 > ⚠️ **Warning**: For the mining of the oxidation states, you need the CSD Python API.
-You need to export the `CSD_HOME` path. Due to the licensing issues, this cannot be done automatically.
+> You need to export the `CSD_HOME` path. Due to the licensing issues, this cannot be done automatically.
 
 ## Installation
 
@@ -26,6 +26,12 @@ This automatically installs several command-line tools (CLI) which are detailed 
 
 The full process should take some seconds.
 
-
-
 ## How to use it
+
+- To run the featurization,
+
+- To collect separate files with features into one file for the feature matrix, you can use the featurecollector, e.g.
+
+```
+run_featurecollection --only_racs {FEATURESPATH}  {LABELSPATH} {labelsoutpath} {featureoutspath} {helperoutpath} 0.2 {holdoutpath} 60000 {RACSDATAPATH} column row crystal_nn_no_steinhardt'
+```
