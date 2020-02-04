@@ -36,6 +36,7 @@ run_featurization {structure} {outdir}
 ```
 
 for each metal center this should take seconds if there is no disorder.
+Note that the metal center features are added using methods from the `FeatureCollector` class.
 
 - To collect separate files with features into one file for the feature matrix, you can use the featurecollector, e.g.
 

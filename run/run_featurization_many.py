@@ -5,6 +5,7 @@ Status: Dev
 Run the featurization on the CSD MOF subset
 """
 from __future__ import absolute_import
+from __future__ import print_function
 import os
 import pickle
 import concurrent.futures
@@ -13,10 +14,10 @@ from pathlib import Path
 from tqdm import tqdm
 from mine_mof_oxstate.featurize import GetFeatures
 
-OUTDIR = '/home/kevin/Dropbox/proj62_guess_oxidation_states/mine_csd/featurization'
-CSDDIR = '/home/kevin/lsmo_db_share/shared/db_structures/mof_subset_csdmay2019'
+OUTDIR = '/home/kevin/Dropbox/proj62_guess_oxidation_states/check_new_release/featurization'
+CSDDIR = '/home/kevin/Dropbox/proj62_guess_oxidation_states/check_new_release/additions'
 ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
-NAME_LIST = '/home/kevin/Dropbox (LSMO)/proj62_guess_oxidation_states/mine_csd/analysis/name_list.pkl'
+NAME_LIST = '/home/kevin/Dropbox/proj62_guess_oxidation_states/check_new_release/new_names_w_ox.pkl'
 
 
 def load_pickle(f):  # pylint:disable=invalid-name
@@ -43,4 +44,5 @@ def main():
 
 
 if __name__ == '__main__':
+    print(('working in {}'.format(CSDDIR)))
     main()  # pylint: disable=no-value-for-parameter
