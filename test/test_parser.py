@@ -9,7 +9,17 @@ from mine_mof_oxstate.parse import GetOxStatesCSD
 
 def test_parser():
     """Test with some hand-selected MOFs"""
-    test_list = ['ACIBOE', 'AZOHEC', 'BADJAU', 'ACOLIP', 'QAGWIG', 'GOCBAD', 'BUVYIB01', 'GIRNIH', 'FURVEU']
+    test_list = [
+        'ACIBOE',
+        'AZOHEC',
+        'BADJAU',
+        'ACOLIP',
+        'QAGWIG',
+        'GOCBAD',
+        'BUVYIB01',
+        'GIRNIH',
+        'FURVEU',
+    ]
 
     expected = {
         'ACIBOE': {},
@@ -34,7 +44,10 @@ def test_parser():
         },
         'FURVEU': {
             'Fe': [2]
-        }
+        },
+        'GAHJUW': {
+            'Fe': [0]
+        },
     }
 
     getoxstates = GetOxStatesCSD(test_list)

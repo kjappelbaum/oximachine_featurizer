@@ -30,7 +30,7 @@ class GetOxStatesCSD():
         self.symbol_name_dict = SymbolNameDict().get_symbol_name_dict()
         self.name_symbol_dict = {v: k for k, v in self.symbol_name_dict.items()}
         symbol_regex = '|'.join(list(self.symbol_name_dict.values()))
-        self.regex = re.compile('((?:{})\\([iv]+\\))'.format(symbol_regex), re.IGNORECASE)
+        self.regex = re.compile('((?:{})\\([iv0]+\\))'.format(symbol_regex), re.IGNORECASE)
 
         self.csd_ids = cds_ids
         self.csd_reader = io.EntryReader('CSD')
@@ -48,7 +48,10 @@ class GetOxStatesCSD():
 
         """
         name, roman = parsed_string.strip(')').split('(')
-        return self.name_symbol_dict[name.lower()], roman2int(roman)
+        if roman != '0':
+            return self.name_symbol_dict[name.lower()], roman2int(roman)
+        else:
+            return self.name_symbol_dict[name.lower()], int(0)
 
     def parse_name(self, chemical_name_string: str) -> dict:
         """Takes the chemical name string from the CSD database and returns,
