@@ -77,7 +77,7 @@ class GetOxStatesCSD():
             oxidation_state_dict[symbol].append(oxidation_int)
         
         negative_matches = re.findall(self.negative_regex, chemical_name_string)
-        for match in matches:
+        for match in negative_matches:
             symbol, oxidation_int = self.get_symbol_negative_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
             
