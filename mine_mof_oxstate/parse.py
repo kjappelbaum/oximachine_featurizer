@@ -31,7 +31,7 @@ class GetOxStatesCSD():
         self.name_symbol_dict = {v: k for k, v in self.symbol_name_dict.items()}
         symbol_regex = '|'.join(list(self.symbol_name_dict.values()))
         self.regex = re.compile('((?:{})\\([iv0]+\\))'.format(symbol_regex), re.IGNORECASE)
-
+        self.negative_regex = re.compile('((?:{})\\([-1234567890]+\\))'.format(symbol_regex), re.IGNORECASE)
         self.csd_ids = cds_ids
         self.csd_reader = io.EntryReader('CSD')
 
@@ -52,6 +52,10 @@ class GetOxStatesCSD():
             return self.name_symbol_dict[name.lower()], roman2int(roman)
         else:
             return self.name_symbol_dict[name.lower()], int(0)
+        
+    def get_symbol_negative_ox_number(self, parsed_string: str) -> Tuple[str, int]:
+        name, roman = parsed_string.strip(')').split('(')
+        return self.name_symbol_dict[name.lower()], int(roman)
 
     def parse_name(self, chemical_name_string: str) -> dict:
         """Takes the chemical name string from the CSD database and returns,
@@ -71,7 +75,12 @@ class GetOxStatesCSD():
         for match in matches:
             symbol, oxidation_int = self.get_symbol_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
-
+        
+        negative_matches = re.findall(self.negative_regex, chemical_name_string)
+        for match in matches:
+            symbol, oxidation_int = self.get_symbol_negative_ox_number(match)
+            oxidation_state_dict[symbol].append(oxidation_int)
+            
         return dict(oxidation_state_dict)
 
     def parse_csd_entry(self, database_id: str) -> dict:

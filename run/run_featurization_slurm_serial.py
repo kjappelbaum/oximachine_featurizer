@@ -25,17 +25,17 @@ logging.basicConfig(
 
 THIS_DIR = os.path.dirname(__file__)
 
-OUTDIR = '/scratch/kjablonk/proj62_featurization/20190928_features'
+OUTDIR = '/scratch/kjablonk/proj62_featurization/extended_chemspace'
 CSDDIR = '/work/lsmo/mof_subset_csdmay2019'
 ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
-NAME_LIST = '/scratch/kjablonk/proj62_featurization/names_to_sample.pkl'
+NAME_LIST = '/scratch/kjablonk/oxidationstates/to_sample_new.pkl'
 
 SUBMISSION_TEMPLATE = """#!/bin/bash -l
 #SBATCH --chdir ./
 #SBATCH --mem       5GB
 #SBATCH --ntasks    1
 #SBATCH --job-name  {name}
-#SBATCH --time      5:00:00
+#SBATCH --time      1:00:00
 #SBATCH --partition=serial
 
 source /home/kjablonk/anaconda3/bin/activate
