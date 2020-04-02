@@ -33,215 +33,215 @@ from .utils import (
     diff_to_18e,
 )
 
-collectorlogger = logging.getLogger('FeatureCollector')
+collectorlogger = logging.getLogger("FeatureCollector")
 collectorlogger.setLevel(logging.INFO)
-logging.basicConfig(format='%(filename)s: %(message)s', level=logging.DEBUG)
-collectorlogger.addHandler(logging.FileHandler('featurecollector.log', mode='w'))
+logging.basicConfig(format="%(filename)s: %(message)s", level=logging.DEBUG)
+collectorlogger.addHandler(logging.FileHandler("featurecollector.log", mode="w"))
 
 FEATURE_RANGES_DICT = {
-    'crystal_nn_fingerprint': [(0, 61)],
-    'crystal_nn_no_steinhardt': [(0, 33), (36, 37), (40, 41), (44, 46), (49, 61)],
-    'local_property_stats': [(61, 121)],
-    'column_differences': [(62, 63), (77, 78), (92, 93), (107, 108)],
-    'row_differences': [(63, 64), (78, 79), (93, 94), (108, 109)],
-    'electronegativity_differences': [(64, 65), (79, 80), (94, 95), (109, 110)],
-    'valence_differences': [(69, 70), (84, 85), (99, 100), (114, 115)],
-    'unfilled_differences': [(74, 75), (89, 90), (104, 105), (119, 120)],
-    'nsvalence_differences': [(65, 66), (79, 80), (95, 96), (110, 111)],
-    'behler_parinello': [(121, 129)],
-    'number': [(129, 130)],
-    'row': [(130, 131)],
-    'column': [(131, 132)],
-    'valenceelectrons': [(132, 133)],
-    'diffto18electrons': [(133, 134)],
-    'sunfilled': [(134, 135)],
-    'punfilled': [(135, 136)],
-    'dunfilled': [(136, 137)],
-    'random_column': [(137, 138)],
+    "crystal_nn_fingerprint": [(0, 61)],
+    "crystal_nn_no_steinhardt": [(0, 33), (36, 37), (40, 41), (44, 46), (49, 61)],
+    "local_property_stats": [(61, 121)],
+    "column_differences": [(62, 63), (77, 78), (92, 93), (107, 108)],
+    "row_differences": [(63, 64), (78, 79), (93, 94), (108, 109)],
+    "electronegativity_differences": [(64, 65), (79, 80), (94, 95), (109, 110)],
+    "valence_differences": [(69, 70), (84, 85), (99, 100), (114, 115)],
+    "unfilled_differences": [(74, 75), (89, 90), (104, 105), (119, 120)],
+    "nsvalence_differences": [(65, 66), (79, 80), (95, 96), (110, 111)],
+    "behler_parinello": [(121, 129)],
+    "number": [(129, 130)],
+    "row": [(130, 131)],
+    "column": [(131, 132)],
+    "valenceelectrons": [(132, 133)],
+    "diffto18electrons": [(133, 134)],
+    "sunfilled": [(134, 135)],
+    "punfilled": [(135, 136)],
+    "dunfilled": [(136, 137)],
+    "random_column": [(137, 138)],
 }
 
 FEATURE_LABELS_ALL = [
-    'wt CN_1',
-    'sgl_bd CN_1',
-    'wt CN_2',
-    'L-shaped CN_2',
-    'water-like CN_2',
-    'bent 120 degrees CN_2',
-    'bent 150 degrees CN_2',
-    'linear CN_2',
-    'wt CN_3',
-    'trigonal planar CN_3',
-    'trigonal non-coplanar CN_3',
-    'T-shaped CN_3',
-    'wt CN_4',
-    'square co-planar CN_4',
-    'tetrahedral CN_4',
-    'rectangular see-saw-like CN_4',
-    'see-saw-like CN_4',
-    'trigonal pyramidal CN_4',
-    'wt CN_5',
-    'pentagonal planar CN_5',
-    'square pyramidal CN_5',
-    'trigonal bipyramidal CN_5',
-    'wt CN_6',
-    'hexagonal planar CN_6',
-    'octahedral CN_6',
-    'pentagonal pyramidal CN_6',
-    'wt CN_7',
-    'hexagonal pyramidal CN_7',
-    'pentagonal bipyramidal CN_7',
-    'wt CN_8',
-    'body-centered cubic CN_8',
-    'hexagonal bipyramidal CN_8',
-    'wt CN_9',
-    'q2 CN_9',
-    'q4 CN_9',
-    'q6 CN_9',
-    'wt CN_10',
-    'q2 CN_10',
-    'q4 CN_10',
-    'q6 CN_10',
-    'wt CN_11',
-    'q2 CN_11',
-    'q4 CN_11',
-    'q6 CN_11',
-    'wt CN_12',
-    'cuboctahedral CN_12',
-    'q2 CN_12',
-    'q4 CN_12',
-    'q6 CN_12',
-    'wt CN_13',
-    'wt CN_14',
-    'wt CN_15',
-    'wt CN_16',
-    'wt CN_17',
-    'wt CN_18',
-    'wt CN_19',
-    'wt CN_20',
-    'wt CN_21',
-    'wt CN_22',
-    'wt CN_23',
-    'wt CN_24',
-    'local difference in MendeleevNumber',
-    'local difference in Column',
-    'local difference in Row',
-    'local difference in Electronegativity',
-    'local difference in NsValence',
-    'local difference in NpValence',
-    'local difference in NdValence',
-    'local difference in NfValence',
-    'local difference in NValence',
-    'local difference in NsUnfilled',
-    'local difference in NpUnfilled',
-    'local difference in NdUnfilled',
-    'local difference in NfUnfilled',
-    'local difference in NUnfilled',
-    'local difference in GSbandgap',
-    'local signed difference in MendeleevNumber',
-    'local signed difference in Column',
-    'local signed difference in Row',
-    'local signed difference in Electronegativity',
-    'local signed difference in NsValence',
-    'local signed difference in NpValence',
-    'local signed difference in NdValence',
-    'local signed difference in NfValence',
-    'local signed difference in NValence',
-    'local signed difference in NsUnfilled',
-    'local signed difference in NpUnfilled',
-    'local signed difference in NdUnfilled',
-    'local signed difference in NfUnfilled',
-    'local signed difference in NUnfilled',
-    'local signed difference in GSbandgap',
-    'maximum local difference in MendeleevNumber',
-    'maximum local difference in Column',
-    'maximum local difference in Row',
-    'maximum local difference in Electronegativity',
-    'maximum local difference in NsValence',
-    'maximum local difference in NpValence',
-    'maximum local difference in NdValence',
-    'maximum local difference in NfValence',
-    'maximum local difference in NValence',
-    'maximum local difference in NsUnfilled',
-    'maximum local difference in NpUnfilled',
-    'maximum local difference in NdUnfilled',
-    'maximum local difference in NfUnfilled',
-    'maximum local difference in NUnfilled',
-    'maximum local difference in GSbandgap',
-    'mimum local difference in MendeleevNumber',
-    'mimum local difference in Column',
-    'mimum local difference in Row',
-    'mimum local difference in Electronegativity',
-    'mimum local difference in NsValence',
-    'mimum local difference in NpValence',
-    'mimum local difference in NdValence',
-    'mimum local difference in NfValence',
-    'mimum local difference in NValence',
-    'mimum local difference in NsUnfilled',
-    'mimum local difference in NpUnfilled',
-    'mimum local difference in NdUnfilled',
-    'mimum local difference in NfUnfilled',
-    'mimum local difference in NUnfilled',
-    'mimum local difference in GSbandgap',
-    'G2_0.05',
-    'G2_4.0',
-    'G2_20.0',
-    'G2_80.0',
-    'G4_0.005_1.0_1.0',
-    'G4_0.005_1.0_-1.0',
-    'G4_0.005_4.0_1.0',
-    'G4_0.005_4.0_-1.0',
-    'number',
-    'row',
-    'column',
-    'valenceelectrons',
-    'diffto18electrons',
-    'sunfilled',
-    'punfilled',
-    'dunfilled',
-    'random_column',
+    "wt CN_1",
+    "sgl_bd CN_1",
+    "wt CN_2",
+    "L-shaped CN_2",
+    "water-like CN_2",
+    "bent 120 degrees CN_2",
+    "bent 150 degrees CN_2",
+    "linear CN_2",
+    "wt CN_3",
+    "trigonal planar CN_3",
+    "trigonal non-coplanar CN_3",
+    "T-shaped CN_3",
+    "wt CN_4",
+    "square co-planar CN_4",
+    "tetrahedral CN_4",
+    "rectangular see-saw-like CN_4",
+    "see-saw-like CN_4",
+    "trigonal pyramidal CN_4",
+    "wt CN_5",
+    "pentagonal planar CN_5",
+    "square pyramidal CN_5",
+    "trigonal bipyramidal CN_5",
+    "wt CN_6",
+    "hexagonal planar CN_6",
+    "octahedral CN_6",
+    "pentagonal pyramidal CN_6",
+    "wt CN_7",
+    "hexagonal pyramidal CN_7",
+    "pentagonal bipyramidal CN_7",
+    "wt CN_8",
+    "body-centered cubic CN_8",
+    "hexagonal bipyramidal CN_8",
+    "wt CN_9",
+    "q2 CN_9",
+    "q4 CN_9",
+    "q6 CN_9",
+    "wt CN_10",
+    "q2 CN_10",
+    "q4 CN_10",
+    "q6 CN_10",
+    "wt CN_11",
+    "q2 CN_11",
+    "q4 CN_11",
+    "q6 CN_11",
+    "wt CN_12",
+    "cuboctahedral CN_12",
+    "q2 CN_12",
+    "q4 CN_12",
+    "q6 CN_12",
+    "wt CN_13",
+    "wt CN_14",
+    "wt CN_15",
+    "wt CN_16",
+    "wt CN_17",
+    "wt CN_18",
+    "wt CN_19",
+    "wt CN_20",
+    "wt CN_21",
+    "wt CN_22",
+    "wt CN_23",
+    "wt CN_24",
+    "local difference in MendeleevNumber",
+    "local difference in Column",
+    "local difference in Row",
+    "local difference in Electronegativity",
+    "local difference in NsValence",
+    "local difference in NpValence",
+    "local difference in NdValence",
+    "local difference in NfValence",
+    "local difference in NValence",
+    "local difference in NsUnfilled",
+    "local difference in NpUnfilled",
+    "local difference in NdUnfilled",
+    "local difference in NfUnfilled",
+    "local difference in NUnfilled",
+    "local difference in GSbandgap",
+    "local signed difference in MendeleevNumber",
+    "local signed difference in Column",
+    "local signed difference in Row",
+    "local signed difference in Electronegativity",
+    "local signed difference in NsValence",
+    "local signed difference in NpValence",
+    "local signed difference in NdValence",
+    "local signed difference in NfValence",
+    "local signed difference in NValence",
+    "local signed difference in NsUnfilled",
+    "local signed difference in NpUnfilled",
+    "local signed difference in NdUnfilled",
+    "local signed difference in NfUnfilled",
+    "local signed difference in NUnfilled",
+    "local signed difference in GSbandgap",
+    "maximum local difference in MendeleevNumber",
+    "maximum local difference in Column",
+    "maximum local difference in Row",
+    "maximum local difference in Electronegativity",
+    "maximum local difference in NsValence",
+    "maximum local difference in NpValence",
+    "maximum local difference in NdValence",
+    "maximum local difference in NfValence",
+    "maximum local difference in NValence",
+    "maximum local difference in NsUnfilled",
+    "maximum local difference in NpUnfilled",
+    "maximum local difference in NdUnfilled",
+    "maximum local difference in NfUnfilled",
+    "maximum local difference in NUnfilled",
+    "maximum local difference in GSbandgap",
+    "mimum local difference in MendeleevNumber",
+    "mimum local difference in Column",
+    "mimum local difference in Row",
+    "mimum local difference in Electronegativity",
+    "mimum local difference in NsValence",
+    "mimum local difference in NpValence",
+    "mimum local difference in NdValence",
+    "mimum local difference in NfValence",
+    "mimum local difference in NValence",
+    "mimum local difference in NsUnfilled",
+    "mimum local difference in NpUnfilled",
+    "mimum local difference in NdUnfilled",
+    "mimum local difference in NfUnfilled",
+    "mimum local difference in NUnfilled",
+    "mimum local difference in GSbandgap",
+    "G2_0.05",
+    "G2_4.0",
+    "G2_20.0",
+    "G2_80.0",
+    "G4_0.005_1.0_1.0",
+    "G4_0.005_1.0_-1.0",
+    "G4_0.005_4.0_1.0",
+    "G4_0.005_4.0_-1.0",
+    "number",
+    "row",
+    "column",
+    "valenceelectrons",
+    "diffto18electrons",
+    "sunfilled",
+    "punfilled",
+    "dunfilled",
+    "random_column",
 ]
 
 SELECTED_RACS = [
-    'D_mc-I-0-all',
-    'D_mc-I-1-all',
-    'D_mc-I-2-all',
-    'D_mc-I-3-all',
-    'D_mc-S-0-all',
-    'D_mc-S-1-all',
-    'D_mc-S-2-all',
-    'D_mc-S-3-all',
-    'D_mc-T-0-all',
-    'D_mc-T-1-all',
-    'D_mc-T-2-all',
-    'D_mc-T-3-all',
-    'D_mc-Z-0-all',
-    'D_mc-Z-1-all',
-    'D_mc-Z-2-all',
-    'D_mc-Z-3-all',
-    'D_mc-chi-0-all',
-    'D_mc-chi-1-all',
-    'D_mc-chi-2-all',
-    'D_mc-chi-3-all',
-    'mc-I-0-all',
-    'mc-I-1-all',
-    'mc-I-2-all',
-    'mc-I-3-all',
-    'mc-S-0-all',
-    'mc-S-1-all',
-    'mc-S-2-all',
-    'mc-S-3-all',
-    'mc-T-0-all',
-    'mc-T-1-all',
-    'mc-T-2-all',
-    'mc-T-3-all',
-    'mc-Z-0-all',
-    'mc-Z-1-all',
-    'mc-Z-2-all',
-    'mc-Z-3-all',
-    'mc-chi-0-all',
-    'mc-chi-1-all',
-    'mc-chi-2-all',
-    'mc-chi-3-all',
+    "D_mc-I-0-all",
+    "D_mc-I-1-all",
+    "D_mc-I-2-all",
+    "D_mc-I-3-all",
+    "D_mc-S-0-all",
+    "D_mc-S-1-all",
+    "D_mc-S-2-all",
+    "D_mc-S-3-all",
+    "D_mc-T-0-all",
+    "D_mc-T-1-all",
+    "D_mc-T-2-all",
+    "D_mc-T-3-all",
+    "D_mc-Z-0-all",
+    "D_mc-Z-1-all",
+    "D_mc-Z-2-all",
+    "D_mc-Z-3-all",
+    "D_mc-chi-0-all",
+    "D_mc-chi-1-all",
+    "D_mc-chi-2-all",
+    "D_mc-chi-3-all",
+    "mc-I-0-all",
+    "mc-I-1-all",
+    "mc-I-2-all",
+    "mc-I-3-all",
+    "mc-S-0-all",
+    "mc-S-1-all",
+    "mc-S-2-all",
+    "mc-S-3-all",
+    "mc-T-0-all",
+    "mc-T-1-all",
+    "mc-T-2-all",
+    "mc-T-3-all",
+    "mc-Z-0-all",
+    "mc-Z-1-all",
+    "mc-Z-2-all",
+    "mc-Z-3-all",
+    "mc-chi-0-all",
+    "mc-chi-1-all",
+    "mc-chi-2-all",
+    "mc-chi-3-all",
 ]
 
 
@@ -258,11 +258,11 @@ class GetFeatures:
         Returns:
 
         """
-        featurizelogger = logging.getLogger('Featurize')
+        featurizelogger = logging.getLogger("Featurize")
         featurizelogger.setLevel(logging.INFO)
         logging.basicConfig(
             # filename="featurize.log",
-            format='%(filename)s: %(message)s',
+            format="%(filename)s: %(message)s",
             level=logging.INFO,
         )
 
@@ -274,17 +274,21 @@ class GetFeatures:
         self.metal_indices = []
         self.features = []
         if self.path is not None:
-            self.outname = os.path.join(self.outpath, ''.join([Path(self.path).stem, '.pkl']))
+            self.outname = os.path.join(
+                self.outpath, "".join([Path(self.path).stem, ".pkl"])
+            )
         else:
             self.outname = os.path.join(
                 self.outpath,
-                ''.join([self.structure.formula.replace(' ', '_'), '.pkl']),
+                "".join([self.structure.formula.replace(" ", "_"), ".pkl"]),
             )
-        self.featurizer = MultipleFeaturizer([
-            CrystalNNFingerprint.from_preset('ops'),
-            LocalPropertyStats.from_preset('interpretable'),
-            GaussianSymmFunc(),
-        ])
+        self.featurizer = MultipleFeaturizer(
+            [
+                CrystalNNFingerprint.from_preset("ops"),
+                LocalPropertyStats.from_preset("interpretable"),
+                GaussianSymmFunc(),
+            ]
+        )
 
     @classmethod
     def from_file(cls, structurepath, outpath):
@@ -294,7 +298,9 @@ class GetFeatures:
         s = GetFeatures.read_safe(structurepath)
         featureclass = cls(s, outpath)
         featureclass.path = structurepath
-        featureclass.outname = os.path.join(featureclass.outpath, ''.join([Path(featureclass.path).stem, '.pkl']))
+        featureclass.outname = os.path.join(
+            featureclass.outpath, "".join([Path(featureclass.path).stem, ".pkl"])
+        )
         return featureclass
 
     @classmethod
@@ -305,12 +311,12 @@ class GetFeatures:
         from pymatgen.io.cif import CifParser
 
         with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
+            warnings.simplefilter("ignore")
             try:
                 cp = CifParser.from_string(structurestring)
                 s = cp.get_structures()[0]
             except Exception:
-                raise ValueError('Pymatgen could not parse ciffile')
+                raise ValueError("Pymatgen could not parse ciffile")
             else:
                 return cls(s, outpath)
 
@@ -323,13 +329,15 @@ class GetFeatures:
 
         """
         with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
+            warnings.simplefilter("ignore")
             try:
                 atoms = read(path)
-                structure = AseAtomsAdaptor.get_structure(atoms)  # ase parser is a bit more robust
+                structure = AseAtomsAdaptor.get_structure(
+                    atoms
+                )  # ase parser is a bit more robust
                 return structure
             except Exception:  # pylint: disable=broad-except
-                raise ValueError('Could not read structure')
+                raise ValueError("Could not read structure")
 
     def get_metal_sites(self):
         """Stores all metal sites of structure  to list"""
@@ -347,7 +355,7 @@ class GetFeatures:
 
     def dump_features(self):
         """Dumps all the features into one pickle file"""
-        with open(self.outname, 'wb') as filehandle:
+        with open(self.outname, "wb") as filehandle:
             pickle.dump(list(self.features), filehandle)
 
     def return_features(self):
@@ -355,15 +363,19 @@ class GetFeatures:
         """
         self.get_metal_sites()
         try:
-            self.logger.info('iterating over {} metal sites'.format(len(self.metal_sites)))
+            self.logger.info(
+                "iterating over {} metal sites".format(len(self.metal_sites))
+            )
             for idx, metal_site in enumerate(self.metal_sites):
-                self.features.append({
-                    'metal': metal_site.species_string,
-                    'feature': self.get_feature_vectors(self.metal_indices[idx]),
-                    'coords': metal_site.coords,
-                })
+                self.features.append(
+                    {
+                        "metal": metal_site.species_string,
+                        "feature": self.get_feature_vectors(self.metal_indices[idx]),
+                        "coords": metal_site.coords,
+                    }
+                )
         except Exception as e:  # pylint: disable=broad-except
-            self.logger.error('could not featurize because of {}'.format(e))
+            self.logger.error("could not featurize because of {}".format(e))
 
         return self.features
 
@@ -371,16 +383,22 @@ class GetFeatures:
         """loops over sites if check ok"""
         self.get_metal_sites()
         try:
-            self.logger.info('iterating over {} metal sites'.format(len(self.metal_sites)))
+            self.logger.info(
+                "iterating over {} metal sites".format(len(self.metal_sites))
+            )
             for idx, metal_site in enumerate(self.metal_sites):
-                self.features.append({
-                    'metal': metal_site.species_string,
-                    'feature': self.get_feature_vectors(self.metal_indices[idx]),
-                    'coords': metal_site.coords,
-                })
+                self.features.append(
+                    {
+                        "metal": metal_site.species_string,
+                        "feature": self.get_feature_vectors(self.metal_indices[idx]),
+                        "coords": metal_site.coords,
+                    }
+                )
             self.dump_features()
         except Exception as e:  # pylint: disable=broad-except
-            self.logger.error('could not featurize {} because of {}'.format(self.path, e))
+            self.logger.error(
+                "could not featurize {} because of {}".format(self.path, e)
+            )
 
 
 class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-locals
@@ -388,27 +406,27 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
     pickle files for feature matrix, label vector and names list. """
 
     def __init__(  # pylint:disable=too-many-arguments
-            self,
-            inpath: str = None,
-            labelpath: str = None,
-            outdir_labels: str = 'data/labels',
-            outdir_features: str = 'data/features',
-            outdir_helper: str = 'data/helper',
-            percentage_holdout: float = 0,
-            outdir_holdout: str = None,
-            forbidden_picklepath: str = 'data/helper/two_ox_states.pkl',
-            exclude_dir: str = '../test_structures/showcases',
-            selected_features: list = [
-                'crystal_nn_fingerprint',
-                'ward_prd',
-                'bond_orientational',
-                'behler_parinello',
-            ],
-            old_format: bool = False,
-            training_set_size: int = None,
-            racsfile: str = None,
-            selectedracs: list = SELECTED_RACS,
-            drop_duplicates: bool = True,
+        self,
+        inpath: str = None,
+        labelpath: str = None,
+        outdir_labels: str = "data/labels",
+        outdir_features: str = "data/features",
+        outdir_helper: str = "data/helper",
+        percentage_holdout: float = 0,
+        outdir_holdout: str = None,
+        forbidden_picklepath: str = "data/helper/two_ox_states.pkl",
+        exclude_dir: str = "../test_structures/showcases",
+        selected_features: list = [
+            "crystal_nn_fingerprint",
+            "ward_prd",
+            "bond_orientational",
+            "behler_parinello",
+        ],
+        old_format: bool = False,
+        training_set_size: int = None,
+        racsfile: str = None,
+        selectedracs: list = SELECTED_RACS,
+        drop_duplicates: bool = True,
     ):
         """Initializes a feature collector.
 
@@ -441,10 +459,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
         for feature in self.selected_features:
             if feature not in list(  # pylint:disable=no-else-raise
-                    FEATURE_RANGES_DICT.keys()):
-                raise KeyError('Cannot understand {}'.format(feature))
+                FEATURE_RANGES_DICT.keys()
+            ):
+                raise KeyError("Cannot understand {}".format(feature))
             else:
-                collectorlogger.info('will collect %s', feature)
+                collectorlogger.info("will collect %s", feature)
 
         self.percentage_holdout = percentage_holdout
         self.outdir_holdout = outdir_holdout
@@ -452,209 +471,283 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         self.old_format = old_format
         self.training_set_size = training_set_size
 
-        self.picklefiles = glob(os.path.join(inpath, '*.pkl'))
-        self.forbidden_list = (list(read_pickle(forbidden_picklepath)) if forbidden_picklepath is not None else [])
-        self.forbidden_list.append('BOJSUO')  # this is te Re2O7 with dioxan
-        clashing = read_pickle('clashing_atoms.pkl')  # clashing atoms as determined by Mohamad
+        self.picklefiles = glob(os.path.join(inpath, "*.pkl"))
+        self.forbidden_list = (
+            list(read_pickle(forbidden_picklepath))
+            if forbidden_picklepath is not None
+            else []
+        )
+        self.forbidden_list.append("BOJSUO")  # this is te Re2O7 with dioxan
+        clashing = read_pickle(
+            "clashing_atoms.pkl"
+        )  # clashing atoms as determined by Mohamad
         self.forbidden_list.extend(clashing)
         extra_test_set = [
-            'QEJLID',  # mixed valence not indicated
-            'JAPZAE',
-            'JAPYIL',
-            'HITQOR',
-            'XAHREE',
-            'JAPZIM',
-            'UGARID',
-            'PEPVEM',
-            'UDOQAF',
-            'AFENAA',
-            'ATAGOR',
-            'FODLAM02',
-            'JAPYUX',
-            'IDXID',
-            'NECCUU',
-            'COFYOM',
-            'NAMTON',
-            'PURVIH',
-            'KOGNIE',
-            'BICPOV',
-            'JAPZUY',
-            'JAPZEI',
-            'SISMAL',
-            'SIBDUD',
-            'ATAGOQ',
-            'FIGZIG',
-            'NECBUT',
-            'HAVHAQ',
-            'KAWFUL',
-            'LARRAA',
-            'JAPYOR',
-            'XEHVOW',
-            'GEVPOM',
-            'EKIPAP01',
-            'ACITAK',
-            'KESSIM',
-            'BIYWAK',
-            'TEDDUC',
-            'RERROW',
-            'FUZBUX',
-            'HAVHAG',
-            'FIGZIG',
-            'CUVJUA',
-            'FIGZOM',
-            'NAVRIO',
-            'KAKTIA01',
-            'WUDLIQ',
-            'CUFMOG',
-            'ADASUW',
-            'AFEHOL',
-            'AMUTEI',
-            'AQUCOF',
-            'AQUDAS',
-            'ARADEE',
-            'BAXLA',
-            'BAXLAP',
-            'BIZLOO',
-            'BUHVOP',
-            'BUPVEP',
-            'BUXZAX',
-            'CAVWEC',
-            'CIGXIA',
-            'COKNOH',
-            'COKNOH01',
-            'CUVJUA',
-            'DIJYED',
-            'DOVBIB',
-            'EBUPUO',
-            'EDIMOT',
-            'EQEHUE',
-            'EQIZAF',
-            'FAQLIV',
-            'FEBZUH10',
-            'FEKCEE',
-            'FENXAY',
-            'FIGZOM',
-            'FIGZUS',
-            'FINPUP01',
-            'FIYGAY',
-            'FUZBUX',
-            'GASMUK',
-            'GUVZEE',
-            'GUVZII',
-            'HAVHAG',
-            'HAWVIN',
-            'HEQVUU',
-            'HEQWAB',
-            'IDIWIB',
-            'IDIWOH',
-            'IWIHON',
-            'JEBWEV',
-            'JIZJAF',
-            'JIZJEJ',
-            'JIZJIN',
-            'JIZJOT',
-            'JIZJUZ',
-            'JUBQEE',
-            'KAJZIH',
-            'KAWCES',
-            'KEPGES',
-            'KERWIP',
-            'KEXZUI',
-            'KOCLEW',
-            'KOVLOC',
-            'KUTNUI',
-            'LAVYIT',
-            'MAHSUK',
-            'MAHSUK01',
-            'MAJLOZ',
-            'MAVLED',
-            'MIFQEZ',
-            'MIFQOJ',
-            'MITFON',
-            'MITSIS',
-            'MOHQOQ',
-            'MOYZAC',
-            'NENNOK',
-            'NEZPOA',
-            'NEZPUG',
-            'NUHWUJ',
-            'NUMLIQ',
-            'NUZXAI',
-            'OLIKUR',
-            'ORIVUI',
-            'PEFHIS',
-            'PEHWEE',
-            'PETWOC',
-            'PETWUI',
-            'PETXAP',
-            'PIZHAJ',
-            'QAMTEG',
-            'QIDFOB',
-            'RAWFAZ',
-            'REKPUV',
-            'RERROW',
-            'REYDUX',
-            'RUVHEX',
-            'SATHUS',
-            'SULPMS',
-            'TEDDUC',
-            'TEJFOG',
-            'TEPWIX',
-            'TEYLOB',
-            'UDACEH',
-            'VAYJOB',
-            'VEYJOB',
-            'VOGBAU',
-            'VOMMUH',
-            'VUNQUS',
-            'WAQFAY',
-            'WAQKIK',
-            'WAZKOZ',
-            'WODZEX',
-            'WOQKET',
-            'XAXPIX',
-            'XEDJUN',
-            'XOXTOW',
-            'XOXTUC',
-            'XUVDEZ',
-            'YAKFIZ',
-            'YAMLOQ',
-            'ZARBEZ',
-            'ZASTUK',
-            'ZEJWOD',
-            'ZEJXAQ',
-            'ZEJXEU',
-            'ZEQROE',
-            'ZIFTIU',
-            'ZITFIU',
-            'ZITMUN',
-            'MELNEZ',
-            'TCAZCO',
-            'JAPYEH',
-            'TAZGEG',
-            'ROCKEZ',
-            'ENATUJ',
-            'TICMEY',
-            'OJANES',
-            'FIGTUL',
-            'KEPGIW',
-            'COXQOV',
-            'HAWVUZ',
-            'MOBBOU',
-            'IDIXID',
-            'LIDWAX',
-            'SIYXIH',
-            'VIGCET',
-            'MELNEZ',
-            'TCAZCO',
-            'JAPYEH',
-            'TAZGEG',
-            'ROCKEZ',
+            "ACITAK",
+            "ACITAK",
+            "ADASUW",
+            "AFEHOL",
+            "AFENAA",
+            "AFENAA",
+            "AMUTEI",
+            "AQUCOF",
+            "AQUCOF",
+            "AQUDAS",
+            "AQUDAS",
+            "ARADEE",
+            "ATAGOQ",
+            "ATAGOR",
+            "ATAGOR",
+            "BAXLA",
+            "BAXLAP",
+            "BAXLAP",
+            "BICPOV",
+            "BICPOV",
+            "BIYWAK",
+            "BIYWAK",
+            "BIZLOO",
+            "BUHVOP",
+            "BUPVEP",
+            "BUXZAX",
+            "CAVWEC",
+            "CIGXIA",
+            "COFYOM",
+            "COFYOM",
+            "COFYOM",
+            "COKNOH",
+            "COKNOH01",
+            "COXQOV",
+            "COXQOV",
+            "CUFMOG",
+            "CUVJUA",
+            "CUVJUA",
+            "DIJYED",
+            "DOVBIB",
+            "EBUPUO",
+            "EBUPUO",
+            "EDIMOT",
+            "EKIPAP01",
+            "ENATUJ",
+            "EQEHUE",
+            "EQIZAF",
+            "FAQLIV",
+            "FEBZUH10",
+            "FEKCEE",
+            "FENXAY",
+            "FIGTUL",
+            "FIGTUL",
+            "FIGZIG",
+            "FIGZIG",
+            "FIGZIG",
+            "FIGZOM",
+            "FIGZOM",
+            "FIGZOM",
+            "FIGZUS",
+            "FIGZUS",
+            "FINPUP01",
+            "FIYGAY",
+            "FODLAM02",
+            "FUZBUX",
+            "FUZBUX",
+            "FUZBUX",
+            "GASMUK",
+            "GEVPOM",
+            "GEVPOM",
+            "GUVZEE",
+            "GUVZII",
+            "HAVHAG",
+            "HAVHAG",
+            "HAVHAQ",
+            "HAVHAQ",
+            "HAWVIN",
+            "HAWVUZ",
+            "HEQVUU",
+            "HEQWAB",
+            "HITQOR",
+            "HITQOR",
+            "HOJHUM",
+            "HOMQEI",
+            "IDIWIB",
+            "IDIWOH",
+            "IDIXID",
+            "IDXID",
+            "IJATUI",
+            "IWIHON",
+            "JAPYEH",
+            "JAPYEH",
+            "JAPYIL",
+            "JAPYOR",
+            "JAPYUX",
+            "JAPZAE",
+            "JAPZEI",
+            "JAPZEI",
+            "JAPZIM",
+            "JAPZUY",
+            "JAPZUY",
+            "JEBWEV",
+            "JIMNUR",
+            "JIZJAF",
+            "JIZJEJ",
+            "JIZJIN",
+            "JIZJOT",
+            "JIZJUZ",
+            "JUBQEE",
+            "KAJZIH",
+            "KAKTIA01",
+            "KAKTIA01",
+            "KAWCES",
+            "KAWFUL",
+            "KAWFUL",
+            "KEPGES",
+            "KEPGIW",
+            "KEPGIW",
+            "KEPGIW",
+            "KERWIP",
+            "KESSIM",
+            "KESSIM",
+            "KEXZUI",
+            "KOCLEW",
+            "KOGNIE",
+            "KOGNIE",
+            "KOVLOC",
+            "KUTNUI",
+            "KUTNUI",
+            "LARRAA",
+            "LARRAA",
+            "LAVYIT",
+            "LIDWAX",
+            "LIDWAX",
+            "MAHSUK",
+            "MAHSUK01",
+            "MAJLOZ",
+            "MAPGUI",
+            "MAVLED",
+            "MELNEZ",
+            "MELNEZ",
+            "MIFQEZ",
+            "MIFQOJ",
+            "MIFQOJ",
+            "MITFON",
+            "MITSIS",
+            "MOBBOU",
+            "MOBBOU",
+            "MOHQOQ",
+            "MOHQOQ",
+            "MOYZAC",
+            "NAMTON",
+            "NAMTON",
+            "NAVRIO",
+            "NECBUT",
+            "NECBUT",
+            "NECCUU",
+            "NECCUU",
+            "NENNOK",
+            "NEZPOA",
+            "NEZPUG",
+            "NOJSUD",
+            "NUHWUJ",
+            "NUMLIQ",
+            "NUZXAI",
+            "NUZXAI",
+            "OJANES",
+            "OJANES",
+            "OLIKUR",
+            "ORIVUI",
+            "PEFHIS",
+            "PEHWEE",
+            "PEPVEM",
+            "PEPVEM",
+            "PETWOC",
+            "PETWUI",
+            "PETXAP",
+            "PIZHAJ",
+            "PURVIH",
+            "PURVIH",
+            "QAMTEG",
+            "QEJLID",  # mixed valence not indicated
+            "QIDFOB",
+            "RAWFAZ",
+            "REKPUV",
+            "REKPUV",
+            "RERROW",
+            "RERROW",
+            "REYDUX",
+            "ROCKEZ",
+            "ROCKEZ",
+            "RUVHEX",
+            "SATHUS",
+            "SIBDUD",
+            "SIBDUD",
+            "SISMAL",
+            "SISMAL",
+            "SIYXIH",
+            "SIYXIH",
+            "SOKKAH",
+            "SULPMS",
+            "TAZGEG",
+            "TAZGEG",
+            "TAZGEG",
+            "TCAZCO",
+            "TCAZCO",
+            "TCAZCO",
+            "TEDDUC",
+            "TEDDUC",
+            "TEDDUC",
+            "TEJFOG",
+            "TEPWIX",
+            "TEYLOB",
+            "TICMEY",
+            "TICMEY",
+            "UDACEH",
+            "UDOQAF",
+            "UDOQAF",
+            "UGARID",
+            "UGARID",
+            "VAYJOB",
+            "VEYJOB",
+            "VIGCET",
+            "VOGBAU",
+            "VOMMUH",
+            "VUNQUS",
+            "VUNQUS",
+            "VUNQUS",
+            "WAQFAY",
+            "WAQKIK",
+            "WAZKOZ",
+            "WODZEX",
+            "WOQKET",
+            "WUDLIQ",
+            "XAHREE",
+            "XAHREE",
+            "XAXPIX",
+            "XEDJUN",
+            "XEHVOW",
+            "XEHVOW",
+            "XOXTOW",
+            "XOXTUC",
+            "XUVDEZ",
+            "YAKFIZ",
+            "YAKFIZ",
+            "YAMLOQ",
+            "ZARBEZ",
+            "ZASTUK",
+            "ZASTUK",
+            "ZEJWIX",
+            "ZEJWOD",
+            "ZEJXAQ",
+            "ZEJXAQ",
+            "ZEJXEU",
+            "ZEQROE",
+            "ZIFTIU",
+            "ZITFIU",
+            "ZITMUN",
         ]
         self.forbidden_list.extend(extra_test_set)
         # just be double sure that we drop the ones we want to test on out
         if exclude_dir is not None:
-            all_to_exclude = [Path(p).stem for p in glob(os.path.join(exclude_dir, '*.cif'))]
+            all_to_exclude = [
+                Path(p).stem for p in glob(os.path.join(exclude_dir, "*.cif"))
+            ]
             self.forbidden_list.extend(all_to_exclude)
 
         # collectorlogger.info(
@@ -675,12 +768,17 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         # RACs
         self.racsdf = None
         self.selected_racs = selectedracs
-        if (racsfile is not None) and (racsfile.endswith('.csv')):
-            collectorlogger.info('Using RACs, now reading them and adding them to the feature names')
-            collectorlogger.warning('Be carful, RACs and their implementation in this code are not thoroughly tested!')
+        if (racsfile is not None) and (racsfile.endswith(".csv")):
+            collectorlogger.info(
+                "Using RACs, now reading them and adding them to the feature names"
+            )
+            collectorlogger.warning(
+                "Be carful, RACs and their implementation in this code are not thoroughly tested!"
+            )
             self.racsdf = pd.read_csv(racsfile)
             self.selected_features = list(self.selected_racs) + list(
-                self.selected_features)  # to get the correct ordering
+                self.selected_features
+            )  # to get the correct ordering
             for i, feature in enumerate(self.selected_racs):
                 FEATURE_RANGES_DICT[feature] = [(i, i + 1)]
 
@@ -705,10 +803,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 to_hstack.append(X[:, lower:upper])
                 featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
-        collectorlogger.debug('the feature names are %s', featurenames)
+        collectorlogger.debug("the feature names are %s", featurenames)
 
         if outdir_helper is not None:
-            with open(os.path.join(outdir_helper, 'feature_names.pkl'), 'wb') as fh:
+            with open(os.path.join(outdir_helper, "feature_names.pkl"), "wb") as fh:
                 pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
 
@@ -730,7 +828,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 to_hstack.append(X[:, lower:upper])
                 featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
-        collectorlogger.debug('the feature names are %s', featurenames)
+        collectorlogger.debug("the feature names are %s", featurenames)
 
         return np.hstack(to_hstack), featurenames
 
@@ -741,11 +839,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             Tuple[np.array, np.array, list] -- numpy arrays of features and labels and list of names
         """
-        feature_list = FeatureCollector.create_feature_list(self.picklefiles, self.forbidden_list, self.old_format)
+        feature_list = FeatureCollector.create_feature_list(
+            self.picklefiles, self.forbidden_list, self.old_format
+        )
         label_raw = read_pickle(self.labelpath)
         # collectorlogger.info(f'found {len(label_raw)} labels')
         label_list = FeatureCollector.make_labels_table(label_raw)
-        df = FeatureCollector.create_clean_dataframe(feature_list, label_list, self.drop_duplicates)
+        df = FeatureCollector.create_clean_dataframe(
+            feature_list, label_list, self.drop_duplicates
+        )
 
         # shuffle dataframe for the next steps to ensure randomization
         df = df.sample(frac=1).reset_index(drop=True)
@@ -760,9 +862,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             # Make stratified split that also makes sure that no structure from the training set is in the test set
             # This is important as the chmemical enviornments in structures can be quite similar (parsiomny principle of Pauling)
             # We do not want to leak this information from training into test set
-            df['base_name'] = [n.strip('0123456789') for n in df['name']]
-            df_name_select = df.drop_duplicates(subset=['base_name'])
-            df_name_select['numbers'] = (df_name_select['metal'].astype('category').cat.codes)
+            df["base_name"] = [n.strip("0123456789") for n in df["name"]]
+            df_name_select = df.drop_duplicates(subset=["base_name"])
+            df_name_select["numbers"] = (
+                df_name_select["metal"].astype("category").cat.codes
+            )
             stratifier = IterativeStratification(
                 n_splits=2,
                 order=2,
@@ -772,31 +876,46 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 ],
             )
             train_indexes, test_indexes = next(
-                stratifier.split(df_name_select, df_name_select[['oxidationstate', 'numbers']]))
+                stratifier.split(
+                    df_name_select, df_name_select[["oxidationstate", "numbers"]]
+                )
+            )
 
             train_names = df_name_select.iloc[train_indexes]
             test_names = df_name_select.iloc[test_indexes]
-            train_names = list(train_names['base_name'])
-            test_names = list(test_names['base_name'])
+            train_names = list(train_names["base_name"])
+            test_names = list(test_names["base_name"])
 
-            df_train = df[df['base_name'].isin(train_names)]
-            df_test = df[df['base_name'].isin(test_names)]
+            df_train = df[df["base_name"].isin(train_names)]
+            df_test = df[df["base_name"].isin(test_names)]
 
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
+            self.x = FeatureCollector._select_features(
+                self.selected_features, x, self.outdir_helper, offset
+            )
 
-            x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(df_test)
-            self.x_test = FeatureCollector._select_features(self.selected_features, x_test, self.outdir_helper, offset)
+            x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(
+                df_test
+            )
+            self.x_test = FeatureCollector._select_features(
+                self.selected_features, x_test, self.outdir_helper, offset
+            )
 
         else:  # no seperate holdout set
             x, self.y, self.names = FeatureCollector.get_x_y_names(df)
-        if (self.training_set_size):  # perform farthest point sampling to selet a fixed number of training points
-            collectorlogger.debug('will now perform farthest point sampling on the feature matrix')
+        if (
+            self.training_set_size
+        ):  # perform farthest point sampling to selet a fixed number of training points
+            collectorlogger.debug(
+                "will now perform farthest point sampling on the feature matrix"
+            )
             # Write one additional holdout set
             assert self.training_set_size < len(df_train)
 
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
-            x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
+            x = FeatureCollector._select_features(
+                self.selected_features, x, self.outdir_helper, offset
+            )
 
             # indices = greedy_farthest_point_samples(x, self.training_set_size)
             indices = apricot_select(x, self.training_set_size)
@@ -808,13 +927,18 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
 
             df_validation = _df_train[~good_indices]
-            x_valid, self.y_valid, self.names_valid = FeatureCollector.get_x_y_names(df_validation)
+            x_valid, self.y_valid, self.names_valid = FeatureCollector.get_x_y_names(
+                df_validation
+            )
 
-            self.x_valid = FeatureCollector._select_features(self.selected_features, x_valid, self.outdir_helper,
-                                                             offset)
+            self.x_valid = FeatureCollector._select_features(
+                self.selected_features, x_valid, self.outdir_helper, offset
+            )
 
-        self.x = FeatureCollector._select_features(self.selected_features, x, self.outdir_helper, offset)
-        collectorlogger.debug('the feature matrix shape is %s', self.x.shape)
+        self.x = FeatureCollector._select_features(
+            self.selected_features, x, self.outdir_helper, offset
+        )
+        collectorlogger.debug("the feature matrix shape is %s", self.x.shape)
 
     def dump_featurecollection(self) -> None:
         """Collect features and write features, labels and names to seperate files
@@ -842,7 +966,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             )
 
         if self.x_valid is not None:
-            self.outdir_valid = os.path.join(self.outdir_holdout, 'valid')
+            self.outdir_valid = os.path.join(self.outdir_holdout, "valid")
             if not os.path.exists(self.outdir_valid):
                 os.makedirs(self.outdir_valid)
             FeatureCollector.write_output(
@@ -862,11 +986,11 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
     def selectracs(df, columns=SELECTED_RACS):
         """select the RACs columns from the dataframe"""
         selected_columns = columns + [
-            'name',
-            'metal',
-            'coordinate_x',
-            'coordinate_y',
-            'coordinate_z',
+            "name",
+            "metal",
+            "coordinate_x",
+            "coordinate_y",
+            "coordinate_z",
         ]
         return df[selected_columns]
 
@@ -874,10 +998,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
     def _partial_match_in_name(name: str, forbidden_list: list) -> bool:
         """Tries to match also partial names, e.g. to ensure that  MAHSUK01 or
         MAHSUK02 is also matched when only MAHSUK is in the forbidden list"""
-        return any(name.rstrip('1234567890') in s for s in forbidden_list)
+        return any(name.rstrip("1234567890") in s for s in forbidden_list)
 
     @staticmethod
-    def create_feature_list(picklefiles: list, forbidden_list: list, old_format: bool = True) -> list:
+    def create_feature_list(
+        picklefiles: list, forbidden_list: list, old_format: bool = True
+    ) -> list:
         """Reads a list of pickle files into dictionary
 
         Arguments:
@@ -887,19 +1013,29 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             list -- parsed pickle contents
         """
-        collectorlogger.info('reading pickle files with features')
+        collectorlogger.info("reading pickle files with features")
         result_list = []
         if not isinstance(forbidden_list, list):
             forbidden_list = []
 
         for pickle_file in picklefiles:
-            if not FeatureCollector._partial_match_in_name(Path(pickle_file).stem, forbidden_list):
+            if not FeatureCollector._partial_match_in_name(
+                Path(pickle_file).stem, forbidden_list
+            ):
                 if not old_format:
-                    result_list.extend(FeatureCollector.create_dict_for_feature_table(pickle_file))
+                    result_list.extend(
+                        FeatureCollector.create_dict_for_feature_table(pickle_file)
+                    )
                 else:
-                    result_list.extend(FeatureCollector._create_dict_for_feature_table(pickle_file))
+                    result_list.extend(
+                        FeatureCollector._create_dict_for_feature_table(pickle_file)
+                    )
             else:
-                collectorlogger.info('{} is in forbidden list and will not be considered for X, y, names'.format(pickle_file))
+                collectorlogger.info(
+                    "{} is in forbidden list and will not be considered for X, y, names".format(
+                        pickle_file
+                    )
+                )
         return result_list
 
     @staticmethod
@@ -915,11 +1051,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             list -- list of dictionaries of the form [{'name':, 'metal':, 'oxidationstate':}]
         """
-        collectorlogger.info('converting raw list of features into list of site dictionaries')
+        collectorlogger.info(
+            "converting raw list of features into list of site dictionaries"
+        )
         result_list = []
         for key, value in raw_labels.items():
             for metal, oxstate in value.items():
-                result_list.append({'name': key, 'metal': metal, 'oxidationstate': oxstate[0]})
+                result_list.append(
+                    {"name": key, "metal": metal, "oxidationstate": oxstate[0]}
+                )
         # collectorlogger.info(f'collected {len(result_list)} labels')
         return result_list
 
@@ -927,21 +1067,27 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
     def merge_racs_frame(df_features, df_racs, selectedracs):
         """Merges the selected RACs features to the list of features
         """
-        collectorlogger.info('Merging RACs into other features')
+        collectorlogger.info("Merging RACs into other features")
         df_selected_racs = FeatureCollector.selectracs(df_racs, selectedracs)
-        df_selected_racs['coordinate_x'] = df_selected_racs['coordinate_x'].astype(np.int32)
-        df_selected_racs['coordinate_y'] = df_selected_racs['coordinate_y'].astype(np.int32)
-        df_selected_racs['coordinate_z'] = df_selected_racs['coordinate_z'].astype(np.int32)
+        df_selected_racs["coordinate_x"] = df_selected_racs["coordinate_x"].astype(
+            np.int32
+        )
+        df_selected_racs["coordinate_y"] = df_selected_racs["coordinate_y"].astype(
+            np.int32
+        )
+        df_selected_racs["coordinate_z"] = df_selected_racs["coordinate_z"].astype(
+            np.int32
+        )
 
-        df_features['coordinate_x'] = df_features['coordinate_x'].astype(np.int32)
-        df_features['coordinate_y'] = df_features['coordinate_y'].astype(np.int32)
-        df_features['coordinate_z'] = df_features['coordinate_z'].astype(np.int32)
+        df_features["coordinate_x"] = df_features["coordinate_x"].astype(np.int32)
+        df_features["coordinate_y"] = df_features["coordinate_y"].astype(np.int32)
+        df_features["coordinate_z"] = df_features["coordinate_z"].astype(np.int32)
 
         df_merged = pd.merge(
             df_features,
             df_selected_racs,
-            left_on=['name', 'metal', 'coordinate_x', 'coordinate_y', 'coordinate_z'],
-            right_on=['name', 'metal', 'coordinate_x', 'coordinate_y', 'coordinate_z'],
+            left_on=["name", "metal", "coordinate_x", "coordinate_y", "coordinate_z"],
+            right_on=["name", "metal", "coordinate_x", "coordinate_y", "coordinate_z"],
         )
         df_merged.dropna(inplace=True)
 
@@ -950,18 +1096,20 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         new_feature_columns = []
         print((df_merged.shape))
         for _, row in df_merged.iterrows():
-            new_feature_column = row['feature']
+            new_feature_column = row["feature"]
             racs = list(row[selectedracs])
             racs.extend(new_feature_column)
             new_feature_columns.append(racs)
         print((len(new_feature_columns)))
-        df_merged.drop(columns=['feature'], inplace=True)
-        df_merged['feature'] = new_feature_columns
+        df_merged.drop(columns=["feature"], inplace=True)
+        df_merged["feature"] = new_feature_columns
 
         return df_merged
 
     @staticmethod
-    def create_clean_dataframe(feature_list: list, label_list: list, drop_duplicates: bool = True) -> pd.DataFrame:
+    def create_clean_dataframe(
+        feature_list: list, label_list: list, drop_duplicates: bool = True
+    ) -> pd.DataFrame:
         """Merge the features and the labels on names and metals and drop entry rows
 
         Arguments:
@@ -972,23 +1120,26 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             pd.DataFrame -- Dataframe with each row describing a seperate metal site
         """
         pd.options.mode.use_inf_as_na = True
-        collectorlogger.info('merging labels and features')
+        collectorlogger.info("merging labels and features")
         df_features = pd.DataFrame(feature_list)
         df_labels = pd.DataFrame(label_list)
         df_merged = pd.merge(
             df_features,
             df_labels,
-            left_on=['name', 'metal'],
-            right_on=['name', 'metal'],
+            left_on=["name", "metal"],
+            right_on=["name", "metal"],
         )
 
         collectorlogger.info(
-            'the length of the feature df is {} the length of the label df is {} and the merged one is {}'.format(
-                len(df_features), len(df_labels), len(df_merged)))
+            "the length of the feature df is {} the length of the label df is {} and the merged one is {}".format(
+                len(df_features), len(df_labels), len(df_merged)
+            )
+        )
         df_merged.dropna(inplace=True)
         if drop_duplicates:
-            df_cleaned = df_merged.loc[df_merged.astype(str).drop_duplicates(
-            ).index]  # to be sure that we do not accidently have same examples in training and test set
+            df_cleaned = df_merged.loc[
+                df_merged.astype(str).drop_duplicates().index
+            ]  # to be sure that we do not accidently have same examples in training and test set
         else:
             df_cleaned = df_merged
         return df_cleaned
@@ -1004,10 +1155,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             Tuple[np.array, np.array, list] -- [description]
         """
-        names = list(df['name'])
-        feature_list = [l for l in df['feature']]
+        names = list(df["name"])
+        feature_list = [l for l in df["feature"]]
         features = np.array(feature_list)
-        labels = np.array(df['oxidationstate'])
+        labels = np.array(df["oxidationstate"])
         return features, labels, names
 
     @staticmethod
@@ -1024,12 +1175,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         mpd = MagpieData()
         result_list = []
         for site in result:
-            e = Element(site['metal'])
-            valence_electrons = mpd.get_elemental_properties([e], 'NValence')[0]
+            e = Element(site["metal"])
+            valence_electrons = mpd.get_elemental_properties([e], "NValence")[0]
             valence_to_donate = diff_to_18e(valence_electrons)
-            sunfilled = mpd.get_elemental_properties([e], 'NsUnfilled')[0]
-            dunfilled = mpd.get_elemental_properties([e], 'NdUnfilled')[0]
-            punfilled = mpd.get_elemental_properties([e], 'NpUnfilled')[0]
+            sunfilled = mpd.get_elemental_properties([e], "NsUnfilled")[0]
+            dunfilled = mpd.get_elemental_properties([e], "NdUnfilled")[0]
+            punfilled = mpd.get_elemental_properties([e], "NpUnfilled")[0]
             metal_encoding = [
                 e.number,
                 e.row,
@@ -1041,15 +1192,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 dunfilled,
                 np.random.randint(1, 18),
             ]
-            features = list(site['feature'])
+            features = list(site["feature"])
             features.extend(metal_encoding)
             result_dict = {
-                'metal': site['metal'],
-                'coordinate_x': int(site['coords'][0]),
-                'coordinate_y': int(site['coords'][1]),
-                'coordinate_z': int(site['coords'][2]),
-                'feature': features,
-                'name': Path(picklefile).stem,
+                "metal": site["metal"],
+                "coordinate_x": int(site["coords"][0]),
+                "coordinate_y": int(site["coords"][1]),
+                "coordinate_z": int(site["coords"][2]),
+                "feature": features,
+                "name": Path(picklefile).stem,
             }
 
             if not np.isnan(np.array(features)).any():
@@ -1070,12 +1221,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         mpd = MagpieData()
         result_list = []
         for site in d:
-            e = Element(site['metal'])
-            valence_electrons = mpd.get_elemental_properties([e], 'NValence')[0]
+            e = Element(site["metal"])
+            valence_electrons = mpd.get_elemental_properties([e], "NValence")[0]
             valence_to_donate = diff_to_18e(valence_electrons)
-            sunfilled = mpd.get_elemental_properties([e], 'NsUnfilled')[0]
-            dunfilled = mpd.get_elemental_properties([e], 'NdUnfilled')[0]
-            punfilled = mpd.get_elemental_properties([e], 'NpUnfilled')[0]
+            sunfilled = mpd.get_elemental_properties([e], "NsUnfilled")[0]
+            dunfilled = mpd.get_elemental_properties([e], "NdUnfilled")[0]
+            punfilled = mpd.get_elemental_properties([e], "NpUnfilled")[0]
             metal_encoding = [
                 e.number,
                 e.row,
@@ -1087,15 +1238,15 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 dunfilled,
                 np.random.randint(1, 18),
             ]
-            features = list(site['feature'])
+            features = list(site["feature"])
             features.extend(metal_encoding)
             result_dict = {
-                'metal': site['metal'],
-                'coordinate_x': int(site['coords'][0]),
-                'coordinate_y': int(site['coords'][1]),
-                'coordinate_z': int(site['coords'][2]),
-                'feature': features,
-                'name': 'noname',
+                "metal": site["metal"],
+                "coordinate_x": int(site["coords"][0]),
+                "coordinate_y": int(site["coords"][1]),
+                "coordinate_z": int(site["coords"][2]),
+                "feature": features,
+                "name": "noname",
             }
 
             if not np.isnan(np.array(features)).any():
@@ -1123,13 +1274,13 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             e = Element(key)
 
             metal_encoding = [e.number, e.row, e.group, np.random.randint(1, 18)]
-            features = list(value['feature'])
+            features = list(value["feature"])
             features.extend(metal_encoding)
             result_dict = {
-                'metal': key,
-                'coords': value['coords'],
-                'feature': features,
-                'name': Path(picklefile).stem,
+                "metal": key,
+                "coords": value["coords"],
+                "feature": features,
+                "name": Path(picklefile).stem,
             }
 
             if not np.isnan(np.array(features)).any():
@@ -1139,12 +1290,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
     @staticmethod
     def write_output(
-            x: np.array,
-            y: np.array,
-            names: list,
-            outdir_labels: str,
-            outdir_features: str,
-            outdir_helper: str,
+        x: np.array,
+        y: np.array,
+        names: list,
+        outdir_labels: str,
+        outdir_features: str,
+        outdir_helper: str,
     ) -> None:
         """writes feature array, label array and name array into output files in outdir/datetime/{x,y}.npy and outdir/datetime/names.pkl
 
@@ -1162,10 +1313,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         # timestr = time.strftime('%Y%m%d-%H%M%S')
         # outpath_base = os.path.join(outdir, timestr)
 
-        np.save(os.path.join(outdir_features, 'features'), x)
-        np.save(os.path.join(outdir_labels, 'labels'), y)
+        np.save(os.path.join(outdir_features, "features"), x)
+        np.save(os.path.join(outdir_labels, "labels"), y)
 
-        with open(os.path.join(outdir_helper, 'names.pkl'), 'wb') as picklefile:
+        with open(os.path.join(outdir_helper, "names.pkl"), "wb") as picklefile:
             pickle.dump(names, picklefile)
 
-        collectorlogger.info('stored features into labels and names into')
+        collectorlogger.info("stored features into labels and names into")
