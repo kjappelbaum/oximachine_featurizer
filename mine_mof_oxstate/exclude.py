@@ -197,7 +197,6 @@ extra_test_set = [
     "SISMAL",
     "SISMAL",
     "SIYXIH",
-    "SIYXIH",
     "SOKKAH",
     "SULPMS",
     "TAZGEG",

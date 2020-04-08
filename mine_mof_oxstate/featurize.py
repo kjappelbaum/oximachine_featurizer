@@ -33,7 +33,7 @@ from .utils import (
     diff_to_18e,
 )
 
-from exclude import extra_test_set
+from .exclude import extra_test_set
 
 collectorlogger = logging.getLogger("FeatureCollector")
 collectorlogger.setLevel(logging.INFO)
@@ -60,7 +60,16 @@ FEATURE_RANGES_DICT = {
     "punfilled": [(135, 136)],
     "dunfilled": [(136, 137)],
     "random_column": [(137, 138)],
-    "optimized_feature_set": [(0, 33), (36, 37), (40, 41), (44, 46), (49, 61), (130, 131), (131, 132), (76,90)]
+    "optimized_feature_set": [
+        (0, 33),
+        (36, 37),
+        (40, 41),
+        (44, 46),
+        (49, 61),
+        (130, 131),
+        (131, 132),
+        (76, 90),
+    ],
 }
 
 FEATURE_LABELS_ALL = [
@@ -485,7 +494,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             "clashing_atoms.pkl"
         )  # clashing atoms as determined by Mohamad
         self.forbidden_list.extend(clashing)
-        
+
         self.forbidden_list.extend(extra_test_set)
         # just be double sure that we drop the ones we want to test on out
         if exclude_dir is not None:
@@ -742,7 +751,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
     def _partial_match_in_name(name: str, forbidden_list: list) -> bool:
         """Tries to match also partial names, e.g. to ensure that  MAHSUK01 or
         MAHSUK02 is also matched when only MAHSUK is in the forbidden list"""
-        return any(name.rstrip("1234567890") in s for s in forbidden_list)
+        return any(name.rstrip("1234567890") in s for s in set(forbidden_list))
 
     @staticmethod
     def create_feature_list(
