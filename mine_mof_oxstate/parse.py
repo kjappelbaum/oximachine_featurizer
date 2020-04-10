@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import re
+import numpy as np
 from collections import defaultdict
 import concurrent.futures
 from typing import Tuple
@@ -14,7 +15,7 @@ from ccdc import io  # pylint: disable=import-error
 from .utils import SymbolNameDict
 
 
-class GetOxStatesCSD():
+class GetOxStatesCSD:
     """Main parsing class"""
 
     def __init__(self, cds_ids: list) -> None:
@@ -29,11 +30,19 @@ class GetOxStatesCSD():
         # Set up dictionaries and regex
         self.symbol_name_dict = SymbolNameDict().get_symbol_name_dict()
         self.name_symbol_dict = {v: k for k, v in self.symbol_name_dict.items()}
-        symbol_regex = '|'.join(list(self.symbol_name_dict.values()))
-        self.regex = re.compile('((?:{})\\([iv0]+\\))'.format(symbol_regex), re.IGNORECASE)
-        self.negative_regex = re.compile('((?:{})\\([-1234567890]+\\))'.format(symbol_regex), re.IGNORECASE)
+        symbol_regex = "|".join(list(self.symbol_name_dict.values()))
+        self.symbol_regex = re.compile(symbol_regex)
+        self.regex = re.compile(
+            "((?:{})\\([iv0]+\\))".format(symbol_regex), re.IGNORECASE
+        )
+        self.not_ox_regex = re.compile(
+            "((?:{})[^\\(]*$)".format(symbol_regex), re.IGNORECASE
+        )
+        self.negative_regex = re.compile(
+            "((?:{})\\(-[1234567890]+\\))".format(symbol_regex), re.IGNORECASE
+        )
         self.csd_ids = cds_ids
-        self.csd_reader = io.EntryReader('CSD')
+        self.csd_reader = io.EntryReader("CSD")
 
     def get_symbol_ox_number(self, parsed_string: str) -> Tuple[str, int]:
         """Splits a parser hit into symbol and ox nuber and returns
@@ -47,15 +56,19 @@ class GetOxStatesCSD():
             int: oxidation number
 
         """
-        name, roman = parsed_string.strip(')').split('(')
-        if roman != '0':
+        name, roman = parsed_string.strip(")").split("(")
+        if roman != "0":
             return self.name_symbol_dict[name.lower()], roman2int(roman)
         else:
             return self.name_symbol_dict[name.lower()], int(0)
-        
+
     def get_symbol_negative_ox_number(self, parsed_string: str) -> Tuple[str, int]:
-        name, roman = parsed_string.strip(')').split('(')
+        name, roman = parsed_string.strip(")").split("(")
         return self.name_symbol_dict[name.lower()], int(roman)
+
+    def get_symbol_nan(self, parsed_string: str) -> Tuple[str, int]:
+        name = self.symbol_regex.findall(parsed_string)[0]
+        return self.name_symbol_dict[name.lower()], np.nan
 
     def parse_name(self, chemical_name_string: str) -> dict:
         """Takes the chemical name string from the CSD database and returns,
@@ -75,12 +88,17 @@ class GetOxStatesCSD():
         for match in matches:
             symbol, oxidation_int = self.get_symbol_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
-        
-        negative_matches = re.findall(self.negative_regex, chemical_name_string)
-        for match in negative_matches:
+
+        no_ox_matches = re.findall(self.not_ox_regex, chemical_name_string)
+        for match in no_ox_matches:
+            symbol, oxidation_int = self.get_symbol_nan(match)
+            oxidation_state_dict[symbol].append(oxidation_int)
+
+        matches = re.findall(self.negative_regex, chemical_name_string)
+        for match in matches:
             symbol, oxidation_int = self.get_symbol_negative_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
-            
+
         return dict(oxidation_state_dict)
 
     def parse_csd_entry(self, database_id: str) -> dict:
@@ -97,7 +115,9 @@ class GetOxStatesCSD():
 
         """
         try:
-            entry_object = self.csd_reader.entry(database_id)  #pylint:disable=no-member
+            entry_object = self.csd_reader.entry(
+                database_id
+            )  # pylint:disable=no-member
             name = entry_object.chemical_name
             return self.parse_name(name)
         except Exception:  # pylint: disable=broad-except
@@ -115,7 +135,9 @@ class GetOxStatesCSD():
         """
         results_dict = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=njobs) as executor:
-            for database_id, result in tqdm(zip(self.csd_ids, executor.map(self.parse_csd_entry, self.csd_ids)),
-                                            total=len(self.csd_ids)):
+            for database_id, result in tqdm(
+                zip(self.csd_ids, executor.map(self.parse_csd_entry, self.csd_ids)),
+                total=len(self.csd_ids),
+            ):
                 results_dict[database_id] = result
         return results_dict
