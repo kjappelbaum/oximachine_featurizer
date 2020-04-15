@@ -15,7 +15,7 @@ from tqdm import tqdm
 from mine_mof_oxstate.featurize import GetFeatures
 
 
-OUTDIR = "/scratch/kjablonk/oximachine_all"
+OUTDIR = "/scratch/kjablonk/oximachine_all/features"
 INDIR = "/work/lsmo/jablonka/2020-4-7_all_csd_for_oximachine/cif_for_feat"
 ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, "*.pkl"))]
 
