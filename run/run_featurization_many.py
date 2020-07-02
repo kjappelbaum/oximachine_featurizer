@@ -13,15 +13,15 @@ from glob import glob
 from pathlib import Path
 from tqdm import tqdm
 from mine_mof_oxstate.featurize import GetFeatures
+from six.moves import map
 
-
-OUTDIR = "/scratch/kjablonk/oximachine_all/features"
-INDIR = "/work/lsmo/jablonka/2020-4-7_all_csd_for_oximachine/cif_for_feat"
-ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, "*.pkl"))]
+OUTDIR = '/scratch/kjablonk/oximachine_all/features'
+INDIR = '/work/lsmo/jablonka/2020-4-7_all_csd_for_oximachine/cif_for_feat'
+ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
 
 
 def load_pickle(f):  # pylint:disable=invalid-name
-    with open(f, "rb") as fh:  # pylint:disable=invalid-name
+    with open(f, 'rb') as fh:  # pylint:disable=invalid-name
         result = pickle.load(fh)
     return result
 
@@ -31,19 +31,17 @@ def featurize_single(structure, outdir=OUTDIR):
         try:
             gf = GetFeatures.from_file(structure, outdir)  # pylint:disable=invalid-name
             gf.run_featurization()
-        except Exception: 
+        except Exception:
             pass
 
 
 def main():
-    all_structures = glob(os.path.join(INDIR, "*.cif"))
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        for _ in tqdm(
-            executor.map(featurize_single, all_structures), total=len(all_structures)
-        ):
-            pass
+    all_structures = glob(os.path.join(INDIR, '*.cif'))
+    #with concurrent.futures.ProcessPoolExecutor() as executor:
+    for _ in tqdm(list(map(featurize_single, all_structures)), total=len(all_structures)):
+        pass
 
 
-if __name__ == "__main__":
-    print(("working in {}".format(INDIR)))
+if __name__ == '__main__':
+    print(('working in {}'.format(INDIR)))
     main()  # pylint: disable=no-value-for-parameter
