@@ -31,19 +31,13 @@ class GetOxStatesCSD:
         # Set up dictionaries and regex
         self.symbol_name_dict = SymbolNameDict().get_symbol_name_dict()
         self.name_symbol_dict = {v: k for k, v in self.symbol_name_dict.items()}
-        symbol_regex = "|".join(list(self.symbol_name_dict.values()))
+        symbol_regex = '|'.join(list(self.symbol_name_dict.values()))
         self.symbol_regex = re.compile(symbol_regex)
-        self.regex = re.compile(
-            "((?:{})\\([iv0]+\\))".format(symbol_regex), re.IGNORECASE
-        )
-        self.not_ox_regex = re.compile(
-            "((?:{})[^\\(]*$)".format(symbol_regex), re.IGNORECASE
-        )
-        self.negative_regex = re.compile(
-            "((?:{})\\(-[1234567890]+\\))".format(symbol_regex), re.IGNORECASE
-        )
+        self.regex = re.compile('((?:{})\\([iv0]+\\))'.format(symbol_regex), re.IGNORECASE)
+        self.not_ox_regex = re.compile('((?:{})[^\\(]*$)'.format(symbol_regex), re.IGNORECASE)
+        self.negative_regex = re.compile('((?:{})\\(-[1234567890]+\\))'.format(symbol_regex), re.IGNORECASE)
         self.csd_ids = cds_ids
-        self.csd_reader = io.EntryReader("CSD")
+        self.csd_reader = io.EntryReader('CSD')
 
     def get_symbol_ox_number(self, parsed_string: str) -> Tuple[str, int]:
         """Splits a parser hit into symbol and ox nuber and returns
@@ -57,14 +51,14 @@ class GetOxStatesCSD:
             int: oxidation number
 
         """
-        name, roman = parsed_string.strip(")").split("(")
-        if roman != "0":
+        name, roman = parsed_string.strip(')').split('(')
+        if roman != '0':
             return self.name_symbol_dict[name.lower()], roman2int(roman)
         else:
             return self.name_symbol_dict[name.lower()], int(0)
 
     def get_symbol_negative_ox_number(self, parsed_string: str) -> Tuple[str, int]:
-        name, roman = parsed_string.strip(")").split("(")
+        name, roman = parsed_string.strip(')').split('(')
         return self.name_symbol_dict[name.lower()], int(roman)
 
     def get_symbol_nan(self, parsed_string: str) -> Tuple[str, int]:
@@ -116,9 +110,7 @@ class GetOxStatesCSD:
 
         """
         try:
-            entry_object = self.csd_reader.entry(
-                database_id
-            )  # pylint:disable=no-member
+            entry_object = self.csd_reader.entry(database_id)  # pylint:disable=no-member
             name = entry_object.chemical_name
             return self.parse_name(name)
         except Exception:  # pylint: disable=broad-except
@@ -137,8 +129,8 @@ class GetOxStatesCSD:
         results_dict = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=njobs) as executor:
             for database_id, result in tqdm(
-                zip(self.csd_ids, executor.map(self.parse_csd_entry, self.csd_ids)),
-                total=len(self.csd_ids),
+                    zip(self.csd_ids, executor.map(self.parse_csd_entry, self.csd_ids)),
+                    total=len(self.csd_ids),
             ):
                 results_dict[database_id] = result
         return results_dict
