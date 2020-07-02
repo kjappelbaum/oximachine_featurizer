@@ -287,8 +287,6 @@ class GetFeatures:
         self.metal_indices = []
         self.features = []
         self.timeout = timeout
-        global timeout_time
-        timeout_time = timeout
         if self.path is not None:
             self.outname = os.path.join(
                 self.outpath, "".join([Path(self.path).stem, ".pkl"])
@@ -395,7 +393,7 @@ class GetFeatures:
 
         return self.features
 
-    @timeout_decorator.timeout(timeout_time, use_signals=False)
+    @timeout_decorator.timeout(40, use_signals=False)
     def run_featurization(self):
         """loops over sites if check ok"""
         self.get_metal_sites()
