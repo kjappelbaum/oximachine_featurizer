@@ -258,6 +258,18 @@ SELECTED_RACS = [
 ]
 
 
+def timeout(
+    seconds=None,
+    use_signals=True,
+    timeout_exception=TimeoutError,
+    exception_message=None,
+    custom_timeout_attribute=False,
+):
+    ...
+    if custom_attribute is not None:
+        new_seconds = eval(custom_timeout_attribute)
+
+
 class GetFeatures:
     """Featurizer"""
 
@@ -393,7 +405,7 @@ class GetFeatures:
 
         return self.features
 
-    @timeout_decorator.timeout(40, use_signals=False)
+    @timeout(40, use_signals=False, custom_timeout_attribute='instance.timeout')
     def run_featurization(self):
         """loops over sites if check ok"""
         self.get_metal_sites()
