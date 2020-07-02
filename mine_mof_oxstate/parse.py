@@ -13,7 +13,7 @@ from numeral import roman2int
 from tqdm import tqdm
 from ccdc import io  # pylint: disable=import-error
 from .utils import SymbolNameDict
-import timeout_decorator
+
 
 
 class GetOxStatesCSD:
