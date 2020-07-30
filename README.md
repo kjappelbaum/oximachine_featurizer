@@ -22,7 +22,6 @@ To install the software with all dependencies, you can use
 pip install git+https://github.com/kjappelbaum/mof_oxidation_states.git
 ```
 
-This should, for appropriate versions of pip (`pip>=18.1`), also install [our fork of matminer from the correct branch](https://github.com/kjappelbaum/matminer.git@localpropertystats).
 This automatically installs several command-line tools (CLI) which are detailed below.
 
 The full process should take some seconds.
