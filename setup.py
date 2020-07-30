@@ -6,6 +6,7 @@ from __future__ import absolute_import
 
 import io
 import os
+import versioneer
 
 from setuptools import find_packages, setup
 
@@ -19,14 +20,14 @@ REQUIRES_PYTHON = '>=3.5.0'
 VERSION = '0.2.0.-alpha'
 
 # What packages are required for this module to be executed?
-with open('requirements.txt', 'r') as fh:
+with open('requirements.txt') as fh: 
     REQUIRED = fh.readlines()
+
 
 # What packages are optional?
 EXTRAS = {
     'testing': ['pytest'],
-    'linting': ['prospector', 'pre-commit', 'pylint', 'isort'],
-    'versioning': ['versioneer'],
+    'linting': ['prospector', 'pre-commit', 'pylint'],
     'documentation': ['sphinx', 'sphinx_rtd_theme', 'sphinx-autodoc-typehints'],
 }
 
@@ -43,7 +44,7 @@ except FileNotFoundError:
 setup(
     name=NAME,
     version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass()
+    cmdclass=versioneer.get_cmdclass(),
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',
