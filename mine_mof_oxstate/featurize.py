@@ -1,45 +1,31 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value, too-many-lines
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
-from __future__ import absolute_import
-from __future__ import print_function
-from pathlib import Path
-import os
-from glob import glob
-import pickle
 import logging
+import os
+import pickle
 import warnings
-import timeout_decorator
-
-# from collections import defaultdict
+from glob import glob
+from pathlib import Path
 from typing import Tuple
 
 import numpy as np
 import pandas as pd
-from skmultilearn.model_selection import IterativeStratification
 from ase.io import read
-from pymatgen.io.ase import AseAtomsAdaptor
-from pymatgen.core import Element
 from matminer.featurizers.base import MultipleFeaturizer
+from matminer.featurizers.site import CrystalNNFingerprint, GaussianSymmFunc
 from matminer.utils.data import MagpieData
-from matminer.featurizers.site import (
-    CrystalNNFingerprint,
-    LocalPropertyStats,
-    GaussianSymmFunc,
-)
-from .utils import (
-    read_pickle,
-    # greedy_farthest_point_samples, # not used anymore probably because slower than apricot
-    apricot_select,
-    diff_to_18e,
-)
-from .timeout import timeout
+from pymatgen.core import Element
+from pymatgen.io.ase import AseAtomsAdaptor
+from skmultilearn.model_selection import IterativeStratification
+
 from .exclude import extra_test_set
+from .featurizer_local_property import LocalPropertyStatsNew
+from .utils import apricot_select, diff_to_18e, read_pickle
 
 collectorlogger = logging.getLogger('FeatureCollector')
 collectorlogger.setLevel(logging.INFO)
 logging.basicConfig(format='%(filename)s: %(message)s', level=logging.DEBUG)
-collectorlogger.addHandler(logging.FileHandler('featurecollector.log', mode='w'))
 
 FEATURE_RANGES_DICT = {
     'crystal_nn_fingerprint': [(0, 61)],
@@ -261,20 +247,18 @@ SELECTED_RACS = [
 class GetFeatures:
     """Featurizer"""
 
-    def __init__(self, structure, outpath, timeout=None):
+    def __init__(self, structure, outpath):
         """Generates features for a list of structures
 
         Args:
             structure
             outpath (str): path to which the features will be dumped
-            timout (int): timeout in seconds
         Returns:
 
         """
         featurizelogger = logging.getLogger('Featurize')
         featurizelogger.setLevel(logging.INFO)
         logging.basicConfig(
-            # filename="featurize.log",
             format='%(filename)s: %(message)s',
             level=logging.INFO,
         )
@@ -286,7 +270,6 @@ class GetFeatures:
         self.metal_sites = []
         self.metal_indices = []
         self.features = []
-        self.timeout = timeout
         if self.path is not None:
             self.outname = os.path.join(self.outpath, ''.join([Path(self.path).stem, '.pkl']))
         else:
@@ -296,23 +279,23 @@ class GetFeatures:
             )
         self.featurizer = MultipleFeaturizer([
             CrystalNNFingerprint.from_preset('ops'),
-            LocalPropertyStats.from_preset('interpretable'),
+            LocalPropertyStatsNew.from_preset('interpretable'),
             GaussianSymmFunc(),
         ])
 
     @classmethod
-    def from_file(cls, structurepath, outpath, timeout=None):
+    def from_file(cls, structurepath, outpath):
         """
         Construct a featurizer class from path to structure and an output path
         """
         s = GetFeatures.read_safe(structurepath)
-        featureclass = cls(s, outpath, timeout)
+        featureclass = cls(s, outpath)
         featureclass.path = structurepath
         featureclass.outname = os.path.join(featureclass.outpath, ''.join([Path(featureclass.path).stem, '.pkl']))
         return featureclass
 
     @classmethod
-    def from_string(cls, structurestring, outpath, timeout=None):
+    def from_string(cls, structurestring, outpath):
         """
         Constructure for the webapp
         """
@@ -326,7 +309,7 @@ class GetFeatures:
             except Exception:
                 raise ValueError('Pymatgen could not parse ciffile')
             else:
-                return cls(s, outpath, timeout)
+                return cls(s, outpath)
 
     @staticmethod
     def read_safe(path):
@@ -381,7 +364,6 @@ class GetFeatures:
 
         return self.features
 
-    @timeout(use_signals=False, use_class_attribute=True)
     def run_featurization(self):
         """loops over sites if check ok"""
         self.get_metal_sites()

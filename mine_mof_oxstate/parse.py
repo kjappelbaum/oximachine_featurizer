@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=relative-beyond-top-level
 """Parsing functions for the oxidation state mining project"""
-from __future__ import absolute_import
-from __future__ import print_function
-import re
-import numpy as np
-from collections import defaultdict
+from __future__ import absolute_import, print_function
+
 import concurrent.futures
+import re
+from collections import defaultdict
 from typing import Tuple
-from six.moves import zip
+
+import numpy as np
+from ccdc import io  # pylint: disable=import-error
 from numeral import roman2int
 from tqdm import tqdm
-from ccdc import io  # pylint: disable=import-error
-from .utils import SymbolNameDict
 
+from .utils import SymbolNameDict
 
 
 class GetOxStatesCSD:

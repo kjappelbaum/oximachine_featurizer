@@ -4,20 +4,27 @@
 Status: Dev
 Run the featurization on the CSD MOF subset
 """
-from __future__ import absolute_import
-from __future__ import print_function
+
+import concurrent.futures
 import os
 import pickle
-import concurrent.futures
 from glob import glob
 from pathlib import Path
+
 from tqdm import tqdm
+
 from mine_mof_oxstate.featurize import GetFeatures
-from six.moves import map
 
 OUTDIR = '/scratch/kjablonk/oximachine_all/features'
 INDIR = '/work/lsmo/jablonka/2020-4-7_all_csd_for_oximachine/cif_for_feat'
-ALREADY_FEAUTRIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
+ALREADY_FEATURIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, '*.pkl'))]
+
+
+def read_already_featurized():
+    if os.path.exists('already_featurized.txt'):
+        with open('already_featurized.txt', 'r') as fh:
+            already_featurized = fh.readlines()
+    ALREADY_FEATURIZED.extend(already_featurized)
 
 
 def load_pickle(f):  # pylint:disable=invalid-name
@@ -27,7 +34,7 @@ def load_pickle(f):  # pylint:disable=invalid-name
 
 
 def featurize_single(structure, outdir=OUTDIR):
-    if Path(structure).stem not in ALREADY_FEAUTRIZED:
+    if Path(structure).stem not in ALREADY_FEATURIZED:
         try:
             gf = GetFeatures.from_file(structure, outdir, 30)  # pylint:disable=invalid-name
             gf.run_featurization()
@@ -36,10 +43,14 @@ def featurize_single(structure, outdir=OUTDIR):
 
 
 def main():
+    read_already_featurized()
     all_structures = glob(os.path.join(INDIR, '*.cif'))
-    #with concurrent.futures.ProcessPoolExecutor() as executor:
-    for _ in tqdm(list(map(featurize_single, all_structures)), total=len(all_structures)):
-        pass
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for _ in tqdm(
+                list(executor.map(featurize_single, all_structures)),
+                total=len(all_structures),
+        ):
+            pass
 
 
 if __name__ == '__main__':

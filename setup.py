@@ -3,36 +3,11 @@
 # pylint: disable=invalid-name, missing-docstring
 
 from __future__ import absolute_import
+
 import io
 import os
-import sys
-import subprocess
 
 from setuptools import find_packages, setup
-
-git_rpmfile = 'git+https://github.com/kjappelbaum/matminer.git@localpropertystats'
-
-try:
-    import matminer  # pylint:disable=unused-import
-except Exception:  # pylint:disable=broad-except
-    if '--user' in sys.argv:
-        subprocess.run(
-            [
-                sys.executable,
-                '-m',
-                'pip',
-                'install',
-                '--upgrade',
-                '--user',
-                git_rpmfile,
-            ],
-            check=False,
-        )
-    else:
-        subprocess.run(
-            [sys.executable, '-m', 'pip', 'install', '--upgrade', git_rpmfile],
-            check=False,
-        )
 
 # Package meta-data.
 NAME = 'mine_mof_oxstate'
@@ -52,7 +27,8 @@ REQUIRED = [
     'tqdm',
     'click',
     'pandas',
-    'scikit-learn==0.22',
+    'scikit-learn',
+    'matminer',
     'scikit-multilearn',
 ]
 

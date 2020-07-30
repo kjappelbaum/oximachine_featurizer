@@ -3,21 +3,20 @@
 """
 Some general utility functions for the oxidation state mining project
 """
-from __future__ import absolute_import
-from __future__ import print_function
-import os
-import warnings
-from pathlib import Path
 import json
+import os
 import pickle
+import warnings
 from collections.abc import Iterable
-from tqdm import tqdm
-from pymatgen.core import Element
-from scipy.spatial import distance
-from sklearn.preprocessing import StandardScaler
+from pathlib import Path
+
 import numpy as np
 from apricot import FacilityLocationSelection
+from pymatgen.core import Element
+from scipy.spatial import distance
 from six.moves import range
+from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
 
 
 def read_pickle(filepath: str):
@@ -126,7 +125,9 @@ def _greedy_loop(remaining, k, metric):
     return greedy_data
 
 
-def _greedy_farthest_point_samples_non_chunked(data, k: int, metric: str = 'euclidean',
+def _greedy_farthest_point_samples_non_chunked(data,
+                                               k: int,
+                                               metric: str = 'euclidean',
                                                standardize: bool = True) -> list:
     """
         Args:
