@@ -6,7 +6,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/936cc6cc791f8bf352c6/maintainability)](https://codeclimate.com/github/kjappelbaum/mof_oxidation_states/maintainability)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Mine oxidation states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps.
+Mine oxidation states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps. Some of these runscripts contain harcoded paths, that would need to be updated.
 This code generates inputs that can be used with the [learnmofox package](https://github.com/kjappelbaum/learn_mof_ox_state.git).
 
 > ⚠️ **Warning**: For the mining of the oxidation states, you need the CSD Python API.

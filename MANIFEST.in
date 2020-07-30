@@ -1,1 +1,3 @@
 include README.md LICENSE
+include versioneer.py
+include mine_mof_oxstate/_version.py
