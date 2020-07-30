@@ -19,23 +19,14 @@ REQUIRES_PYTHON = '>=3.5.0'
 VERSION = '0.2.0.-alpha'
 
 # What packages are required for this module to be executed?
-REQUIRED = [
-    'pymatgen',
-    'ase',
-    'numeral',
-    'apricot-select',
-    'tqdm',
-    'click',
-    'pandas',
-    'scikit-learn',
-    'matminer',
-    'scikit-multilearn',
-]
+with open('requirements.txt', 'r') as fh:
+    REQUIRED = fh.readlines()
 
 # What packages are optional?
 EXTRAS = {
     'testing': ['pytest'],
-    'linting': ['prospector', 'pre-commit', 'pylint'],
+    'linting': ['prospector', 'pre-commit', 'pylint', 'isort'],
+    'versioning': ['versioneer'],
     'documentation': ['sphinx', 'sphinx_rtd_theme', 'sphinx-autodoc-typehints'],
 }
 
@@ -51,7 +42,8 @@ except FileNotFoundError:
 
 setup(
     name=NAME,
-    version=VERSION,
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass()
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',
