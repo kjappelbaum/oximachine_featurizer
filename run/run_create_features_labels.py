@@ -6,7 +6,6 @@ to three pickle files for feature matrix, label vector and names list.
 Latter is important to investigate the failures manually
 """
 
-from __future__ import absolute_import
 
 import click
 

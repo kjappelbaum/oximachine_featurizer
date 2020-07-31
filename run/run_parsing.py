@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=relative-beyond-top-level
 """
-Status: Dev
 Run the oxidation state mining
 """
-from __future__ import absolute_import
 
 import os
 import pickle

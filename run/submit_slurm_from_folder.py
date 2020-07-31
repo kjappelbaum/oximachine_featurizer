@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 # pylint:disable = logging-format-interpolation
 """
-Status: Dev
 This runscript can be used to submit the featurizations on a HPC clusters with the SLURM workload manager.
 
 Usage: Install script in conda enviornment called ml on cluster and then run it using the
 the outdir, start and end indices and submit flag.
 """
-from __future__ import absolute_import
 
 import logging
 import os
-import pickle
 import subprocess
 import time
 from glob import glob

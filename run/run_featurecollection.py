@@ -4,7 +4,6 @@
 Status: Dev
 Run the featurization on one structure
 """
-from __future__ import absolute_import
 
 import os
 

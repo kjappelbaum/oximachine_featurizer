@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=relative-beyond-top-level
 """
-Status: Dev
 Run the featurization on the structures from Materials Project
 """
-from __future__ import absolute_import, print_function
 
 import concurrent.futures
 import os
