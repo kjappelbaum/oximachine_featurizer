@@ -2,6 +2,7 @@
 """
 Collect features and labels for the structures from Materials Project
 """
+import os
 import pickle
 import tempfile
 
