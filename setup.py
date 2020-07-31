@@ -27,6 +27,7 @@ with open('requirements.txt') as fh:
 EXTRAS = {
     'testing': ['pytest'],
     'linting': ['prospector', 'pre-commit', 'pylint'],
+    'changelog': ['gitchangelog'],
     'documentation': ['sphinx', 'sphinx_rtd_theme', 'sphinx-autodoc-typehints'],
 }
 

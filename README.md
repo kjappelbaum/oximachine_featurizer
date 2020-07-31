@@ -59,10 +59,9 @@ Some output can be found on the [MaterialsCloud Archive (doi: 10.24435/materials
 The use of the main functions of this package is shown in the Jupyter Notebook in the example directory.
 It contains some example structures and the output, which should be produces in seconds.
 
-
 ## Testing the installation
 
-For testing you can---as it is done for the continuos integration (CI)---use `pytest` and run the files in the `test` directory. For example
+For testing, you can---as it is done for the continuous integration (CI)---use `pytest` and run the files in the `test` directory. For example
 
 ```(bash)
 pip install pytest
