@@ -5,12 +5,13 @@ I probably should have used one simple GET request instead of querying multiple 
 it is not too slow
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
-from itertools import product
+from __future__ import absolute_import, print_function
+
 import os
-from pymatgen import MPRester
+from itertools import product
+
 import pandas as pd
+from pymatgen import MPRester
 from tqdm import tqdm
 
 mp_api = MPRester(os.getenv('MP_API_KEY', None))  # pylint:disable=invalid-name
@@ -144,9 +145,9 @@ def calculate_metal_oxidation_state(formula: dict, metal: str, anion: str):
 
 
 def which_is_the_metal(  # pylint:disable=dangerous-default-value
-        formula,
-        metals=metals,  # pylint:disable=redefined-outer-name
-        anions=anions,  # pylint:disable=redefined-outer-name
+    formula,
+    metals=metals,  # pylint:disable=redefined-outer-name
+    anions=anions,  # pylint:disable=redefined-outer-name
 ):
     """Return metal, anion to have quicker access to the relevant keys of the formula dictionary"""
     metal = None

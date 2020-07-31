@@ -13,7 +13,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from mine_mof_oxstate.featurize import GetFeatures
+from oximachine_featurizer.featurize import GetFeatures
 
 OUTDIR = '/scratch/kjablonk/oximachine_all/features'
 INDIR = '/work/lsmo/jablonka/2020-4-7_all_csd_for_oximachine/cif_for_feat'

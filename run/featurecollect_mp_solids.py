@@ -10,7 +10,7 @@ import os
 import tempfile
 import pandas as pd
 import click
-from mine_mof_oxstate.featurize import FeatureCollector
+from oximachine_featurizer.featurize import FeatureCollector
 
 
 def write_labels_to_stupid_format(df, outdir):  # pylint:disable = invalid-name

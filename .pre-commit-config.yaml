@@ -49,14 +49,14 @@ repos:
         types: [python]
         entry: isort
       - id: yapf
-        exclude: versioneer.py|mine_mof_oxstate/_version.py
+        exclude: versioneer.py|oximachine_featurizer/_version.py
         name: yapf
         entry: yapf
         language: system
         types: [python]
         args: ["-i"]
       - id: prospector
-        exclude: versioneer.py|mine_mof_oxstate/_version.py
+        exclude: versioneer.py|oximachine_featurizer/_version.py
         language: system
         types: [file, python]
         name: prospector

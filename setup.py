@@ -12,13 +12,12 @@ from setuptools import find_packages, setup
 import versioneer
 
 # Package meta-data.
-NAME = 'mine_mof_oxstate'
-DESCRIPTION = 'Mine MOF oxidation states.'
+NAME = 'oximachine_featurizer'
+DESCRIPTION = 'Mine MOF oxidation states and featurize metal sites.'
 URL = 'https://github.com/kjappelbaum/mine_csd'
 EMAIL = 'kevin.jablonka@epfl.ch'
 AUTHOR = 'Kevin M. Jablonka, Daniele Ongari, Berend Smit'
 REQUIRES_PYTHON = '>=3.5.0'
-VERSION = '0.2.0.-alpha'
 
 # What packages are required for this module to be executed?
 with open('requirements.txt') as fh:

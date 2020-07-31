@@ -11,7 +11,7 @@ import pickle
 import concurrent.futures
 from glob import glob
 from tqdm import tqdm
-from mine_mof_oxstate.featurize import GetFeatures
+from oximachine_featurizer.featurize import GetFeatures
 
 MPDIR = '/Users/kevinmaikjablonka/Dropbox (LSMO)/proj62_guess_oxidation_states/mp_structures'
 ALREADY_FEATURIZED = glob(os.path.join(MPDIR, '*.pkl'))

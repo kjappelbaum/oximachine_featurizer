@@ -5,13 +5,16 @@ Status: Dev
 Run the oxidation state mining
 """
 from __future__ import absolute_import
+
 import os
-from pathlib import Path
-from glob import glob
-import time
 import pickle
+import time
+from glob import glob
+from pathlib import Path
+
 import click
-from mine_mof_oxstate.parse import GetOxStatesCSD
+
+from oximachine_featurizer.parse import GetOxStatesCSD
 
 
 def prepare_list(indir='/mnt/lsmo_databases/mof_subset_csdmay2019'):

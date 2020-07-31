@@ -11,7 +11,7 @@ import random
 import click
 from six.moves import range
 from ccdc import io  # pylint: disable=import-error
-from mine_mof_oxstate.parse import GetOxStatesCSD
+from oximachine_featurizer.parse import GetOxStatesCSD
 
 
 def generate_id_list(num_samples=1009141):

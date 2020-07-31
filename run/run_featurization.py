@@ -5,8 +5,10 @@ Status: Dev
 Run the featurization on one structure
 """
 from __future__ import absolute_import
+
 import click
-from mine_mof_oxstate.featurize import GetFeatures
+
+from oximachine_featurizer.featurize import GetFeatures
 
 
 @click.command('cli')

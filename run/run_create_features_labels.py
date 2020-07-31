@@ -8,7 +8,7 @@ Latter is important to investigate the failures manually
 
 from __future__ import absolute_import
 import click
-from mine_mof_oxstate.featurize import FeatureCollector
+from oximachine_featurizer.featurize import FeatureCollector
 
 
 @click.command('cli')

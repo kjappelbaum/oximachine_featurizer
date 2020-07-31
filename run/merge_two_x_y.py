@@ -16,7 +16,7 @@ import pickle
 import numpy as np
 import click
 from sklearn.utils import shuffle
-from mine_mof_oxstate.utils import read_pickle
+from oximachine_featurizer.utils import read_pickle
 
 RANDOM_SEED = 1234
 
