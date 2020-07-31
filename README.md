@@ -15,15 +15,23 @@ This code generates inputs that can be used with the [learnmofox package](https:
 
 ## Installation
 
-To install the software with all dependencies, you can use
-
-```bash
-pip install git+https://github.com/kjappelbaum/mof_oxidation_states.git
-```
-
-This automatically installs several command-line tools (CLI) which are detailed below.
+The commands below automatically install several command-line tools (CLI) which are detailed below.
 
 The full process should take some seconds.
+
+### Latest version
+
+To install the latest version of the software with all dependencies, you can use
+
+```bash
+pip install git+https://github.com/kjappelbaum/oximachine_featurizer.git
+```
+
+### Stable release
+
+```bash
+pip install oximachine_featurizer
+```
 
 ## How to use it
 
@@ -50,3 +58,13 @@ Some output can be found on the [MaterialsCloud Archive (doi: 10.24435/materials
 
 The use of the main functions of this package is shown in the Jupyter Notebook in the example directory.
 It contains some example structures and the output, which should be produces in seconds.
+
+
+## Testing the installation
+
+For testing you can---as it is done for the continuos integration (CI)---use `pytest` and run the files in the `test` directory. For example
+
+```(bash)
+pip install pytest
+pytest test/test_featurize.py
+```
