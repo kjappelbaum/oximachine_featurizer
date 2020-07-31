@@ -264,7 +264,7 @@ class GetFeatures:
         )
 
         self.outpath = outpath
-        if not os.path.exists(self.outpath):
+        if outpath != '' and not os.path.exists(self.outpath):
             os.mkdir(self.outpath)
         self.logger = featurizelogger
         self.path = None

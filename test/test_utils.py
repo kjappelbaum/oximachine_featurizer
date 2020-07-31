@@ -2,7 +2,8 @@
 # pylint: disable=relative-beyond-top-level
 """Test the utils module"""
 from __future__ import absolute_import
-from mine_mof_oxstate.utils import SymbolNameDict
+
+from oximachine_featurizer.utils import SymbolNameDict
 
 
 def test_symbolnamedict():

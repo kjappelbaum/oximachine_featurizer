@@ -3,8 +3,21 @@
 Note: tests require a running CSD Python API"""
 
 from __future__ import absolute_import
+
+import os
+
 import pandas as pd
-from mine_mof_oxstate.featurize import FeatureCollector
+from pymatgen import Structure
+
+from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
+
+
+def test_featurization():
+    s = Structure.from_file(os.path.join('..', 'examples', 'structures', 'BaO2_mp-1105_computed.cif'))
+    featurizer = GetFeatures(s, '')
+    feat = featurizer.return_features()
+    assert len(feat) == 2
+    assert len(feat[0]) == len(feat[1]) == 116
 
 
 def test_make_labels_table(provide_label_dict):
