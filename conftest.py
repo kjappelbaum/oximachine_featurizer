@@ -2,8 +2,9 @@
 """Providing some fixtures for the tests"""
 
 from __future__ import absolute_import
-import pytest
+
 import pandas as pd
+import pytest
 
 
 @pytest.fixture('session')

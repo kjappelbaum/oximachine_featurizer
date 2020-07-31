@@ -8,20 +8,20 @@ Usage: Install script in conda enviornment called ml on cluster and then run it 
 the outdir, start and end indices and submit flag.
 """
 from __future__ import absolute_import
+
+import logging
 import os
 import pickle
+import subprocess
 import time
-import logging
 from glob import glob
 from pathlib import Path
-import subprocess
+
 import click
 
 featurizer = logging.getLogger('featurizer')  # pylint:disable=invalid-name
 featurizer.setLevel(logging.DEBUG)
-logging.basicConfig(
-    filename='featurizer.log', format='%(filename)s: %(message)s', level=logging.DEBUG
-)
+logging.basicConfig(filename='featurizer.log', format='%(filename)s: %(message)s', level=logging.DEBUG)
 
 THIS_DIR = os.path.dirname(__file__)
 
@@ -57,12 +57,8 @@ TO_SAMPLE = load_pickle(NAME_LIST)
 
 def write_and_submit_slurm(workdir, name, structure, outdir, submit=False):
     """writes a slurm submission script and submits it if requested"""
-    submission_template = SUBMISSION_TEMPLATE.format(
-        name=name + '_featurize', structure=structure, outdir=outdir
-    )
-    with open(
-        os.path.join(workdir, name + '.slurm'), 'w'
-    ) as fh:  # pylint:disable=invalid-name
+    submission_template = SUBMISSION_TEMPLATE.format(name=name + '_featurize', structure=structure, outdir=outdir)
+    with open(os.path.join(workdir, name + '.slurm'), 'w') as fh:  # pylint:disable=invalid-name
         for line in submission_template:
             fh.write(line)
 
@@ -88,9 +84,7 @@ def main(outdir, start, end, submit):
     for structure in TO_SAMPLE[start:end:5]:
         if structure not in ALREADY_FEAUTRIZED:
             name = structure
-            write_and_submit_slurm(
-                THIS_DIR, name, os.path.join(CSDDIR, structure + '.cif'), outdir, submit
-            )
+            write_and_submit_slurm(THIS_DIR, name, os.path.join(CSDDIR, structure + '.cif'), outdir, submit)
 
 
 if __name__ == '__main__':

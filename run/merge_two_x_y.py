@@ -11,11 +11,14 @@ hard to wrap it in Dask if this is not the case.
 """
 
 from __future__ import absolute_import
+
 import os
 import pickle
-import numpy as np
+
 import click
+import numpy as np
 from sklearn.utils import shuffle
+
 from oximachine_featurizer.utils import read_pickle
 
 RANDOM_SEED = 1234
@@ -25,16 +28,16 @@ class Merger:
     """Class to merge two featrue sets"""
 
     def __init__(  # pylint:disable=too-many-arguments
-            self,
-            features0,
-            features1,
-            labels0,
-            labels1,
-            names0,
-            names1,
-            outdir_features,
-            outdir_labels,
-            outdir_names,
+        self,
+        features0,
+        features1,
+        labels0,
+        labels1,
+        names0,
+        names1,
+        outdir_features,
+        outdir_labels,
+        outdir_names,
     ):
 
         self.features0 = features0
@@ -67,16 +70,16 @@ class Merger:
 
     @classmethod
     def from_files(  # pylint:disable=too-many-arguments
-            cls,
-            features0path,
-            features1path,
-            labels0path,
-            labels1path,
-            names0path,
-            names1path,
-            outdir_features,
-            outdir_labels,
-            outdir_names,
+        cls,
+        features0path,
+        features1path,
+        labels0path,
+        labels1path,
+        names0path,
+        names1path,
+        outdir_features,
+        outdir_labels,
+        outdir_names,
     ):
         """Construct class from filepaths"""
         features0 = np.load(features0path)
@@ -100,12 +103,12 @@ class Merger:
 
     @staticmethod
     def output(  # pylint:disable = invalid-name
-            X,  # pylint:disable = invalid-name
-            y,  # pylint:disable = invalid-name
-            names,
-            outdir_features,
-            outdir_labels,
-            outdir_names,
+        X,  # pylint:disable = invalid-name
+        y,  # pylint:disable = invalid-name
+        names,
+        outdir_features,
+        outdir_labels,
+        outdir_names,
     ):
         """Write the new training set files for the merged training set"""
         features, labels, names = shuffle(X, y, names, random_state=RANDOM_SEED)
@@ -142,15 +145,15 @@ class Merger:
 @click.argument('outdir_labels')
 @click.argument('outdir_names')
 def run_merging(  # pylint:disable=too-many-arguments
-        features0path,
-        features1path,
-        labels0path,
-        labels1path,
-        names0path,
-        names1path,
-        outdir_features,
-        outdir_labels,
-        outdir_names,
+    features0path,
+    features1path,
+    labels0path,
+    labels1path,
+    names0path,
+    names1path,
+    outdir_features,
+    outdir_labels,
+    outdir_names,
 ):
     """CLI"""
     merger = Merger.from_files(

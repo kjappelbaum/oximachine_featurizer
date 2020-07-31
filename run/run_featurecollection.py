@@ -5,8 +5,11 @@ Status: Dev
 Run the featurization on one structure
 """
 from __future__ import absolute_import
+
 import os
+
 import click
+
 from oximachine_featurizer.featurize import FeatureCollector
 
 
@@ -24,18 +27,18 @@ from oximachine_featurizer.featurize import FeatureCollector
 @click.option('--only_racs', is_flag=True)
 @click.option('--do_not_drop_duplicates', is_flag=True)
 def main(
-        inpath,
-        labelpath,
-        outdir_labels,
-        outdir_features,
-        outdir_helper,
-        percentage_holdout,
-        outdir_holdout,
-        training_set_size,
-        racsfile,
-        features,
-        only_racs,
-        do_not_drop_duplicates,
+    inpath,
+    labelpath,
+    outdir_labels,
+    outdir_features,
+    outdir_helper,
+    percentage_holdout,
+    outdir_holdout,
+    training_set_size,
+    racsfile,
+    features,
+    only_racs,
+    do_not_drop_duplicates,
 ):
     """
     CLI function

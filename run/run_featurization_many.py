@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint:disable=relative-beyond-top-level
 """
 Status: Dev
 Run the featurization on the CSD MOF subset

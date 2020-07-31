@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from ccdc import io
-import re
+
 import pickle
+import re
 import time
+
+from ccdc import io
 
 
 def load_pickle(f):

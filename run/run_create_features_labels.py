@@ -7,7 +7,9 @@ Latter is important to investigate the failures manually
 """
 
 from __future__ import absolute_import
+
 import click
+
 from oximachine_featurizer.featurize import FeatureCollector
 
 

@@ -3,13 +3,15 @@
 Status: Dev
 Collect features and labels for the structures from Materials Project
 """
-from __future__ import absolute_import
-from __future__ import print_function
-import pickle
+from __future__ import absolute_import, print_function
+
 import os
+import pickle
 import tempfile
-import pandas as pd
+
 import click
+import pandas as pd
+
 from oximachine_featurizer.featurize import FeatureCollector
 
 
@@ -36,15 +38,15 @@ def write_labels_to_stupid_format(df, outdir):  # pylint:disable = invalid-name
 @click.argument('training_set_size')
 @click.argument('features', nargs=-1)
 def main(  # pylint:disable=too-many-arguments
-        dfpath,
-        inpath,
-        outdir_labels,
-        outdir_features,
-        outdir_helper,
-        percentage_holdout,
-        outdir_holdout,
-        training_set_size,
-        features,
+    dfpath,
+    inpath,
+    outdir_labels,
+    outdir_features,
+    outdir_helper,
+    percentage_holdout,
+    outdir_holdout,
+    training_set_size,
+    features,
 ):
     """CLI"""
     df = pd.read_csv(dfpath)  # pylint:disable=invalid-name

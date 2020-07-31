@@ -5,12 +5,15 @@ Status: Dev
 Run the oxidation state mining
 """
 from __future__ import absolute_import
-import time
+
 import pickle
 import random
+import time
+
 import click
-from six.moves import range
 from ccdc import io  # pylint: disable=import-error
+from six.moves import range
+
 from oximachine_featurizer.parse import GetOxStatesCSD
 
 

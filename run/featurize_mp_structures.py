@@ -4,13 +4,15 @@
 Status: Dev
 Run the featurization on the structures from Materials Project
 """
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
+import concurrent.futures
 import os
 import pickle
-import concurrent.futures
 from glob import glob
+
 from tqdm import tqdm
+
 from oximachine_featurizer.featurize import GetFeatures
 
 MPDIR = '/Users/kevinmaikjablonka/Dropbox (LSMO)/proj62_guess_oxidation_states/mp_structures'

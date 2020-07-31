@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """Testing the conversion of feature files into feature matrix and label file into label vector,
 Note: tests require a running CSD Python API"""
-
-from __future__ import absolute_import
-
 import os
 
 import pandas as pd
@@ -11,9 +8,11 @@ from pymatgen import Structure
 
 from oximachine_featurizer.featurize import FeatureCollector, GetFeatures
 
+THIS_DIR = os.path.dirname(__file__)
+
 
 def test_featurization():
-    s = Structure.from_file(os.path.join('..', 'examples', 'structures', 'BaO2_mp-1105_computed.cif'))
+    s = Structure.from_file(os.path.join(THIS_DIR, '..', 'examples', 'structures', 'BaO2_mp-1105_computed.cif'))
     featurizer = GetFeatures(s, '')
     feat = featurizer.return_features()
     assert len(feat) == 2
@@ -41,8 +40,8 @@ def test_create_clean_dataframe(provide_dummy_feature_list, provide_label_dict):
 
     # an interesting case is UKUDIP01 with two metals
     assert len(df[df['name'] == 'UKUDIP01']) == 2
-    assert df[(df['name'] == 'UKUDIP01') & (df['metal'] == 'Cu')]['oxidationstate'].values == 2
-    assert df[(df['name'] == 'UKUDIP01') & (df['metal'] == 'Gd')]['oxidationstate'].values == 3
+    assert (df[(df['name'] == 'UKUDIP01') & (df['metal'] == 'Cu')]['oxidationstate'].values == 2)
+    assert (df[(df['name'] == 'UKUDIP01') & (df['metal'] == 'Gd')]['oxidationstate'].values == 3)
 
 
 def test_get_x_y_names(provide_dataframe):
