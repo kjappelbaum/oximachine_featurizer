@@ -14,7 +14,6 @@ import numpy as np
 from apricot import FacilityLocationSelection
 from pymatgen.core import Element
 from scipy.spatial import distance
-from six.moves import range
 from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 

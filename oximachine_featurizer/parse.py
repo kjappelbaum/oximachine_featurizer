@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=relative-beyond-top-level
 """Parsing functions for the oxidation state mining project"""
-from __future__ import absolute_import, print_function
 
 import concurrent.futures
 import re

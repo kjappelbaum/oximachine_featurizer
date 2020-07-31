@@ -10,7 +10,6 @@ One big approximation of all of this is that all data fits into memory in once. 
 hard to wrap it in Dask if this is not the case.
 """
 
-
 import os
 import pickle
 

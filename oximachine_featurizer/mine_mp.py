@@ -5,8 +5,6 @@ I probably should have used one simple GET request instead of querying multiple 
 it is not too slow
 """
 
-from __future__ import absolute_import, print_function
-
 import os
 from itertools import product
 

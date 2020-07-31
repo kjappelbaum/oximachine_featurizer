@@ -6,7 +6,6 @@ to three pickle files for feature matrix, label vector and names list.
 Latter is important to investigate the failures manually
 """
 
-
 import click
 
 from oximachine_featurizer.featurize import FeatureCollector
