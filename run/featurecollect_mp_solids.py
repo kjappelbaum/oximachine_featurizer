@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Status: Dev
 Collect features and labels for the structures from Materials Project
 """
-from __future__ import absolute_import, print_function
-
-import os
 import pickle
 import tempfile
 

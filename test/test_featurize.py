@@ -16,7 +16,7 @@ def test_featurization():
     featurizer = GetFeatures(s, '')
     feat = featurizer.return_features()
     assert len(feat) == 2
-    assert len(feat[0]['feature']) == len(feat[1]['feature']) == 116
+    assert len(feat[0]['feature']) == len(feat[1]['feature']) == 129
 
 
 def test_make_labels_table(provide_label_dict):
