@@ -23,7 +23,7 @@ def read_already_featurized():
     if os.path.exists('already_featurized.txt'):
         with open('already_featurized.txt', 'r') as fh:
             already_featurized = fh.readlines()
-    ALREADY_FEATURIZED.extend(already_featurized)
+        ALREADY_FEATURIZED.extend(already_featurized)
 
 
 def load_pickle(f):  # pylint:disable=invalid-name
