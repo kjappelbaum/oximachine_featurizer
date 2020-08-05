@@ -35,7 +35,7 @@ def load_pickle(f):  # pylint:disable=invalid-name
 def featurize_single(structure, outdir=OUTDIR):
     if Path(structure).stem not in ALREADY_FEATURIZED:
         try:
-            gf = GetFeatures.from_file(structure, outdir, 30)  # pylint:disable=invalid-name
+            gf = GetFeatures.from_file(structure, outdir)  # pylint:disable=invalid-name
             gf.run_featurization()
         except Exception:
             pass

@@ -169,5 +169,3 @@ Other
 - Passed tests. [kjappelbaum]
 - Initial commit. [kjappelbaum]
 - Initial commit. [Kevin]
-
-
