@@ -27,6 +27,18 @@ collectorlogger = logging.getLogger('FeatureCollector')
 collectorlogger.setLevel(logging.INFO)
 logging.basicConfig(format='%(filename)s: %(message)s', level=logging.INFO)
 
+METAL_CENTER_FEATURES = [
+    "column",
+    "row",
+    "valenceelectrons",
+    "diffto18electrons",
+    "sunfilled",
+    "punfilled",
+    "dunfilled",
+]
+GEOMETRY_FEATURES = ["crystal_nn_fingerprint", "behler_parinello"]
+CHEMISTRY_FEATURES = ["local_property_stats"]
+
 FEATURE_RANGES_DICT = {
     'crystal_nn_fingerprint': [(0, 61)],
     'crystal_nn_no_steinhardt': [(0, 33), (36, 37), (40, 41), (44, 46), (49, 61)],
@@ -399,12 +411,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         outdir_holdout: str = None,
         forbidden_picklepath: str = 'data/helper/two_ox_states.pkl',
         exclude_dir: str = '../test_structures/showcases',
-        selected_features: list = [
-            'crystal_nn_fingerprint',
-            'ward_prb',
-            'bond_orientational',
-            'behler_parinello',
-        ],
+        selected_features: list = CHEMISTRY_FEATURES + METAL_CENTER_FEATURES + ['crystal_nn_fingerprint'],
         old_format: bool = False,
         training_set_size: int = None,
         racsfile: str = None,
