@@ -28,16 +28,16 @@ collectorlogger.setLevel(logging.INFO)
 logging.basicConfig(format='%(filename)s: %(message)s', level=logging.INFO)
 
 METAL_CENTER_FEATURES = [
-    "column",
-    "row",
-    "valenceelectrons",
-    "diffto18electrons",
-    "sunfilled",
-    "punfilled",
-    "dunfilled",
+    'column',
+    'row',
+    'valenceelectrons',
+    'diffto18electrons',
+    'sunfilled',
+    'punfilled',
+    'dunfilled',
 ]
-GEOMETRY_FEATURES = ["crystal_nn_fingerprint", "behler_parinello"]
-CHEMISTRY_FEATURES = ["local_property_stats"]
+GEOMETRY_FEATURES = ['crystal_nn_fingerprint', 'behler_parinello']
+CHEMISTRY_FEATURES = ['local_property_stats']
 
 FEATURE_RANGES_DICT = {
     'crystal_nn_fingerprint': [(0, 61)],
