@@ -3,7 +3,7 @@
 Status: Dev
 Run the featurization on the CSD MOF subset
 """
-
+import click
 import concurrent.futures
 import os
 import pickle
@@ -41,13 +41,18 @@ def featurize_single(structure, outdir=OUTDIR):
             pass
 
 
-def main():
+@click.command('cli')
+@click.option('--reverse')
+def main(reverse):
     read_already_featurized()
-    all_structures = glob(os.path.join(INDIR, '*.cif'))
+    if reverse:
+        all_structures = sorted(glob(os.path.join(INDIR, '*.cif')), reverse=True)
+    else:
+        all_structures = sorted(glob(os.path.join(INDIR, '*.cif')))
     with concurrent.futures.ProcessPoolExecutor() as executor:
         for _ in tqdm(
-                list(executor.map(featurize_single, all_structures)),
-                total=len(all_structures),
+            list(executor.map(featurize_single, all_structures)),
+            total=len(all_structures),
         ):
             pass
 
