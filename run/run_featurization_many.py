@@ -3,13 +3,13 @@
 Status: Dev
 Run the featurization on the CSD MOF subset
 """
-import click
 import concurrent.futures
 import os
 import pickle
 from glob import glob
 from pathlib import Path
 
+import click
 from tqdm import tqdm
 
 from oximachine_featurizer.featurize import GetFeatures
@@ -42,7 +42,7 @@ def featurize_single(structure, outdir=OUTDIR):
 
 
 @click.command('cli')
-@click.option('--reverse')
+@click.option('--reverse', is_flag=True)
 def main(reverse):
     read_already_featurized()
     if reverse:
@@ -51,8 +51,8 @@ def main(reverse):
         all_structures = sorted(glob(os.path.join(INDIR, '*.cif')))
     with concurrent.futures.ProcessPoolExecutor() as executor:
         for _ in tqdm(
-            list(executor.map(featurize_single, all_structures)),
-            total=len(all_structures),
+                list(executor.map(featurize_single, all_structures)),
+                total=len(all_structures),
         ):
             pass
 

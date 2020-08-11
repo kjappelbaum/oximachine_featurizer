@@ -3,11 +3,7 @@ import copy
 
 import numpy as np
 from matminer.featurizers.base import BaseFeaturizer
-from matminer.featurizers.site import (
-    LocalStructOrderParams,
-    cn_motif_op_params,
-    cn_target_motif_op,
-)
+from matminer.featurizers.site import (LocalStructOrderParams, cn_motif_op_params, cn_target_motif_op)
 from matminer.utils.caching import get_nearest_neighbors
 from matminer.utils.data import MagpieData
 from pymatgen.analysis.local_env import VoronoiNN
@@ -34,9 +30,7 @@ class LocalPropertyStatsNew(BaseFeaturizer):
          `Ward et al. _PRB_ 2017 <http://link.aps.org/doi/10.1103/PhysRevB.96.024104>`_
     """
 
-    def __init__(
-        self, data_source=MagpieData(), weight='area', properties=('Electronegativity',)
-    ):
+    def __init__(self, data_source=MagpieData(), weight='area', properties=('Electronegativity',)):
         """ Initialize the featurizer
         Args:
             data_source (AbstractData) - Class from which to retrieve
@@ -108,24 +102,18 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         for i, p in enumerate(self.properties):
             my_prop = self.data_source.get_elemental_property(my_site.specie, p)
             n_props = self.data_source.get_elemental_properties(elems, p)
-            output[i] = (
-                np.dot(weights, np.abs(np.subtract(n_props, my_prop))) / total_weight
-            )
-            output_signed[i] = (
-                np.dot(weights, np.subtract(n_props, my_prop)) / total_weight
-            )
+            output[i] = (np.dot(weights, np.abs(np.subtract(n_props, my_prop))) / total_weight)
+            output_signed[i] = (np.dot(weights, np.subtract(n_props, my_prop)) / total_weight)
             output_max[i] = np.max(np.subtract(n_props, my_prop))
             output_min[i] = np.min(np.subtract(n_props, my_prop))
         return np.hstack([output, output_signed, output_max, output_min])
 
     def feature_labels(self):
 
-        return (
-            ['local difference in ' + p for p in self.properties]
-            + ['local signed difference in ' + p for p in self.properties]
-            + ['maximum local difference in ' + p for p in self.properties]
-            + ['minimum local difference in ' + p for p in self.properties]
-        )
+        return (['local difference in ' + p for p in self.properties] +
+                ['local signed difference in ' + p for p in self.properties] +
+                ['maximum local difference in ' + p for p in self.properties] +
+                ['minimum local difference in ' + p for p in self.properties])
 
     def citations(self):
         return [
@@ -190,9 +178,7 @@ class CrystalNNFingerprint(BaseFeaturizer):
             return CrystalNNFingerprint(op_types, chem_info=None, **kwargs)
 
         else:
-            raise RuntimeError(
-                'preset "{}" is not supported in ' 'CrystalNNFingerprint'.format(preset)
-            )
+            raise RuntimeError('preset "{}" is not supported in ' 'CrystalNNFingerprint'.format(preset))
 
     def __init__(self, op_types, chem_info=None, **kwargs):
         """
@@ -284,9 +270,7 @@ class CrystalNNFingerprint(BaseFeaturizer):
                                         self.chem_info[prop].get(elem_neigh),
                                     )
 
-                                    prop_delta[prop] += (
-                                        wt * (prop_neigh - prop_central) / cn
-                                    )
+                                    prop_delta[prop] += (wt * (prop_neigh - prop_central) / cn)
 
                     elif wt == 0:
                         cn_fingerprint.append(wt)
@@ -295,7 +279,8 @@ class CrystalNNFingerprint(BaseFeaturizer):
                         opval = op.get_order_parameters(
                             [struct[idx]] + neigh_sites,
                             0,
-                            indices_neighs=list(range(1, len(neigh_sites) + 1)),
+                            indices_neighs=list(range(1,
+                                                      len(neigh_sites) + 1)),
                         )[0]
                         opval = opval or 0  # handles None
                         cn_fingerprint.append(wt * opval)
