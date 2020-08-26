@@ -2,11 +2,24 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+v0.2.2 (2020-08-26)
+-------------------
+
+New
+~~~
+- Feat: increasing cutoff. [Kevin]
 
 Changes
 ~~~~~~~
+- Chore: preparing next release. [Kevin]
+- Chore: reverse option should work as is_flag. [Kevin]
+- Chore: adding reverse option for featurize many. [Kevin]
+- Chore: changing default. [Kevin]
+- Chore: updated exclude list. [Kevin]
+- Chore: changing default. [Kevin]
+- Chore: changing search cutoffs. [Kevin]
+- Chore: changing search cutoffs. [Kevin]
+- Chore: updated run_featurization_many. [Kevin]
 - Chore: added changelog. [Kevin]
 - Chore: fix in readme. [Kevin]
 
