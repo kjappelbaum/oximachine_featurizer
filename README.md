@@ -1,7 +1,7 @@
 # oximachine_featurizer
 
 [![Actions Status](https://github.com/kjappelbaum/mof_oxidation_states/workflows/Python%20package/badge.svg)](https://github.com/kjappelbaum/mof_oxidation_states/actions)
-[![](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/download/releases/3.6.0/)
+[![Documentation Status](https://readthedocs.org/projects/oximachine-featurizer/badge/?version=latest)](https://oximachine-featurizer.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3567274.svg)](https://doi.org/10.5281/zenodo.3567274)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kjappelbaum/oximachine_featurizer/master?filepath=examples%2Fexample.ipynb)
 
@@ -69,6 +69,6 @@ pytest test/test_featurize.py
 ```
 
 
-## References 
+## References
 
 [1] Jablonka, Kevin Maik; Ongari, Daniele; Moosavi, Seyed Mohamad; Smit, Berend (2020): Using Collective Knowledge to Assign Oxidation States. ChemRxiv. Preprint. https://doi.org/10.26434/chemrxiv.11604129.v1
