@@ -36,7 +36,7 @@ def featurize_single(structure, outdir=OUTDIR):
     if Path(structure).stem not in ALREADY_FEATURIZED:
         try:
             gf = GetFeatures.from_file(structure, outdir)  # pylint:disable=invalid-name
-            gf.run_featurization()
+            gf._run_featurization()
         except Exception:
             pass
 

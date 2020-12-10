@@ -51,8 +51,17 @@ Additional tools
 
 Scripts that are prefixed with an underscore are part of the private API and may contain hard coded paths. For example, :code:`_run_featurization_slurm_serial.py` contains code that is specific to our cluster infrastructure.
 
+
 Parsing the CSD
 .................
+
+The :py:class:`~oximachine_featurizer.parse.GetOxStatesCSD` can be used to retrieve the oxidation states from a list of CSD identifiers. This feature requires a CSD license and you need to export :code:`CSD_HOME` for the CSD API to work.
+
+You can for example use the following snippet of Python 
+
+.. code-block:: python
+
+    from oximachine_featurizer import GetOxStatesCSD
 
 
 Parsing the Materials Project

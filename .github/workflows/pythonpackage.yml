@@ -23,7 +23,7 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          pytest -v --cov=oximachine_featurizer --cov-report=xml --color=yes tests/main
+          pytest -v --cov=oximachine_featurizer --cov-report=xml --color=yes test/main
       - name: CodeCov
         uses: codecov/codecov-action@v1
         with:
