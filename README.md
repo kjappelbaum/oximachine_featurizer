@@ -38,7 +38,7 @@ pip install oximachine_featurizer
 - To run the featurization
 
 ```bash
-run_featurization {structure} {outdir}
+run_featurization <structure> <outdir>
 ```
 
 for each metal center this should take seconds if there is no disorder.

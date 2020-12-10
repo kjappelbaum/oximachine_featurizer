@@ -18,6 +18,7 @@ Contents
    :maxdepth: 3
 
    getting_started
+   api
 
 Indices and tables
 ==================
