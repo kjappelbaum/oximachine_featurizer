@@ -25,10 +25,20 @@ with open('requirements.txt') as fh:
 
 # What packages are optional?
 EXTRAS = {
-    'testing': ['pytest'],
-    'linting': ['prospector', 'pre-commit', 'pylint'],
-    'changelog': ['gitchangelog'],
-    'documentation': ['sphinx', 'sphinx_rtd_theme', 'sphinx-autodoc-typehints'],
+     "dev": [
+        "pre-commit~=2.6.0",
+        "pylint~=2.5.3",
+        "pytest~=6.0.1",
+        "versioneer~=0.18",
+        "isort~=4.3.21",
+        "black",
+    ],
+    "docs": [
+        "sphinx~=3.3.1",
+        "sphinx-book-theme~=0.0.39",
+        "sphinx-autodoc-typehints~=1.11.1",
+        "sphinx-copybutton~=0.3.1",
+    ],
 }
 
 here = os.path.abspath(os.path.dirname(__file__))
