@@ -35,24 +35,17 @@ pip install oximachine_featurizer
 
 ## How to use it
 
-- To run the featurization
+To run the default featurization on one structure you can use the CLI
 
 ```bash
 run_featurization <structure> <outdir>
 ```
 
 for each metal center this should take seconds if there is no disorder.
-Note that the metal center features are added using methods from the `FeatureCollector` class.
-
-- To collect separate files with features into one file for the feature matrix, you can use the featurecollector, e.g.
-
-```bash
-run_featurecollection --only_racs {FEATURESPATH}  {LABELSPATH} {labelsoutpath} {featureoutspath} {helperoutpath} 0.2 {holdoutpath} 60000 {RACSDATAPATH} column row crystal_nn_no_steinhardt
-```
-
-The bottleneck of this approach is that it currently checks for each name if we exclude it (e.g., due to wrong assignments). One should expect a runtime in the order of several minutes for several structures.
 
 Some output can be found on the [MaterialsCloud Archive (doi: 10.24435/materialscloud:2019.0085/v1 )](https://doi.org/10.24435/materialscloud:2019.0085/v1).
+
+More details can be found in the [documentation](https://oximachine-featurizer.readthedocs.io/en/latest/).
 
 ## Example usage
 
