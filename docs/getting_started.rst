@@ -46,6 +46,7 @@ For example,
 
 This command line tool will attempt to read the :code:`structurefile` using pymatgen and then write the features as ``npy` <https://numpy.org/devdocs/reference/generated/numpy.lib.format.html>`_ file to :code:`outname`. The numpy array in this file can be feed directly into the :code:`StandardScaler` and :code:`VotingClassifier` objects that can be created with the :code:`learnmofox` Python package.
 
+
 Additional tools
 ------------------
 
