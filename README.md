@@ -65,7 +65,7 @@ For testing, you can---as it is done for the continuous integration (CI)---use `
 
 ```(bash)
 pip install pytest
-pytest test/test_featurize.py
+pytest test/main
 ```
 
 
