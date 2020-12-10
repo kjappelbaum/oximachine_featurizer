@@ -56,7 +56,7 @@ Scripts that are prefixed with an underscore are part of the private API and may
 Parsing the CSD
 .................
 
-The :py:class:`~oximachine_featurizer.parse.GetOxStatesCSD` can be used to retrieve the oxidation states from a list of CSD identifiers. This feature requires a CSD license and you need to export :code:`CSD_HOME` for the CSD API to work.
+The :py:class:`~oximachine_featurizer.parse.GetOxStatesCSD` can be used to retrieve the oxidation states from a list of CSD identifiers. This feature requires a CSD license and you need to export :code:`CSD_HOME` for the `CSD API <https://downloads.ccdc.cam.ac.uk/documentation/API/installation_notes.html>`_to work.
 
 You can for example use the following snippet of Python 
 

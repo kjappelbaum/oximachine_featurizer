@@ -1,0 +1,23 @@
+name: learnmofox
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - pip
+  - pip:
+      - sphinx~=3.3.1
+      - sphinx-book-theme~=0.0.39
+      - sphinx-autodoc-typehints~=1.11.1
+      - sphinx-copybutton~=0.3.1
+      - pymatgen~=2020.7.18
+      - ase~=3.0
+      - numeral~=0.1
+      - apricot-select~=0.5
+      - tqdm~=4.0
+      - click~=7.1
+      - pandas~=1.0
+      - scikit-learn<0.23>=0.22
+      - matminer~=0.6.3
+      - scikit-multilearn~=0.2
+      - numba~=0.48
