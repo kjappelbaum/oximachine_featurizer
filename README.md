@@ -3,12 +3,12 @@
 [![Actions Status](https://github.com/kjappelbaum/mof_oxidation_states/workflows/Python%20package/badge.svg)](https://github.com/kjappelbaum/mof_oxidation_states/actions)
 [![](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/download/releases/3.6.0/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3567274.svg)](https://doi.org/10.5281/zenodo.3567274)
-[![Maintainability](https://api.codeclimate.com/v1/badges/936cc6cc791f8bf352c6/maintainability)](https://codeclimate.com/github/kjappelbaum/mof_oxidation_states/maintainability)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kjappelbaum/oximachine_featurizer/master?filepath=examples%2Fexample.ipynb)
 
-Mine oxidation states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps. Some of these runscripts contain hardcoded paths, that would need to be updated.
+Mine oxidation states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps. Some of these runscripts contain hard coded paths, that would need to be updated.
 This code generates inputs that can be used with the [learnmofox package](https://github.com/kjappelbaum/learn_mof_ox_state.git).
+
+If you're just interested in using a pre-trained model, the [oximachinerunner](https://github.com/kjappelbaum/oximachinerunner) package.
 
 > ⚠️ **Warning**: For the mining of the oxidation states, you need the CSD Python API.
 > You need to export the `CSD_HOME` path. Due to the licensing issues, this cannot be done automatically.
