@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # pylint:disable=relative-beyond-top-level
 """
-Run the oxidation state mining
+Run the oxidation state mining. 
+Note that the default filepaths are specific to our enviornment.
 """
 
 import os

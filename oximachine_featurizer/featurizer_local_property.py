@@ -140,7 +140,7 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         ]
 
     def implementors(self):
-        return ['Logan Ward', 'Aik Rui Tan', 'Kevin Jablonka']
+        return ['Logan Ward', 'Aik Rui Tan']
 
 
 class CrystalNNFingerprint(BaseFeaturizer):

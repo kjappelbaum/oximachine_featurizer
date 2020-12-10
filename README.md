@@ -6,7 +6,7 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kjappelbaum/oximachine_featurizer/master?filepath=examples%2Fexample.ipynb)
 
 Mine oxidation states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps. Some of these runscripts contain hard coded paths, that would need to be updated.
-This code generates inputs that can be used with the [learnmofox package](https://github.com/kjappelbaum/learn_mof_ox_state.git).
+This code generates inputs that can be used with the [learnmofox package](https://github.com/kjappelbaum/learn_mof_ox_state.git) to replicate our work [1].
 
 If you're just interested in using a pre-trained model, the [oximachinerunner](https://github.com/kjappelbaum/oximachinerunner) package.
 
@@ -67,3 +67,8 @@ For testing, you can---as it is done for the continuous integration (CI)---use `
 pip install pytest
 pytest test/test_featurize.py
 ```
+
+
+## References 
+
+[1] Jablonka, Kevin Maik; Ongari, Daniele; Moosavi, Seyed Mohamad; Smit, Berend (2020): Using Collective Knowledge to Assign Oxidation States. ChemRxiv. Preprint. https://doi.org/10.26434/chemrxiv.11604129.v1
