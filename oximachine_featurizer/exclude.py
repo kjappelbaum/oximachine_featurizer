@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-extra_test_set = [
+TO_EXCLUDE = [
     "ACITAK",
     "ACITAK",
     "ADASUW",
@@ -349,5 +349,5 @@ extra_test_set = [
     "XIHLIK",
     "KIWDOJ",
     "BALTUE",  # Re(V/VII) resonance forms
+    "BOJSUO",
 ]
-

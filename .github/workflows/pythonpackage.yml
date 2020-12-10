@@ -22,8 +22,8 @@ jobs:
           pip install -r requirements.txt
       - name: Test with pytest
         run: |
-          pip install pytest
-          pytest -v --cov=mofchecker --cov-report=xml --color=yes tests/main
+          pip install pytest pytest-cov
+          pytest -v --cov=oximachine_featurizer --cov-report=xml --color=yes tests/main
       - name: CodeCov
         uses: codecov/codecov-action@v1
         with:

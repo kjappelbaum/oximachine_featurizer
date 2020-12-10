@@ -12,49 +12,29 @@ from oximachine_featurizer.parse import GetOxStatesCSD
 def test_parser():
     """Test with some hand-selected MOFs"""
     test_list = [
-        'ACIBOE',
-        'AZOHEC',
-        'BADJAU',
-        'ACOLIP',
-        'QAGWIG',
-        'GOCBAD',
-        'BUVYIB01',
-        'GIRNIH',
-        'FURVEU',
-        'GAHJUW',
+        "ACIBOE",
+        "AZOHEC",
+        "BADJAU",
+        "ACOLIP",
+        "QAGWIG",
+        "GOCBAD",
+        "BUVYIB01",
+        "GIRNIH",
+        "FURVEU",
+        "GAHJUW",
     ]
 
     expected = {
-        'ACIBOE': {
-            'Zn': [np.nan]
-        },
-        'AZOHEC': {
-            'Zn': [2]
-        },
-        'BADJAU': {
-            'Sc': [np.nan]
-        },
-        'ACOLIP': {
-            'Zn': [2]
-        },
-        'QAGWIG': {
-            'Fe': [2]
-        },
-        'GOCBAD': {
-            'Cu': [2]
-        },
-        'BUVYIB01': {
-            'Fe': [2]
-        },
-        'GIRNIH': {
-            'Cd': [2]
-        },
-        'FURVEU': {
-            'Fe': [2]
-        },
-        'GAHJUW': {
-            'Fe': [0]
-        },
+        "ACIBOE": {"Zn": [np.nan]},
+        "AZOHEC": {"Zn": [2]},
+        "BADJAU": {"Sc": [np.nan]},
+        "ACOLIP": {"Zn": [2]},
+        "QAGWIG": {"Fe": [2]},
+        "GOCBAD": {"Cu": [2]},
+        "BUVYIB01": {"Fe": [2]},
+        "GIRNIH": {"Cd": [2]},
+        "FURVEU": {"Fe": [2]},
+        "GAHJUW": {"Fe": [0]},
     }
 
     getoxstates = GetOxStatesCSD(test_list)
