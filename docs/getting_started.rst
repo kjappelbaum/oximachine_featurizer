@@ -61,8 +61,11 @@ You can for example use the following snippet of Python
 
 .. code-block:: python
 
-    from oximachine_featurizer import GetOxStatesCSD
+    from oximachine_featurizer.parse import GetOxStatesCSD
 
 
 Parsing the Materials Project
 ................................
+
+Using this code requires that you export the :code:`MP_API_KEY` environment variable containing your API key for the Materials Project.
+For example, the :py:mod:`oximachine_featurizer.run.run_mine_mp.py` script will retrieve all binary halides, sulfides, oxides, ... that are stable (zero energy above comblex hull) and calculate the oxidation states. 

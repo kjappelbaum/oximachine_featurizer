@@ -6,4 +6,3 @@ del get_versions
 
 
 from .featurize import FeatureCollector, GetFeatures, featurize
-from .parse import GetOxStatesCSD
