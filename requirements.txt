@@ -1,7 +1,7 @@
 pymatgen~=2020.7.18
 ase~=3.20
 numeral~=0.1
-apricot-select~=0.5
+apricot-select~=0.6
 tqdm~=4.0
 click~=7.1
 pandas~=1.0
