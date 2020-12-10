@@ -17,7 +17,7 @@ DESCRIPTION = "Mine MOF oxidation states and featurize metal sites."
 URL = "https://github.com/kjappelbaum/mine_csd"
 EMAIL = "kevin.jablonka@epfl.ch"
 AUTHOR = "Kevin M. Jablonka, Daniele Ongari, Berend Smit"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = ">=3.7.0"
 
 # What packages are required for this module to be executed?
 with open("requirements.txt") as fh:

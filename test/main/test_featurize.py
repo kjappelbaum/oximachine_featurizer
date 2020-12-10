@@ -12,7 +12,7 @@ THIS_DIR = os.path.dirname(__file__)
 
 
 def test_featurization():
-    s = Structure.from_file(os.path.join(THIS_DIR, '..', 'examples', 'structures', 'BaO2_mp-1105_computed.cif'))
+    s = Structure.from_file(os.path.join(THIS_DIR, '..', '..', 'examples', 'structures', 'BaO2_mp-1105_computed.cif'))
     featurizer = GetFeatures(s, '')
     feat = featurizer.return_features()
     assert len(feat) == 2
