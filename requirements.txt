@@ -8,4 +8,4 @@ pandas~=1.0
 scikit-learn<0.23>=0.22
 matminer~=0.6.4
 scikit-multilearn~=0.2
-numba~=0.48
+numba~=0.51
