@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.8](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.7...v0.2.8) (2020-12-11)
+
+
+### Bug Fixes
+
+* console script entry point names ([eabafe3](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/eabafe38e1d3f6d0f3383f067e73aa3eb4426493))
+
 ### [0.2.7](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.6...v0.2.7) (2020-12-11)
 
 
