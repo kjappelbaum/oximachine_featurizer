@@ -316,14 +316,14 @@ def featurize(
     return X, metal_indices, metals
 
 
-class GetFeatures:
+class GetFeatures:  # pylint:disable=too-many-instance-attributes
     """Featurizer"""
 
     def __init__(self, structure: Structure, outpath: Union[str, Path]):
-        """Generates features for a list of structures
+        """Generates features for a structures
 
         Args:
-            structure (Structure)
+            structure (Structure): Pymatgen Structure object
             outpath (Union[str, Path]): path to which the features will be dumped
         Returns:
 
@@ -381,7 +381,7 @@ class GetFeatures:
     @classmethod
     def from_string(cls, structurestring: str, outpath: Union[str, Path]):
         """
-        Constructor for the webapp
+        Constructor for the webapp, using a string of a structure file, e.g., a CIF
         """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -433,8 +433,8 @@ class GetFeatures:
         with open(self.outname, "wb") as filehandle:
             pickle.dump(list(self.features), filehandle)
 
-    def return_features(self):
-        """Runs featurization and return np array with features."""
+    def return_features(self) -> List[dict]:
+        """Runs featurization and returns a list of dictionaries"""
         self._get_metal_sites()
         try:
             self.logger.info(
@@ -519,7 +519,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             forbidden_picklepath (Union[str, Path]) -- path to picklefile with list of forbidden CSD names (default: None)
             exclude_dir (Union[str, Path]) -- path to directory with structure names are forbidden as well (default: None)
             selected_features (List[str]) -- list of selected features. Available crystal_nn_fingerprint, cn, ward_prb, bond_orientational, behler_parinello
-              (default: {["crystal_nn_fingerprint","ward_prd","bond_orientational","behler_parinello",]})
+              (default: ["crystal_nn_fingerprint","ward_prd","bond_orientational","behler_parinello"])
             old_format (bool) -- if True, it uses the old feature dictionary style (default: {True})
             training_set_size (int) -- if set to an int, it set an upper limit of the number of training points and uses farthest point sampling to select them
             racsfile (str) -- path to file with RACs (pd.DataFrame saved as csv)
@@ -670,7 +670,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         label_raw = read_pickle(self.labelpath)
         # collectorlogger.info(f'found {len(label_raw)} labels')
         label_list = FeatureCollector.make_labels_table(label_raw)
-        df = FeatureCollector.create_clean_dataframe(
+        df = FeatureCollector._create_clean_dataframe(
             feature_list, label_list, self.drop_duplicates
         )
 
@@ -681,7 +681,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         offset = 0
         if self.racsdf is not None:
             offset = len(self.selected_racs)
-            df = FeatureCollector.merge_racs_frame(df, self.racsdf, self.selected_racs)
+            df = FeatureCollector._merge_racs_frame(df, self.racsdf, self.selected_racs)
 
         if self.percentage_holdout > 0:
             # Make stratified split that also makes sure that no structure from the training set is in the test set
@@ -714,12 +714,12 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             df_train = df[df["base_name"].isin(train_names)]
             df_test = df[df["base_name"].isin(test_names)]
 
-            x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
+            x, self.y, self.names = FeatureCollector._get_x_y_names(df_train)
             self.x = FeatureCollector._select_features(
                 self.selected_features, x, self.outdir_helper, offset
             )
 
-            x_test, self.y_test, self.names_test = FeatureCollector.get_x_y_names(
+            x_test, self.y_test, self.names_test = FeatureCollector._get_x_y_names(
                 df_test
             )
             self.x_test = FeatureCollector._select_features(
@@ -727,7 +727,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             )
 
         else:  # no seperate holdout set
-            x, self.y, self.names = FeatureCollector.get_x_y_names(df)
+            x, self.y, self.names = FeatureCollector._get_x_y_names(df)
         if (
             self.training_set_size
         ):  # perform farthest point sampling to selet a fixed number of training points
@@ -737,7 +737,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             # Write one additional holdout set
             assert self.training_set_size < len(df_train)
 
-            x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
+            x, self.y, self.names = FeatureCollector._get_x_y_names(df_train)
             x = FeatureCollector._select_features(
                 self.selected_features, x, self.outdir_helper, offset
             )
@@ -749,10 +749,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
             good_indices = _df_train.index.isin(indices)
             df_train = _df_train[good_indices]
-            x, self.y, self.names = FeatureCollector.get_x_y_names(df_train)
+            x, self.y, self.names = FeatureCollector._get_x_y_names(df_train)
 
             df_validation = _df_train[~good_indices]
-            x_valid, self.y_valid, self.names_valid = FeatureCollector.get_x_y_names(
+            x_valid, self.y_valid, self.names_valid = FeatureCollector._get_x_y_names(
                 df_validation
             )
 
@@ -766,13 +766,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         collectorlogger.debug("the feature matrix shape is %s", self.x.shape)
 
     def dump_featurecollection(self) -> None:
-        """Collect features and write features, labels and names to seperate files
-
-        Returns:
-            None -- [description]
-        """
+        """Collect features and write features, labels and names to seperate files"""
         self._featurecollection()
-        FeatureCollector.write_output(
+        FeatureCollector._write_output(
             self.x,
             self.y,
             self.names,
@@ -781,7 +777,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             self.outdir_helper,
         )
         if self.x_test is not None:
-            FeatureCollector.write_output(
+            FeatureCollector._write_output(
                 self.x_test,
                 self.y_test,
                 self.names_test,
@@ -794,7 +790,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             self.outdir_valid = os.path.join(self.outdir_holdout, "valid")
             if not os.path.exists(self.outdir_valid):
                 os.makedirs(self.outdir_valid)
-            FeatureCollector.write_output(
+            FeatureCollector._write_output(
                 self.x_valid,
                 self.y_valid,
                 self.names_valid,
@@ -803,7 +799,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 self.outdir_valid,
             )
 
-    def return_featurecollection_train(self) -> Tuple[np.array, np.array, list]:
+    def _return_featurecollection_train(self) -> Tuple[np.array, np.array, list]:
         self._featurecollection()
         return self.x, self.y, self.names
 
@@ -827,13 +823,18 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
 
     @staticmethod
     def create_feature_list(
-        picklefiles: list, forbidden_list: list, old_format: bool = True
+        picklefiles: List[Union[str, Path]],
+        forbidden_list: list,
+        old_format: bool = True,
     ) -> list:
         """Reads a list of pickle files into dictionary
 
         Arguments:
-            picklefiles (list) -- list of paths
-            forbidden_list (list) -- list of forbidden names (CSD naming convention)
+            picklefiles (List[Union[str, Path]]) -- list of paths
+            forbidden_list (list) -- list of "forbidden" names (CSD naming convention),
+                that will not be used
+            old_format (bool) -- If true, it will assume that the pickle files are in old
+                "legacy" format. Default: True
 
         Returns:
             list -- parsed pickle contents
@@ -864,14 +865,14 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return result_list
 
     @staticmethod
-    def make_labels_table(raw_labels: dict) -> List[dict]:
+    def make_labels_table(raw_labels: Dict[str, dict]) -> List[dict]:
         """Read raw labeling output into a dictionary format that can be used to construct pd.DataFrames
 
         Warning: assumes that each metal in the structure has the same oxidation states as it takes the first
         list element. Cases in which this is not fulfilled need to be filtered out earlier.
 
         Arguments:
-            raw_labels (dict) -- nested dictionary of {name: {metal: [oxidationstates]}}
+            raw_labels (Dict[str, dict]) -- nested dictionary of {name: {metal: [oxidationstates]}}
 
         Returns:
             List[dict] -- list of dictionaries of the form [{'name':, 'metal':, 'oxidationstate':}]
@@ -885,14 +886,14 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 result_list.append(
                     {"name": key, "metal": metal, "oxidationstate": oxstate[0]}
                 )
-        # collectorlogger.info(f'collected {len(result_list)} labels')
+
         return result_list
 
     @staticmethod
-    def merge_racs_frame(
+    def _merge_racs_frame(
         df_features: pd.DataFrame, df_racs: pd.DataFrame, selectedracs: List[str]
     ) -> pd.DataFrame:
-        """Merges the selected RACs features to the list of features"""
+        """Merges the selected RACs features to the other features"""
         collectorlogger.info("Merging RACs into other features")
         df_selected_racs = FeatureCollector._selectracs(df_racs, selectedracs)
         df_selected_racs["coordinate_x"] = df_selected_racs["coordinate_x"].astype(
@@ -933,7 +934,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return df_merged
 
     @staticmethod
-    def create_clean_dataframe(
+    def _create_clean_dataframe(
         feature_list: list, label_list: list, drop_duplicates: bool = True
     ) -> pd.DataFrame:
         """Merge the features and the labels on names and metals and drop entry rows
@@ -971,7 +972,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return df_cleaned
 
     @staticmethod
-    def get_x_y_names(df: pd.DataFrame) -> Tuple[np.array, np.array, list]:
+    def _get_x_y_names(df: pd.DataFrame) -> Tuple[np.array, np.array, list]:
         """Splits the columns of a dataframe into features, labels and names
 
         Arguments:
@@ -982,7 +983,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             Tuple[np.array, np.array, list] -- [description]
         """
         names = list(df["name"])
-        feature_list = [l for l in df["feature"]]
+        feature_list = df["feature"].values
         features = np.array(feature_list)
         labels = np.array(df["oxidationstate"])
         return features, labels, names
@@ -1090,9 +1091,10 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             List[dict] -- list of dicionary
         """
-        # warnings.DeprecationWarning(
-        #    "this is method for old feature files will be deprecated. Produce feature files in new format"
-        # )
+        warnings.warn(
+            "This method will be removed in the next major release",
+            DeprecationWarning,
+        )
         result = read_pickle(picklefile)
 
         result_list = []
@@ -1115,7 +1117,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return result_list
 
     @staticmethod
-    def write_output(
+    def _write_output(  # pylint:disable=too-many-arguments
         x: np.array,
         y: np.array,
         names: list,
@@ -1132,9 +1134,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             outdir_labels (Union[str, Path]) -- directory into which labels are written
             outdir_features (Union[str, Path]) -- directory into which features are written
             outdir_helper (Union[str, Path]) -- directory into which names are written
-
-        Returns:
-            None --
         """
 
         np.save(os.path.join(outdir_features, "features"), x)

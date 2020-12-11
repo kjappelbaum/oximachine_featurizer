@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
-"""Testing the conversion of feature files into feature matrix and label file into label vector,
-Note: tests require a running CSD Python API"""
+"""Testing the conversion of feature files
+into feature matrix and label file into label vector"""
 import os
 
 import pandas as pd
 from pymatgen import Structure
 
-from oximachine_featurizer.featurize import (FeatureCollector, GetFeatures,
-                                             featurize)
+from oximachine_featurizer.featurize import FeatureCollector, GetFeatures, featurize
 
 THIS_DIR = os.path.dirname(__file__)
 
 
 def test_featurization():
     """Test the basic featurizer"""
-    s = Structure.from_file(
+    structure = Structure.from_file(
         os.path.join(
             THIS_DIR, "..", "..", "examples", "structures", "BaO2_mp-1105_computed.cif"
         )
     )
-    featurizer = GetFeatures(s, "")
+    featurizer = GetFeatures(structure, "")
     feat = featurizer.return_features()
     assert len(feat) == 2
     assert len(feat[0]["feature"]) == len(feat[1]["feature"]) == 129
@@ -27,12 +26,12 @@ def test_featurization():
 
 def test_featurize():
     """Test the featurization wrapper function."""
-    s = Structure.from_file(
+    structure = Structure.from_file(
         os.path.join(
             THIS_DIR, "..", "..", "examples", "structures", "BaO2_mp-1105_computed.cif"
         )
     )
-    x, indices, names = featurize(s)
+    x, indices, names = featurize(structure)  # pylint: disable=invalid-name
     assert len(x) == len(indices) == len(names)
 
 
@@ -50,7 +49,7 @@ def test_create_clean_dataframe(provide_dummy_feature_list, provide_label_dict):
     _, expected_table = provide_label_dict
     feature_list = provide_dummy_feature_list
 
-    df = FeatureCollector.create_clean_dataframe(  # pylint:disable=invalid-name
+    df = FeatureCollector._create_clean_dataframe(  # pylint:disable=invalid-name,protected-access
         feature_list, expected_table
     )
     assert isinstance(df, pd.DataFrame)  # make sure we have a dataframe
@@ -72,7 +71,13 @@ def test_get_x_y_names(provide_dataframe):
     """Test splitting in features, labels and names"""
     df = provide_dataframe  # pylint:disable=invalid-name
 
-    X, y, names = FeatureCollector.get_x_y_names(df)  # pylint:disable=invalid-name
+    (
+        X,  # pylint:disable=invalid-name
+        y,  # pylint:disable=invalid-name
+        names,
+    ) = FeatureCollector._get_x_y_names(  # pylint:disable=protected-access
+        df
+    )
 
     assert len(X) == len(y) == len(names)
     # an interesting case is UKUDIP01 with two metals
@@ -84,10 +89,12 @@ def test_get_x_y_names(provide_dataframe):
 
 def test__partial_match_in_name():
     """Test if the partial match detector works as intended"""
-    assert FeatureCollector._partial_match_in_name(
+    assert FeatureCollector._partial_match_in_name(  # pylint:disable=protected-access
         "MAHSUK01", ["MAHSUK", "JIZJIN"]
-    )  # pylint:disable=protected-access
+    )
 
-    assert not FeatureCollector._partial_match_in_name(
-        "MAHSUK01", ["ORIVUI", "JIZJIN"]
-    )  # pylint:disable=protected-access
+    assert (
+        not FeatureCollector._partial_match_in_name(  # pylint:disable=protected-access
+            "MAHSUK01", ["ORIVUI", "JIZJIN"]
+        )
+    )

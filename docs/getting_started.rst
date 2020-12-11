@@ -63,7 +63,11 @@ You can for example use the following snippet of Python
 .. code-block:: python
 
     from oximachine_featurizer.parse import GetOxStatesCSD
+    getoxstates_instance= GetOxStatesCSD(names_cleaned)
 
+    outputdict = getoxstates_instance.run_parsing(njobs=4)
+
+:code:`outputdict` will be a nested dictionary of the form :code:`{'id': {'symbol': [oxidation states]}}`.
 
 Parsing the Materials Project
 ................................
