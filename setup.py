@@ -65,9 +65,8 @@ setup(
         "console_scripts": [
             "run_parsing=run.run_parsing:main",
             "run_parsing_reference=run.run_parsing_reference:main",
+            "run_parsing_reference=run.run_mine_mp:main",
             "run_featurization=run.run_featurization:main",
-            "run_featurization_many=run.run_featurization_many:main",
-            "run_featurecollection=run.run_featurecollection:main",
         ]
     },
     install_requires=REQUIRED,

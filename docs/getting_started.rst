@@ -69,8 +69,23 @@ You can for example use the following snippet of Python
 
 :code:`outputdict` will be a nested dictionary of the form :code:`{'id': {'symbol': [oxidation states]}}`.
 
+
+The :py:mod:`~oximachine_featurizer.run.run_parsing` command line tool allows you to run the parsing for a folder of structures that are names with the CSD refcodes.
+
+.. code-block:: bash
+
+    run_parsing <indir> <outname>
+
+The output dictionary will be saved in to a pickle file with the name :code:`outname`.
+
 Parsing the Materials Project
 ................................
 
 Using this code requires that you export the :code:`MP_API_KEY` environment variable containing your API key for the Materials Project.
 For example, the :py:mod:`oximachine_featurizer.run.run_mine_mp.py` script will retrieve all binary halides, sulfides, oxides, ... that are stable (zero energy above comblex hull) and calculate the oxidation states.
+
+.. code-block:: bash
+
+    run_mine_mp
+
+Will write a dataframe with the results :code:`mp_parsing_results.csv` to the current working directory.
