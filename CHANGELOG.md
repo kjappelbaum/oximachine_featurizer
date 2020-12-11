@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.7](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.6...v0.2.7) (2020-12-11)
+
+
+### Miscellaneous
+
+* changelog sections for release-please ([e6cbb1c](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/e6cbb1ca1328780248cf54859cd5b358b1e745e6))
+
 ### [0.2.6](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.5...v0.2.6) (2020-12-11)
 
 
