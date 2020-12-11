@@ -5,7 +5,7 @@
 import concurrent.futures
 import re
 from collections import defaultdict
-from typing import Tuple, List, Dict
+from typing import Dict, List, Tuple
 
 import numpy as np
 from ccdc import io  # pylint: disable=import-error
@@ -17,7 +17,7 @@ from .utils import SymbolNameDict
 __all__ = ["GetOxStatesCSD"]
 
 
-class GetOxStatesCSD:
+class GetOxStatesCSD:  # pylint:disable=too-many-instance-attributes
     """Main parsing class"""
 
     def __init__(self, cds_ids: List[str]) -> None:
@@ -46,7 +46,7 @@ class GetOxStatesCSD:
         self.csd_ids = cds_ids
         self.csd_reader = io.EntryReader("CSD")
 
-    def get_symbol_ox_number(self, parsed_string: str) -> Tuple[str, int]:
+    def _get_symbol_ox_number(self, parsed_string: str) -> Tuple[str, int]:
         """Splits a parser hit into symbol and ox nuber and returns
         latter as a integer
 
@@ -64,11 +64,13 @@ class GetOxStatesCSD:
 
         return self.name_symbol_dict[name.lower()], int(0)
 
-    def get_symbol_negative_ox_number(self, parsed_string: str) -> Tuple[str, int]:
+    def _get_symbol_negative_ox_number(self, parsed_string: str) -> Tuple[str, int]:
+        """Returns a tuple(symbol, int) for negative oxidation numbers"""
         name, roman = parsed_string.strip(")").split("(")
         return self.name_symbol_dict[name.lower()], int(roman)
 
-    def get_symbol_nan(self, parsed_string: str) -> Tuple[str, int]:
+    def _get_symbol_nan(self, parsed_string: str) -> Tuple[str, int]:
+        """Returns a tuple(symbol, np.nan)"""
         name = self.symbol_regex.findall(parsed_string)[0]
         return self.name_symbol_dict[name.lower()], np.nan
 
@@ -88,17 +90,17 @@ class GetOxStatesCSD:
 
         matches = re.findall(self.regex, chemical_name_string)
         for match in matches:
-            symbol, oxidation_int = self.get_symbol_ox_number(match)
+            symbol, oxidation_int = self._get_symbol_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
 
         no_ox_matches = re.findall(self.not_ox_regex, chemical_name_string)
         for match in no_ox_matches:
-            symbol, oxidation_int = self.get_symbol_nan(match)
+            symbol, oxidation_int = self._get_symbol_nan(match)
             oxidation_state_dict[symbol].append(oxidation_int)
 
         matches = re.findall(self.negative_regex, chemical_name_string)
         for match in matches:
-            symbol, oxidation_int = self.get_symbol_negative_ox_number(match)
+            symbol, oxidation_int = self._get_symbol_negative_ox_number(match)
             oxidation_state_dict[symbol].append(oxidation_int)
 
         return dict(oxidation_state_dict)
@@ -113,7 +115,8 @@ class GetOxStatesCSD:
             dict: symbol - oxidation state dictionary
 
         Exception:
-            returns empy dict upon exception (if it cannot find the structure in the database)
+            returns empy dict upon exception
+                (if it cannot find the structure in the database)
 
         """
         try:
@@ -125,14 +128,15 @@ class GetOxStatesCSD:
         except Exception:  # pylint: disable=broad-except
             return {}
 
-    def run_parsing(self, njobs: int = 4) -> Dict[dict]:
+    def run_parsing(self, njobs: int = 4) -> Dict[str, dict]:
         """Runs (concurrent) parsing over the list of database identifiers.
 
         Args:
             njobs (int): maximum number of parallel workers
 
         Returns:
-            dict: nested dictionary  with {'id': {'symbol': [oxidation states]}}
+            Dict[str, dict]: nested dictionary
+                with {'id': {'symbol': [oxidation states]}}
 
         """
         results_dict = {}

@@ -366,9 +366,18 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         )
 
     @classmethod
-    def from_file(cls, structurepath: Union[str, Path], outpath: Union[str, Path]):
-        """
-        Construct a featurizer class from path to structure and an output path
+    def from_file(
+        cls, structurepath: Union[str, Path], outpath: Union[str, Path]
+    ) -> object:
+        """Construct a featurizer class from path to structure
+            and an output path
+
+        Args:
+            structurepath (Union[str, Path]): Path to structure file
+            outpath (Union[str, Path]): Path to which the outputs should be written.
+
+        Returns:
+            object: Instance of the GetFeatures class
         """
         s = GetFeatures._read_safe(structurepath)
         featureclass = cls(s, outpath)
@@ -379,9 +388,19 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         return featureclass
 
     @classmethod
-    def from_string(cls, structurestring: str, outpath: Union[str, Path]):
-        """
-        Constructor for the webapp, using a string of a structure file, e.g., a CIF
+    def from_string(cls, structurestring: str, outpath: Union[str, Path]) -> object:
+        """Constructor for the webapp, using a string of a structure file,
+        e.g., a CIF
+
+        Args:
+            structurestring (str): Fileconent of a CIF as string
+            outpath (Union[str, Path]): Path to which the output should be written.
+
+        Raises:
+            ValueError: In case the CIF could not be parsed
+
+        Returns:
+            object: Instance of GetFeatures
         """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -434,7 +453,12 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
             pickle.dump(list(self.features), filehandle)
 
     def return_features(self) -> List[dict]:
-        """Runs featurization and returns a list of dictionaries"""
+        """Runs featurization and returns a list of dictionaries
+
+        Returns:
+            List[dict]: List of dictionaries of the form {"metal": , "feature", : , "coords"},
+                i.e features for one metal site
+        """
         self._get_metal_sites()
         try:
             self.logger.info(
@@ -804,7 +828,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         return self.x, self.y, self.names
 
     @staticmethod
-    def _selectracs(df, columns=SELECTED_RACS):
+    def _selectracs(df: pd.DataFrame, columns: List[str] = SELECTED_RACS):
         """select the RACs columns from the dataframe"""
         selected_columns = columns + [
             "name",
@@ -980,7 +1004,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 a metal site with feature, oxidation state, metal  and name
 
         Returns:
-            Tuple[np.array, np.array, list] -- [description]
+            Tuple[np.array, np.array, list] -- features, labels, names
         """
         names = list(df["name"])
         feature_list = df["feature"].values
