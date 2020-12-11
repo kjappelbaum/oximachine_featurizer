@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.6](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.5...v0.2.6) (2020-12-11)
+
+
+### Documentation
+
+* updated docs about the parsing tools ([ebf850a](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/ebf850ab82bf69d0fa98cd7824d803000aa66a46))
+
 ### [0.2.5](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.4...v0.2.5) (2020-12-11)
 
 
