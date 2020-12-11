@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.5](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.4...v0.2.5) (2020-12-11)
+
+
+### Documentation
+
+* fixing docstrings, mocking imports ([da512c1](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/da512c14d15a1f0b27c4c91063d31b65173a4b1d))
+
 ### [0.2.4](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.3...v0.2.4) (2020-12-11)
 
 
