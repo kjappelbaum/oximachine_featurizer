@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.3](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.2...v0.2.3) (2020-12-11)
+
+
+### Documentation
+
+* adding API docs ([a638164](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/a6381640c921d0009796560e2f979984d3fbb2b2))
+
 ## v0.2.2 (2020-08-26)
 
 ### New
