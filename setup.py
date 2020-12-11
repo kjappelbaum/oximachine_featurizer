@@ -12,7 +12,7 @@ import versioneer
 # Package meta-data.
 NAME = "oximachine_featurizer"
 DESCRIPTION = "Mine MOF oxidation states and featurize metal sites."
-URL = "https://github.com/kjappelbaum/mine_csd"
+URL = "https://github.com/kjappelbaum/oximachine_featurizer"
 EMAIL = "kevin.jablonka@epfl.ch"
 AUTHOR = "Kevin M. Jablonka, Daniele Ongari, Berend Smit"
 REQUIRES_PYTHON = ">=3.7.0"
