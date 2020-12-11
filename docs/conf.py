@@ -16,6 +16,11 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 from oximachine_featurizer import __version__
 
+autodoc_mock_imports = []
+try:
+    import ccdc
+except ImportError:
+    autodoc_mock_imports.append('ccdc')
 
 
 # -- Project information -----------------------------------------------------
