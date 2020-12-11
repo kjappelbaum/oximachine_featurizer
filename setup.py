@@ -65,7 +65,7 @@ setup(
         "console_scripts": [
             "run_parsing=run.run_parsing:main",
             "run_parsing_reference=run.run_parsing_reference:main",
-            "run_parsing_reference=run.run_mine_mp:main",
+            "run_mine_mp=run.run_mine_mp:main",
             "run_featurization=run.run_featurization:main",
         ]
     },
