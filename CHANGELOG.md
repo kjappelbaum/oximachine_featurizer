@@ -1,5 +1,16 @@
 # Changelog
 
+### [0.2.10](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.9...v0.2.10) (2020-12-15)
+
+
+### Miscellaneous
+
+* lower ase version for aiida-lsmo compatibility ([431b103](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/431b10309aa3c8c159c1bdf9bdac147ce21d8e38))
+* more flexible requirements ([8c89214](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/8c89214331ddedd06c110d266b6fa64a9156c261))
+* more flexible requirements ([b630e02](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/b630e02bd4dfaaafe51524dcdbe8ad7781ed5a70))
+* more flexible requirements ([051c5fe](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/051c5fe483d4d7096b79474410de15f72f44e7f6))
+* set log level to debug ([4d9c836](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/4d9c83608b7404cd32af5e5cbde8ad4f1ed0cbbb))
+
 ### [0.2.9](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.8...v0.2.9) (2020-12-15)
 
 
