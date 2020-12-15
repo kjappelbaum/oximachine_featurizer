@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.2.11](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.10...v0.2.11) (2020-12-15)
+
+
+### Miscellaneous
+
+* add option to get the feature names ([93ba376](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/93ba376ee5054dfe81bd71c0d8095b80c21e852a))
+* add option to get the feature names ([cac2b7f](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/cac2b7f6b3d439f1d55ea1fe9bd22e8e4b7ad7f7))
+
 ### [0.2.10](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.9...v0.2.10) (2020-12-15)
 
 
