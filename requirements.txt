@@ -1,5 +1,5 @@
 pymatgen~=2020.12.3
-ase~=3.20
+ase~=3.19
 numeral~=0.1
 apricot-select~=0.6
 tqdm~=4.54
