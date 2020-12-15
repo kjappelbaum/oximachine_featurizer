@@ -1,5 +1,14 @@
 # Changelog
 
+### [0.2.9](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.8...v0.2.9) (2020-12-15)
+
+
+### Miscellaneous
+
+* add python 3.6 support back ([c2278c7](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/c2278c758a51e6a928a9d8b7b6a084d867c2daea))
+* add python 3.6 support back ([7fad64d](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/7fad64deae238eb94e12a7027ab39bc66b54f778))
+* add python 3.6 support back ([84e4ea9](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/84e4ea915ab94ef6b46571e93fecebf581acd5fd))
+
 ### [0.2.8](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.7...v0.2.8) (2020-12-11)
 
 
