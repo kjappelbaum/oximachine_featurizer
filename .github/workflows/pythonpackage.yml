@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7", "3.8"]
+        python-version: ["3,.6", "3.7", "3.8"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -30,9 +30,6 @@ jobs:
           file: ./coverage.xml
           flags: unittests
           name: codecov-{{ '${{ matrix.os }}' }}-py{{ '${{ matrix.python-version }}' }}
-
-
-
   # pre-commit:
   #   strategy:
   #     matrix:
@@ -49,7 +46,6 @@ jobs:
   #         python -m pip install --upgrade pip
   #         pip install -e .[pre-commit,testing]
   #         pip freeze
-
   #     - name: Run pre-commit
   #       run:
   #         pre-commit run --all-files || ( git status --short ; git diff ; exit 1 )
