@@ -267,6 +267,8 @@ __all__ = [
     "SELECTED_RACS",
     "FEATURE_LABELS_ALL",
     "FEATURE_RANGES_DICT",
+    "featurize",
+    "get_feature_names"
 ]
 
 DEFAULT_FEATURE_SET = (
@@ -283,6 +285,31 @@ DEFAULT_FEATURE_SET = (
     + ["crystal_nn_no_steinhardt"]
 )
 
+
+def get_feature_names(selected_features: List[str], offset: int = 0) -> List[str]:
+    """Given a set of selected feature categories, return all feature names
+
+    Args:
+        selected_features (List[str]): feature categories
+        offset (int, optional): To offset the feature ranges,
+            to be used with RACs. Defaults to 0.
+
+    Returns:
+        List[str]: list of feature names
+    """
+    featurenames = []
+    # RACs are naturally considered
+    for feature in selected_features:
+        featureranges = FEATURE_RANGES_DICT[feature]
+        for featurerange in featureranges:
+            lower, upper = featurerange
+            # adding the offset to account for RACS from seperate file
+            # that are added at the start of the feature list
+            lower += offset
+            upper += offset
+            featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
+
+    return featurenames
 
 def featurize(
     structure: Structure, featureset: List[str] = DEFAULT_FEATURE_SET
@@ -657,31 +684,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
                 pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
 
-    @staticmethod
-    def get_feature_names(selected_features: List[str], offset: int = 0) -> List[str]:
-        """Given a set of selected feature categories, return all feature names
-
-        Args:
-            selected_features (List[str]): feature categories
-            offset (int, optional): To offset the feature ranges,
-                to be used with RACs. Defaults to 0.
-
-        Returns:
-            List[str]: list of feature names
-        """
-        featurenames = []
-        # RACs are naturally considered
-        for feature in selected_features:
-            featureranges = FEATURE_RANGES_DICT[feature]
-            for featurerange in featureranges:
-                lower, upper = featurerange
-                # adding the offset to account for RACS from seperate file
-                # that are added at the start of the feature list
-                lower += offset
-                upper += offset
-                featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
-
-        return featurenames
 
     @staticmethod
     def _select_features_return_names(
