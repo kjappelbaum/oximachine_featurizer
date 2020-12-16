@@ -18,6 +18,9 @@ The development version can be installed directly from GitHub
     pip install git+https://github.com/kjappelbaum/oximachine_featurizer.git
 
 
+Some parts of the code are accelerated using just-in-time compilation (jit) using numba. This can benefit from `threading layers <https://numba.pydata.org/numba-doc/latest/user/threading-layer.html>`_. You can enable this using :code:`pip install tbb`. If you do not do so, you might see warnings like :code:`The TBB threading layer requires TBB version 2019.5 or later`.
+
+
 Featurizing a structure
 --------------------------
 
