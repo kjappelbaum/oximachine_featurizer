@@ -13,12 +13,17 @@ import numpy as np
 import pandas as pd
 from ase.io import read
 from matminer.featurizers.base import MultipleFeaturizer
-from matminer.featurizers.site import CrystalNNFingerprint, GaussianSymmFunc
+from matminer.featurizers.site import (
+    CrystalNNFingerprint,
+    EwaldSiteEnergy,
+    GaussianSymmFunc,
+)
 from matminer.utils.data import MagpieData
 from pymatgen import Structure
 from pymatgen.core import Element
 from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from skmultilearn.model_selection import IterativeStratification
 
 from .exclude import TO_EXCLUDE
@@ -268,7 +273,7 @@ __all__ = [
     "FEATURE_LABELS_ALL",
     "FEATURE_RANGES_DICT",
     "featurize",
-    "get_feature_names"
+    "get_feature_names",
 ]
 
 DEFAULT_FEATURE_SET = (
@@ -310,6 +315,7 @@ def get_feature_names(selected_features: List[str], offset: int = 0) -> List[str
             featurenames.extend(FEATURE_LABELS_ALL[lower:upper])
 
     return featurenames
+
 
 def featurize(
     structure: Structure, featureset: List[str] = DEFAULT_FEATURE_SET
@@ -372,6 +378,10 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         self.logger = featurizelogger
         self.path = None
         self.structure = structure
+        self.spacegroup_analyzer = SpacegroupAnalyzer(structure)
+        self.symmetrized_structure = (
+            self.spacegroup_analyzer.get_symmetrized_structure()
+        )
         self.metal_sites = []
         self.metal_indices = []
         self.features = []
@@ -470,7 +480,7 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
 
-            X = self.featurizer.featurize(self.structure, site)
+            X = self.featurizer.featurize(self.symmetrized_structure, site)
 
         return X
 
@@ -487,18 +497,37 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
                 i.e features for one metal site
         """
         self._get_metal_sites()
+        already_featurized = {}
         try:
             self.logger.debug(
                 "iterating over {} metal sites".format(len(self.metal_sites))
             )
             for idx, metal_site in enumerate(self.metal_sites):
+
+                feat = None
+                equivalent_sites = self.symmetrized_structure.find_equivalent_sites(
+                    metal_site
+                )
+                for equivalent_site in equivalent_sites:
+                    try:
+                        feat = already_featurized[str(equivalent_site)]
+                    except KeyError:
+                        pass
+                    else:
+                        break
+
+                if feat is None:
+                    feat = self._get_feature_vectors(self.metal_indices[idx])
+
                 self.features.append(
                     {
                         "metal": metal_site.species_string,
-                        "feature": self._get_feature_vectors(self.metal_indices[idx]),
+                        "feature": feat,
                         "coords": metal_site.coords,
                     }
                 )
+
+                already_featurized[str(metal_site)] = feat
         except Exception as e:  # pylint: disable=broad-except
             self.logger.error("Could not featurize because of {}".format(e))
 
@@ -683,7 +712,6 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             with open(os.path.join(outdir_helper, "feature_names.pkl"), "wb") as fh:
                 pickle.dump(featurenames, fh)
         return np.hstack(to_hstack)
-
 
     @staticmethod
     def _select_features_return_names(
