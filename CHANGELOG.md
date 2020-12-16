@@ -1,5 +1,14 @@
 # Changelog
 
+### [0.2.12](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.11...v0.2.12) (2020-12-16)
+
+
+### Miscellaneous
+
+* pin matminer version furhter ([70cc5a0](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/70cc5a06243e9cb7235a327695915e5255a5986c))
+* removed one unused fingerprint ([453a329](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/453a329d2c96156fd666d8e095acdd6e78cfb5d5))
+* testing caching of symmetry equivalent sites ([91d046c](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/91d046c5fa0be16c674301c99367e057a1cd2d00))
+
 ### [0.2.11](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.10...v0.2.11) (2020-12-15)
 
 
