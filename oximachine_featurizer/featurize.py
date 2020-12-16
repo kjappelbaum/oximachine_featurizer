@@ -13,11 +13,7 @@ import numpy as np
 import pandas as pd
 from ase.io import read
 from matminer.featurizers.base import MultipleFeaturizer
-from matminer.featurizers.site import (
-    CrystalNNFingerprint,
-    EwaldSiteEnergy,
-    GaussianSymmFunc,
-)
+from matminer.featurizers.site import CrystalNNFingerprint, GaussianSymmFunc
 from matminer.utils.data import MagpieData
 from pymatgen import Structure
 from pymatgen.core import Element
