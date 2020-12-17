@@ -537,7 +537,7 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         )
         self._get_metal_sites()
         try:
-            self.logger.info(
+            self.logger.debug(
                 "iterating over {} metal sites".format(len(self.metal_sites))
             )
             for idx, metal_site in enumerate(self.metal_sites):
