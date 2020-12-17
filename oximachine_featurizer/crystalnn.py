@@ -4,7 +4,12 @@ from collections import namedtuple
 
 import numpy as np
 from numba import jit
-from pymatgen.analysis.local_env import (NearNeighbors, VoronoiNN, _get_default_radius, _get_radius)
+from pymatgen.analysis.local_env import (
+    NearNeighbors,
+    VoronoiNN,
+    _get_default_radius,
+    _get_radius,
+)
 
 
 class CrystalNN(NearNeighbors):
@@ -18,7 +23,7 @@ class CrystalNN(NearNeighbors):
     coordination environment or a weighted list of coordination environments.
     """
 
-    NNData = namedtuple('nn_data', ['all_nninfo', 'cn_weights', 'cn_nninfo'])
+    NNData = namedtuple("nn_data", ["all_nninfo", "cn_weights", "cn_nninfo"])
 
     def __init__(
         self,
@@ -27,7 +32,7 @@ class CrystalNN(NearNeighbors):
         distance_cutoffs=(0.5, 1),
         x_diff_weight=3.0,
         porous_adjustment=True,
-        search_cutoff=9,
+        search_cutoff=10,
         fingerprint_length=None,
     ):
         """
@@ -104,7 +109,7 @@ class CrystalNN(NearNeighbors):
             max_key = max(nndata.cn_weights, key=lambda k: nndata.cn_weights[k])
             nn = nndata.cn_nninfo[max_key]
             for entry in nn:
-                entry['weight'] = 1
+                entry["weight"] = 1
             return nn
 
         else:
@@ -112,10 +117,10 @@ class CrystalNN(NearNeighbors):
                 weight = 0
                 for cn in nndata.cn_nninfo:
                     for cn_entry in nndata.cn_nninfo[cn]:
-                        if entry['site'] == cn_entry['site']:
+                        if entry["site"] == cn_entry["site"]:
                             weight += nndata.cn_weights[cn]
 
-                entry['weight'] = weight
+                entry["weight"] = weight
 
             return nndata.all_nninfo
 
@@ -144,12 +149,14 @@ class CrystalNN(NearNeighbors):
                 if site.specie.oxi_state * m_oxi <= 0:  # opposite charge
                     target.append(site.specie)
             if not target:
-                raise ValueError('No valid targets for site within cation_anion constraint!')
+                raise ValueError(
+                    "No valid targets for site within cation_anion constraint!"
+                )
 
         # get base VoronoiNN targets
         cutoff = self.search_cutoff
         vnn = VoronoiNN(
-            weight='solid_angle',
+            weight="solid_angle",
             targets=target,
             cutoff=cutoff,
             compute_adj_neighbors=False,
@@ -160,63 +167,67 @@ class CrystalNN(NearNeighbors):
         # adjust weights to correct for this behavior
         if self.porous_adjustment:
             for x in nn:
-                x['weight'] *= x['poly_info']['solid_angle'] / x['poly_info']['area']
+                x["weight"] *= x["poly_info"]["solid_angle"] / x["poly_info"]["area"]
 
         # adjust solid angle weight based on electronegativity difference
         if self.x_diff_weight > 0:
             for entry in nn:
                 X1 = structure[n].specie.X
-                X2 = entry['site'].specie.X
+                X2 = entry["site"].specie.X
 
                 if math.isnan(X1) or math.isnan(X2):
                     chemical_weight = 1
                 else:
                     # note: 3.3 is max deltaX between 2 elements
-                    chemical_weight = 1 + self.x_diff_weight * math.sqrt(abs(X1 - X2) / 3.3)
+                    chemical_weight = 1 + self.x_diff_weight * math.sqrt(
+                        abs(X1 - X2) / 3.3
+                    )
 
-                entry['weight'] = entry['weight'] * chemical_weight
+                entry["weight"] = entry["weight"] * chemical_weight
 
         # sort nearest neighbors from highest to lowest weight
-        nn = sorted(nn, key=lambda x: x['weight'], reverse=True)
-        if nn[0]['weight'] == 0:
+        nn = sorted(nn, key=lambda x: x["weight"], reverse=True)
+        if nn[0]["weight"] == 0:
             return self.transform_to_length(self.NNData([], {0: 1.0}, {0: []}), length)
 
         # renormalize weights so the highest weight is 1.0
-        highest_weight = nn[0]['weight']
+        highest_weight = nn[0]["weight"]
         for entry in nn:
-            entry['weight'] = entry['weight'] / highest_weight
+            entry["weight"] = entry["weight"] / highest_weight
 
         # adjust solid angle weights based on distance
         if self.distance_cutoffs:
             r1 = _get_radius(structure[n])
             for entry in nn:
-                r2 = _get_radius(entry['site'])
+                r2 = _get_radius(entry["site"])
                 if r1 > 0 and r2 > 0:
                     d = r1 + r2
                 else:
-                    d = _get_default_radius(structure[n]) + _get_default_radius(entry['site'])
+                    d = _get_default_radius(structure[n]) + _get_default_radius(
+                        entry["site"]
+                    )
 
-                dist = np.linalg.norm(structure[n].coords - entry['site'].coords)
+                dist = np.linalg.norm(structure[n].coords - entry["site"].coords)
 
                 _adjust_solid_angle_weight(entry, self.distance_cutoffs, dist, d)
 
         # sort nearest neighbors from highest to lowest weight
-        nn = sorted(nn, key=lambda x: x['weight'], reverse=True)
-        if nn[0]['weight'] == 0:
+        nn = sorted(nn, key=lambda x: x["weight"], reverse=True)
+        if nn[0]["weight"] == 0:
             return self.transform_to_length(self.NNData([], {0: 1.0}, {0: []}), length)
 
         for entry in nn:
-            entry['weight'] = round(entry['weight'], 3)
-            del entry['poly_info']  # trim
+            entry["weight"] = round(entry["weight"], 3)
+            del entry["poly_info"]  # trim
 
         # remove entries with no weight
-        nn = [x for x in nn if x['weight'] > 0]
+        nn = [x for x in nn if x["weight"] > 0]
 
         # get the transition distances, i.e. all distinct weights
         dist_bins = []
         for entry in nn:
-            if not dist_bins or dist_bins[-1] != entry['weight']:
-                dist_bins.append(entry['weight'])
+            if not dist_bins or dist_bins[-1] != entry["weight"]:
+                dist_bins.append(entry["weight"])
         dist_bins.append(0)
 
         # main algorithm to determine fingerprint from bond weights
@@ -226,7 +237,7 @@ class CrystalNN(NearNeighbors):
             if val != 0:
                 nn_info = []
                 for entry in nn:
-                    if entry['weight'] >= val:
+                    if entry["weight"] >= val:
                         nn_info.append(entry)
                 cn = len(nn_info)
                 cn_nninfo[cn] = nn_info
@@ -254,7 +265,9 @@ class CrystalNN(NearNeighbors):
             cn (integer or float): coordination number.
         """
         if self.weighted_cn != use_weights:
-            raise ValueError('The weighted_cn parameter and use_weights ' 'parameter should match!')
+            raise ValueError(
+                "The weighted_cn parameter and use_weights " "parameter should match!"
+            )
 
         return super().get_cn(structure, n, use_weights)
 
@@ -272,7 +285,9 @@ class CrystalNN(NearNeighbors):
             cn (dict): dictionary of CN of each element bonded to site
         """
         if self.weighted_cn != use_weights:
-            raise ValueError('The weighted_cn parameter and use_weights ' 'parameter should match!')
+            raise ValueError(
+                "The weighted_cn parameter and use_weights " "parameter should match!"
+            )
 
         return super().get_cn_dict(structure, n, use_weights)
 
@@ -314,13 +329,19 @@ def _semicircle_integral(dist_bins, idx):
     x2 = dist_bins[idx + 1]
 
     if dist_bins[idx] == 1:
-        area1 = 0.25 * math.pi * r**2
+        area1 = 0.25 * math.pi * r ** 2
     else:
-        area1 = 0.5 * ((x1 * math.sqrt(r**2 - x1**2)) + (r**2 * math.atan(x1 / math.sqrt(r**2 - x1**2))))
+        area1 = 0.5 * (
+            (x1 * math.sqrt(r ** 2 - x1 ** 2))
+            + (r ** 2 * math.atan(x1 / math.sqrt(r ** 2 - x1 ** 2)))
+        )
 
-    area2 = 0.5 * ((x2 * math.sqrt(r**2 - x2**2)) + (r**2 * math.atan(x2 / math.sqrt(r**2 - x2**2))))
+    area2 = 0.5 * (
+        (x2 * math.sqrt(r ** 2 - x2 ** 2))
+        + (r ** 2 * math.atan(x2 / math.sqrt(r ** 2 - x2 ** 2)))
+    )
 
-    return (area1 - area2) / (0.25 * math.pi * r**2)
+    return (area1 - area2) / (0.25 * math.pi * r ** 2)
 
 
 @jit(nopython=True)
@@ -331,5 +352,7 @@ def _adjust_solid_angle_weight(entry, distance_cutoffs, dist, d):
     if dist <= cutoff_low:
         dist_weight = 1
     elif dist < cutoff_high:
-        dist_weight = (math.cos((dist - cutoff_low) / (cutoff_high - cutoff_low) * math.pi) + 1) * 0.5
-    entry['weight'] = entry['weight'] * dist_weight
+        dist_weight = (
+            math.cos((dist - cutoff_low) / (cutoff_high - cutoff_low) * math.pi) + 1
+        ) * 0.5
+    entry["weight"] = entry["weight"] * dist_weight
