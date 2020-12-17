@@ -277,3 +277,4 @@ featurization/*.pkl
 # End of https://www.gitignore.io/api/vim,linux,macos,python,pycharm
 
 *already_featurized.txt
+.vscode/
