@@ -32,7 +32,7 @@ class CrystalNN(NearNeighbors):
         distance_cutoffs=(0.5, 1),
         x_diff_weight=3.0,
         porous_adjustment=True,
-        search_cutoff=8,
+        search_cutoff=10,
         fingerprint_length=None,
     ):
         """

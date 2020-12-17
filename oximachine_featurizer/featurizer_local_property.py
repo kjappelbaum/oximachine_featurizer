@@ -3,7 +3,11 @@ import copy
 
 import numpy as np
 from matminer.featurizers.base import BaseFeaturizer
-from matminer.featurizers.site import (LocalStructOrderParams, cn_motif_op_params, cn_target_motif_op)
+from matminer.featurizers.site import (
+    LocalStructOrderParams,
+    cn_motif_op_params,
+    cn_target_motif_op,
+)
 from matminer.utils.caching import get_nearest_neighbors
 from matminer.utils.data import MagpieData
 from pymatgen.analysis.local_env import VoronoiNN
@@ -30,8 +34,10 @@ class LocalPropertyStatsNew(BaseFeaturizer):
          `Ward et al. _PRB_ 2017 <http://link.aps.org/doi/10.1103/PhysRevB.96.024104>`_
     """
 
-    def __init__(self, data_source=MagpieData(), weight='area', properties=('Electronegativity',)):
-        """ Initialize the featurizer
+    def __init__(
+        self, data_source=MagpieData(), weight="area", properties=("Electronegativity",)
+    ):
+        """Initialize the featurizer
         Args:
             data_source (AbstractData) - Class from which to retrieve
                 elemental properties
@@ -53,29 +59,29 @@ class LocalPropertyStatsNew(BaseFeaturizer):
             preset (str) - Name of preset
         """
 
-        if preset == 'interpretable':
+        if preset == "interpretable":
             return LocalPropertyStatsNew(
                 data_source=MagpieData(),
                 properties=[
-                    'MendeleevNumber',
-                    'Column',
-                    'Row',
-                    'Electronegativity',
-                    'NsValence',
-                    'NpValence',
-                    'NdValence',
-                    'NfValence',
-                    'NValence',
-                    'NsUnfilled',
-                    'NpUnfilled',
-                    'NdUnfilled',
-                    'NfUnfilled',
-                    'NUnfilled',
-                    'GSbandgap',
+                    "MendeleevNumber",
+                    "Column",
+                    "Row",
+                    "Electronegativity",
+                    "NsValence",
+                    "NpValence",
+                    "NdValence",
+                    "NfValence",
+                    "NValence",
+                    "NsUnfilled",
+                    "NpUnfilled",
+                    "NdUnfilled",
+                    "NfUnfilled",
+                    "NUnfilled",
+                    "GSbandgap",
                 ],
             )
         else:
-            raise ValueError('Unrecognized preset: ' + preset)
+            raise ValueError("Unrecognized preset: " + preset)
 
     def featurize(self, strc, idx):
         # Get the targeted site
@@ -83,14 +89,14 @@ class LocalPropertyStatsNew(BaseFeaturizer):
 
         # Get the tessellation of a site
         nn = get_nearest_neighbors(
-            VoronoiNN(weight=self.weight, cutoff=8, compute_adj_neighbors=False),
+            VoronoiNN(weight=self.weight, cutoff=10, compute_adj_neighbors=False),
             strc,
             idx,
         )
 
         # Get the element and weight of each site
-        elems = [n['site'].specie for n in nn]
-        weights = [n['weight'] for n in nn]
+        elems = [n["site"].specie for n in nn]
+        weights = [n["weight"] for n in nn]
 
         # Compute the difference for each property
         output = np.zeros((len(self.properties),))
@@ -102,45 +108,51 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         for i, p in enumerate(self.properties):
             my_prop = self.data_source.get_elemental_property(my_site.specie, p)
             n_props = self.data_source.get_elemental_properties(elems, p)
-            output[i] = (np.dot(weights, np.abs(np.subtract(n_props, my_prop))) / total_weight)
-            output_signed[i] = (np.dot(weights, np.subtract(n_props, my_prop)) / total_weight)
+            output[i] = (
+                np.dot(weights, np.abs(np.subtract(n_props, my_prop))) / total_weight
+            )
+            output_signed[i] = (
+                np.dot(weights, np.subtract(n_props, my_prop)) / total_weight
+            )
             output_max[i] = np.max(np.subtract(n_props, my_prop))
             output_min[i] = np.min(np.subtract(n_props, my_prop))
         return np.hstack([output, output_signed, output_max, output_min])
 
     def feature_labels(self):
 
-        return (['local difference in ' + p for p in self.properties] +
-                ['local signed difference in ' + p for p in self.properties] +
-                ['maximum local difference in ' + p for p in self.properties] +
-                ['minimum local difference in ' + p for p in self.properties])
+        return (
+            ["local difference in " + p for p in self.properties]
+            + ["local signed difference in " + p for p in self.properties]
+            + ["maximum local difference in " + p for p in self.properties]
+            + ["minimum local difference in " + p for p in self.properties]
+        )
 
     def citations(self):
         return [
-            '@article{Ward2017,'
-            'author = {Ward, Logan and Liu, Ruoqian '
-            'and Krishna, Amar and Hegde, Vinay I. '
-            'and Agrawal, Ankit and Choudhary, Alok '
-            'and Wolverton, Chris},'
-            'doi = {10.1103/PhysRevB.96.024104},'
-            'journal = {Physical Review B},'
-            'pages = {024104},'
-            'title = {{Including crystal structure attributes '
-            'in machine learning models of formation energies '
-            'via Voronoi tessellations}},'
-            'url = {http://link.aps.org/doi/10.1103/PhysRevB.96.014107},'
-            'volume = {96},year = {2017}}',
-            '@article{jong_chen_notestine_persson_ceder_jain_asta_gamst_2016,'
-            'title={A Statistical Learning Framework for Materials Science: '
-            'Application to Elastic Moduli of k-nary Inorganic Polycrystalline Compounds}, '
-            'volume={6}, DOI={10.1038/srep34256}, number={1}, journal={Scientific Reports}, '
-            'author={Jong, Maarten De and Chen, Wei and Notestine, Randy and Persson, '
-            'Kristin and Ceder, Gerbrand and Jain, Anubhav and Asta, Mark and Gamst, Anthony}, '
-            'year={2016}, month={Mar}}',
+            "@article{Ward2017,"
+            "author = {Ward, Logan and Liu, Ruoqian "
+            "and Krishna, Amar and Hegde, Vinay I. "
+            "and Agrawal, Ankit and Choudhary, Alok "
+            "and Wolverton, Chris},"
+            "doi = {10.1103/PhysRevB.96.024104},"
+            "journal = {Physical Review B},"
+            "pages = {024104},"
+            "title = {{Including crystal structure attributes "
+            "in machine learning models of formation energies "
+            "via Voronoi tessellations}},"
+            "url = {http://link.aps.org/doi/10.1103/PhysRevB.96.014107},"
+            "volume = {96},year = {2017}}",
+            "@article{jong_chen_notestine_persson_ceder_jain_asta_gamst_2016,"
+            "title={A Statistical Learning Framework for Materials Science: "
+            "Application to Elastic Moduli of k-nary Inorganic Polycrystalline Compounds}, "
+            "volume={6}, DOI={10.1038/srep34256}, number={1}, journal={Scientific Reports}, "
+            "author={Jong, Maarten De and Chen, Wei and Notestine, Randy and Persson, "
+            "Kristin and Ceder, Gerbrand and Jain, Anubhav and Asta, Mark and Gamst, Anthony}, "
+            "year={2016}, month={Mar}}",
         ]
 
     def implementors(self):
-        return ['Logan Ward', 'Aik Rui Tan']
+        return ["Logan Ward", "Aik Rui Tan"]
 
 
 class CrystalNNFingerprint(BaseFeaturizer):
@@ -163,22 +175,24 @@ class CrystalNNFingerprint(BaseFeaturizer):
             preset (str): name of preset ("cn" or "ops")
             **kwargs: other settings to be passed into CrystalNN class
         """
-        if preset == 'cn':
-            op_types = {k + 1: ['wt'] for k in range(24)}
+        if preset == "cn":
+            op_types = {k + 1: ["wt"] for k in range(24)}
             return CrystalNNFingerprint(op_types, **kwargs)
 
-        elif preset == 'ops':
+        elif preset == "ops":
             op_types = copy.deepcopy(cn_target_motif_op)
             for k in range(24):
                 if k + 1 in op_types:
-                    op_types[k + 1].insert(0, 'wt')
+                    op_types[k + 1].insert(0, "wt")
                 else:
-                    op_types[k + 1] = ['wt']
+                    op_types[k + 1] = ["wt"]
 
             return CrystalNNFingerprint(op_types, chem_info=None, **kwargs)
 
         else:
-            raise RuntimeError('preset "{}" is not supported in ' 'CrystalNNFingerprint'.format(preset))
+            raise RuntimeError(
+                'preset "{}" is not supported in ' "CrystalNNFingerprint".format(preset)
+            )
 
     def __init__(self, op_types, chem_info=None, **kwargs):
         """
@@ -205,7 +219,7 @@ class CrystalNNFingerprint(BaseFeaturizer):
         for cn, t_list in self.op_types.items():
             self.ops[cn] = []
             for t in t_list:
-                if t == 'wt':
+                if t == "wt":
                     self.ops[cn].append(t)
                 else:
                     ot = t
@@ -246,13 +260,13 @@ class CrystalNNFingerprint(BaseFeaturizer):
             wt = nndata.cn_weights.get(cn, 0)
             if cn in self.ops:
                 for op in self.ops[cn]:
-                    if op == 'wt':
+                    if op == "wt":
                         cn_fingerprint.append(wt)
 
                         if self.chem_info is not None and wt != 0:
                             # Compute additional chemistry-related features
                             sum_wt += wt
-                            neigh_sites = [d['site'] for d in nndata.cn_nninfo[cn]]
+                            neigh_sites = [d["site"] for d in nndata.cn_nninfo[cn]]
 
                             for prop in self.chem_props:
                                 # get the value for specie, if not fall back to
@@ -270,17 +284,18 @@ class CrystalNNFingerprint(BaseFeaturizer):
                                         self.chem_info[prop].get(elem_neigh),
                                     )
 
-                                    prop_delta[prop] += (wt * (prop_neigh - prop_central) / cn)
+                                    prop_delta[prop] += (
+                                        wt * (prop_neigh - prop_central) / cn
+                                    )
 
                     elif wt == 0:
                         cn_fingerprint.append(wt)
                     else:
-                        neigh_sites = [d['site'] for d in nndata.cn_nninfo[cn]]
+                        neigh_sites = [d["site"] for d in nndata.cn_nninfo[cn]]
                         opval = op.get_order_parameters(
                             [struct[idx]] + neigh_sites,
                             0,
-                            indices_neighs=list(range(1,
-                                                      len(neigh_sites) + 1)),
+                            indices_neighs=list(range(1, len(neigh_sites) + 1)),
                         )[0]
                         opval = opval or 0  # handles None
                         cn_fingerprint.append(wt * opval)
@@ -299,14 +314,14 @@ class CrystalNNFingerprint(BaseFeaturizer):
             cn = k + 1
             if cn in list(self.ops.keys()):
                 for op in self.op_types[cn]:
-                    labels.append('{} CN_{}'.format(op, cn))
+                    labels.append("{} CN_{}".format(op, cn))
         if self.chem_info is not None:
             for prop in self.chem_props:
-                labels.append('{} local diff'.format(prop))
+                labels.append("{} local diff".format(prop))
         return labels
 
     def citations(self):
         return []
 
     def implementors(self):
-        return ['Anubhav Jain', 'Nils E.R. Zimmermann']
+        return ["Anubhav Jain", "Nils E.R. Zimmermann"]
