@@ -100,9 +100,9 @@ class Merger:
         )
 
     @staticmethod
-    def output(  # pylint:disable = invalid-name
-        X,  # pylint:disable = invalid-name
-        y,  # pylint:disable = invalid-name
+    def output(  # pylint:disable=invalid-name
+        X,
+        y,
         names,
         outdir_features,
         outdir_labels,
@@ -111,10 +111,10 @@ class Merger:
         """Write the new training set files for the merged training set"""
         features, labels, names = shuffle(X, y, names, random_state=RANDOM_SEED)
 
-        np.save(os.path.join(outdir_features, 'features'), features)
-        np.save(os.path.join(outdir_labels, 'labels'), labels)
+        np.save(os.path.join(outdir_features, "features"), features)
+        np.save(os.path.join(outdir_labels, "labels"), labels)
 
-        with open(os.path.join(outdir_names, 'names.pkl'), 'wb') as picklefile:
+        with open(os.path.join(outdir_names, "names.pkl"), "wb") as picklefile:
             pickle.dump(names, picklefile)
 
     def merge(self):
@@ -129,19 +129,21 @@ class Merger:
         )
 
         # Now shuffle and output
-        Merger.output(X, y, names, self.outdir_features, self.outdir_labels, self.outdir_names)
+        Merger.output(
+            X, y, names, self.outdir_features, self.outdir_labels, self.outdir_names
+        )
 
 
-@click.command('cli')
-@click.argument('features0path')
-@click.argument('features1path')
-@click.argument('labels0path')
-@click.argument('labels1path')
-@click.argument('names0path')
-@click.argument('names1path')
-@click.argument('outdir_features')
-@click.argument('outdir_labels')
-@click.argument('outdir_names')
+@click.command("cli")
+@click.argument("features0path")
+@click.argument("features1path")
+@click.argument("labels0path")
+@click.argument("labels1path")
+@click.argument("names0path")
+@click.argument("names1path")
+@click.argument("outdir_features")
+@click.argument("outdir_labels")
+@click.argument("outdir_names")
 def run_merging(  # pylint:disable=too-many-arguments
     features0path,
     features1path,
@@ -168,5 +170,5 @@ def run_merging(  # pylint:disable=too-many-arguments
     merger.merge()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_merging()  # pylint:disable=no-value-for-parameter

@@ -11,15 +11,15 @@ import click
 from oximachine_featurizer.featurize import FeatureCollector
 
 
-@click.command('cli')
-@click.argument('inpath')
-@click.argument('labelsfile')
-@click.argument('outdir')
-def main(inpath, labelsfile, outdir):  #pylint:disable=unused-argument
+@click.command("cli")
+@click.argument("inpath")
+@click.argument("labelsfile")
+@click.argument("outdir")
+def main(inpath, labelsfile, outdir):  # pylint:disable=unused-argument
     """Run the CLI"""
-    fc = FeatureCollector(inpath, labelsfile, outdir)  #pylint:disable=invalid-name
+    fc = FeatureCollector(inpath, labelsfile, outdir)  # pylint:disable=invalid-name
     fc.dump_featurecollection()
 
 
-if __name__ == '__main__':
-    main()  #pylint:disable=no-value-for-parameter
+if __name__ == "__main__":
+    main()  # pylint:disable=no-value-for-parameter

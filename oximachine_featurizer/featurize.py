@@ -569,7 +569,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         percentage_holdout: float = 0,
         outdir_holdout: Union[str, Path] = None,
         forbidden_picklepath: Union[str, Path] = None,
-        exclude_dir: Union[str, Path] = "../test_structures/showcases",
+        exclude_dir: Union[str, Path] = None,
         selected_features: List[str] = CHEMISTRY_FEATURES
         + METAL_CENTER_FEATURES
         + ["crystal_nn_fingerprint"],
