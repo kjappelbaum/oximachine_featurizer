@@ -1,5 +1,22 @@
 # Changelog
 
+### [0.2.13](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.12...v0.2.13) (2020-12-18)
+
+
+### Miscellaneous
+
+* fixing some lint warnings ([949b6a1](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/949b6a1f493f023c38f66febd69bcc85f4b2a0c7))
+* increasing search cutoff ([24acd72](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/24acd72cc119fbc950862e721cd5bb493f6cafe5))
+* increasing search cutoff ([c9a74c8](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/c9a74c830f4812bb0e9dc2d25fc42eae8be0d083))
+* increasing search cutoff ([bf2ab57](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/bf2ab57c75df25d350150b79e0fd0137cbe83172))
+* increasing search cutoff ([4efa3ca](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/4efa3caf9a8afe23b787a25c67bb2997f880afd9))
+* increasing search cutoff ([47b27f9](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/47b27f939d514b6a98540167bb3b21d8035b3eb7))
+* increasing search cutoff ([82510d9](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/82510d991fde6373694849a31c8ddf6d89fbb5a0))
+* increasing search cutoff ([ffc7d56](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/ffc7d560520f734b178ca069c09278e3ca292508))
+* reverting cutoffs ([f9b3c1b](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/f9b3c1b453d20ce98eff658aab7436804a01154c))
+* silencing the featurizer ([fdaf0e6](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/fdaf0e6b1dd9a9c4bfebee8ac352e1d13a74d270))
+* updated example notebook ([4ea885f](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/4ea885f88fc650b4b471dd3aa3f4a0d7334b32ff))
+
 ### [0.2.12](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.11...v0.2.12) (2020-12-16)
 
 
