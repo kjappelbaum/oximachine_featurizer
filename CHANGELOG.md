@@ -1,5 +1,14 @@
 # Changelog
 
+### [0.2.14](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.13...v0.2.14) (2020-12-18)
+
+
+### Miscellaneous
+
+* also increasing cutoff ([56383a4](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/56383a4a9b2d91a1b714c6976b0becdc2f8c2637))
+* increasing cutoff further for testing ([e12138d](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/e12138dd4bd9143f0b01219447309d3dfaa8dd18))
+* standardizing the cell before featurization ([04ff6b9](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/04ff6b96a3b02d2fa7eeea3667b60e5252efd0fa))
+
 ### [0.2.13](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.12...v0.2.13) (2020-12-18)
 
 
