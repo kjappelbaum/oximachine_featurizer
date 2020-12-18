@@ -89,7 +89,7 @@ class LocalPropertyStatsNew(BaseFeaturizer):
 
         # Get the tessellation of a site
         nn = get_nearest_neighbors(
-            VoronoiNN(weight=self.weight, cutoff=13, compute_adj_neighbors=False),
+            VoronoiNN(weight=self.weight, cutoff=15, compute_adj_neighbors=False),
             strc,
             idx,
         )
