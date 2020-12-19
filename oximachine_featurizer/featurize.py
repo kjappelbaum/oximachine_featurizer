@@ -360,8 +360,7 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         featurizelogger = logging.getLogger("Featurize")
         featurizelogger.setLevel(logging.INFO)
         logging.basicConfig(
-            format="%(filename)s: %(message)s",
-            level=logging.INFO,
+            format="%(filename)s: %(message)s", level=logging.INFO,
         )
 
         self.outpath = outpath
@@ -1168,8 +1167,7 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             List[dict] -- list of dicionary
         """
         warnings.warn(
-            "This method will be removed in the next major release",
-            DeprecationWarning,
+            "This method will be removed in the next major release", DeprecationWarning,
         )
         result = read_pickle(picklefile)
 

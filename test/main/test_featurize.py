@@ -5,6 +5,7 @@ import os
 
 import pandas as pd
 from pymatgen import Structure
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from oximachine_featurizer.featurize import FeatureCollector, GetFeatures, featurize
 
@@ -43,6 +44,24 @@ def test_featurize():
     assert len(x) == len(indices) == len(names) == 6
     assert indices[0] == 0
     assert indices[1] == 1
+
+    structure = Structure.from_file(
+        os.path.join(THIS_DIR, "..", "structure_data_files", "RSM0027.cif")
+    )
+    x, indices, names = featurize(structure)  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 2
+
+    structure = Structure.from_file(
+        os.path.join(THIS_DIR, "..", "structure_data_files", "RSM0099.cif")
+    )
+    x, indices, names = featurize(structure)  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 3
+
+    spga = SpacegroupAnalyzer(structure)
+    x, indices, names = featurize(
+        spga.get_primitive_standard_structure()
+    )  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 3
 
 
 def test_make_labels_table(provide_label_dict):
@@ -103,8 +122,6 @@ def test__partial_match_in_name():
         "MAHSUK01", ["MAHSUK", "JIZJIN"]
     )
 
-    assert (
-        not FeatureCollector._partial_match_in_name(  # pylint:disable=protected-access
-            "MAHSUK01", ["ORIVUI", "JIZJIN"]
-        )
+    assert not FeatureCollector._partial_match_in_name(  # pylint:disable=protected-access
+        "MAHSUK01", ["ORIVUI", "JIZJIN"]
     )
