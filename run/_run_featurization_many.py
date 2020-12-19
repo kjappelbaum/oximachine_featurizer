@@ -26,17 +26,11 @@ def read_already_featurized():
         ALREADY_FEATURIZED.extend(already_featurized)
 
 
-def load_pickle(f):  # pylint:disable=invalid-name
-    with open(f, "rb") as handle:  # pylint:disable=invalid-name
-        result = pickle.load(handle)
-    return result
-
-
 def featurize_single(structure, outdir=OUTDIR):
     if Path(structure).stem not in ALREADY_FEATURIZED:
         try:
             gf = GetFeatures.from_file(structure, outdir)  # pylint:disable=invalid-name
-            gf._run_featurization()
+            gf._run_featurization()  # pylint:disable=protected-access
         except Exception:
             pass
 

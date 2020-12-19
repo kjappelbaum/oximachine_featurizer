@@ -10,13 +10,14 @@ the outdir, start and end indices and submit flag.
 
 import logging
 import os
-import pickle
 import subprocess
 import time
 from glob import glob
 from pathlib import Path
 
 import click
+
+from .utils import load_pickle
 
 featurizer = logging.getLogger("featurizer")  # pylint:disable=invalid-name
 featurizer.setLevel(logging.DEBUG)
@@ -44,13 +45,6 @@ conda activate ml
 
 run_featurization {structure} {outdir}
 """
-
-
-def load_pickle(f):  # pylint:disable=invalid-name
-    """Loads a pickle file"""
-    with open(f, "rb") as handle:  # pylint:disable=invalid-name
-        result = pickle.load(handle)
-    return result
 
 
 TO_SAMPLE = load_pickle(NAME_LIST)

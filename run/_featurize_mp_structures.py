@@ -6,7 +6,6 @@ Run the featurization on the structures from Materials Project
 
 import concurrent.futures
 import os
-import pickle
 from glob import glob
 
 from tqdm import tqdm
@@ -20,15 +19,10 @@ OUTDIR = (
 )
 
 
-def load_pickle(f):  # pylint:disable=invalid-name
-    with open(f, "rb") as fh:  # pylint:disable=invalid-name
-        result = pickle.load(fh)
-    return result
-
-
 def featurize_single(structure, outdir=OUTDIR):
+    """Featurize one structure"""
     gf = GetFeatures.from_file(structure, outdir)  # pylint:disable=invalid-name
-    gf.run_featurization()
+    gf._run_featurization()  # pylint:disable=protected-access
 
 
 def main():

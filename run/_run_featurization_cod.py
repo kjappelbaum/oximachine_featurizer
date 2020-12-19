@@ -5,7 +5,6 @@ Run the featurization on the CSD MOF subset
 """
 import concurrent.futures
 import os
-import pickle
 from glob import glob
 from pathlib import Path
 
@@ -22,16 +21,9 @@ ALREADY_FEATURIZED = [Path(p).stem for p in glob(os.path.join(OUTDIR, "*.pkl"))]
 def read_already_featurized():
     """Reads a file with list of already featurized files"""
     if os.path.exists("already_featurized.txt"):
-        with open("already_featurized.txt", "r") as fh:
-            already_featurized = fh.readlines()
+        with open("already_featurized.txt", "r") as handle:
+            already_featurized = handle.readlines()
         ALREADY_FEATURIZED.extend(already_featurized)
-
-
-def load_pickle(f):  # pylint:disable=invalid-name
-    """Returns content of pickle file."""
-    with open(f, "rb") as handle:  # pylint:disable=invalid-name
-        result = pickle.load(handle)
-    return result
 
 
 def featurize_single(structure, outdir=OUTDIR):
@@ -39,8 +31,8 @@ def featurize_single(structure, outdir=OUTDIR):
     if Path(structure).stem not in ALREADY_FEATURIZED:
         try:
             gf = GetFeatures.from_file(structure, outdir)  # pylint:disable=invalid-name
-            gf._run_featurization()
-        except Exception:
+            gf._run_featurization()  # pylint:disable=protected-access
+        except Exception:  # pylint:disable=broad-except
             pass
 
 

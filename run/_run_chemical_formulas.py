@@ -8,11 +8,7 @@ import time
 
 from ccdc import io
 
-
-def load_pickle(f):
-    with open(f, "rb") as handle:
-        result = pickle.load(handle)
-    return result
+from .utils import load_pickle
 
 
 def get_chemical_formula(csd_reader, database_id):
