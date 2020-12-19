@@ -51,6 +51,19 @@ def test_featurize():
     x, indices, names = featurize(structure)  # pylint: disable=invalid-name
     assert len(x) == len(indices) == len(names) == 2
 
+    spga = SpacegroupAnalyzer(structure)
+
+    spga = SpacegroupAnalyzer(structure)
+    x, indices, names = featurize(
+        spga.get_primitive_standard_structure()
+    )  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 2
+
+    x, indices, names = featurize(
+        spga.get_conventional_standard_structure()
+    )  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 4
+
     structure = Structure.from_file(
         os.path.join(THIS_DIR, "..", "structure_data_files", "RSM0099.cif")
     )
@@ -62,6 +75,11 @@ def test_featurize():
         spga.get_primitive_standard_structure()
     )  # pylint: disable=invalid-name
     assert len(x) == len(indices) == len(names) == 3
+
+    x, indices, names = featurize(
+        spga.get_conventional_standard_structure()
+    )  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 9
 
 
 def test_make_labels_table(provide_label_dict):
@@ -122,6 +140,8 @@ def test__partial_match_in_name():
         "MAHSUK01", ["MAHSUK", "JIZJIN"]
     )
 
-    assert not FeatureCollector._partial_match_in_name(  # pylint:disable=protected-access
-        "MAHSUK01", ["ORIVUI", "JIZJIN"]
+    assert (
+        not FeatureCollector._partial_match_in_name(  # pylint:disable=protected-access
+            "MAHSUK01", ["ORIVUI", "JIZJIN"]
+        )
     )

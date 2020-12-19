@@ -8,7 +8,6 @@ from matminer.featurizers.site import (
     cn_motif_op_params,
     cn_target_motif_op,
 )
-from matminer.utils.caching import get_nearest_neighbors
 from matminer.utils.data import MagpieData
 from pymatgen.analysis.local_env import VoronoiNN
 
@@ -35,7 +34,11 @@ class LocalPropertyStatsNew(BaseFeaturizer):
     """
 
     def __init__(
-        self, data_source=MagpieData(), weight="area", properties=("Electronegativity",)
+        self,
+        data_source=MagpieData(),
+        weight="area",
+        properties=("Electronegativity",),
+        cutoff=35,
     ):
         """Initialize the featurizer
         Args:
@@ -50,9 +53,10 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         self.data_source = data_source
         self.properties = properties
         self.weight = weight
+        self.cutoff = cutoff
 
     @staticmethod
-    def from_preset(preset):
+    def from_preset(preset, cutoff=13):
         """
         Create a new LocalPropertyStats class according to a preset
         Args:
@@ -79,6 +83,7 @@ class LocalPropertyStatsNew(BaseFeaturizer):
                     "NUnfilled",
                     "GSbandgap",
                 ],
+                cutoff=cutoff,
             )
         else:
             raise ValueError("Unrecognized preset: " + preset)
@@ -88,13 +93,12 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         my_site = strc[idx]
 
         # Get the tessellation of a site
-        nn = get_nearest_neighbors(
-            VoronoiNN(
-                weight=self.weight, tol=0.2, cutoff=20, compute_adj_neighbors=False
-            ),
-            strc,
-            idx,
-        )
+        nn = VoronoiNN(
+            weight=self.weight,
+            tol=0.2,
+            cutoff=self.cutoff,
+            compute_adj_neighbors=False,
+        ).get_nn_info(strc, idx)
 
         # Get the element and weight of each site
         elems = [n["site"].specie for n in nn]

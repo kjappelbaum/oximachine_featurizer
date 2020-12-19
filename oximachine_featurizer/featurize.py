@@ -21,6 +21,7 @@ from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from skmultilearn.model_selection import IterativeStratification
+from spglib import standardize_cell
 
 from .exclude import TO_EXCLUDE
 from .featurizer_local_property import LocalPropertyStatsNew
@@ -287,6 +288,18 @@ DEFAULT_FEATURE_SET = (
 )
 
 
+def _choose_cutoff(structure):
+    """Cutoff is the longest diagonal,
+    re-using https://pymatgen.org/_modules/pymatgen/analysis/local_env.html"""
+    corners = [[1, 1, 1], [-1, 1, 1], [1, -1, 1], [1, 1, -1]]
+    d_corners = [
+        np.linalg.norm(structure.lattice.get_cartesian_coords(c)) for c in corners
+    ]
+    max_cutoff = max(d_corners) + 0.01
+
+    return max_cutoff
+
+
 def get_feature_names(selected_features: List[str], offset: int = 0) -> List[str]:
     """Given a set of selected feature categories, return all feature names
 
@@ -325,6 +338,7 @@ def featurize(
     Returns:
         Union[np.array, list, list]: [description]
     """
+    # structure = _round_structure(structure)
     get_feat = GetFeatures(structure, "")
     features = get_feat.return_features()
     metal_indices = get_feat.metal_indices
@@ -360,7 +374,8 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         featurizelogger = logging.getLogger("Featurize")
         featurizelogger.setLevel(logging.INFO)
         logging.basicConfig(
-            format="%(filename)s: %(message)s", level=logging.INFO,
+            format="%(filename)s: %(message)s",
+            level=logging.INFO,
         )
 
         self.outpath = outpath
@@ -389,10 +404,24 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
                 self.outpath,
                 "".join([self.structure.formula.replace(" ", "_"), ".pkl"]),
             )
-        self.featurizer = MultipleFeaturizer(
+        self._cutoff = 35
+
+    @property
+    def cutoff(self):
+        try:
+            return _choose_cutoff(self.structure)
+        except Exception:
+            return self._cutoff
+
+    @property
+    def featurizer(self):
+        cutoff = self.cutoff
+        cnn_fingerprint = CrystalNNFingerprint.from_preset("ops")
+        cnn_fingerprint.cutoff = cutoff
+        return MultipleFeaturizer(
             [
-                CrystalNNFingerprint.from_preset("ops"),
-                LocalPropertyStatsNew.from_preset("interpretable"),
+                cnn_fingerprint,
+                LocalPropertyStatsNew.from_preset("interpretable", cutoff=self.cutoff),
                 GaussianSymmFunc(),
             ]
         )
@@ -1167,7 +1196,8 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
             List[dict] -- list of dicionary
         """
         warnings.warn(
-            "This method will be removed in the next major release", DeprecationWarning,
+            "This method will be removed in the next major release",
+            DeprecationWarning,
         )
         result = read_pickle(picklefile)
 

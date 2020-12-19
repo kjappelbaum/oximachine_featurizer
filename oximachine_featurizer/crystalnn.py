@@ -32,7 +32,7 @@ class CrystalNN(NearNeighbors):
         distance_cutoffs=(0.5, 1),
         x_diff_weight=3.0,
         porous_adjustment=True,
-        search_cutoff=20,
+        search_cutoff=35,
         fingerprint_length=None,
     ):
         """
@@ -157,6 +157,7 @@ class CrystalNN(NearNeighbors):
         cutoff = self.search_cutoff
         vnn = VoronoiNN(
             weight="solid_angle",
+            tol=0.2,
             targets=target,
             cutoff=cutoff,
             compute_adj_neighbors=False,
