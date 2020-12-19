@@ -157,7 +157,7 @@ class CrystalNN(NearNeighbors):
         cutoff = self.search_cutoff
         vnn = VoronoiNN(
             weight="solid_angle",
-            tol=0.2,
+            tol=0.5,
             targets=target,
             cutoff=cutoff,
             compute_adj_neighbors=False,

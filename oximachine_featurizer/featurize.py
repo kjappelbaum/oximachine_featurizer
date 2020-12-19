@@ -416,12 +416,10 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
     @property
     def featurizer(self):
         cutoff = self.cutoff
-        cnn_fingerprint = CrystalNNFingerprint.from_preset("ops")
-        cnn_fingerprint.cutoff = cutoff
         return MultipleFeaturizer(
             [
-                cnn_fingerprint,
-                LocalPropertyStatsNew.from_preset("interpretable", cutoff=self.cutoff),
+                CrystalNNFingerprint.from_preset("ops", search_cutoff=cutoff),
+                LocalPropertyStatsNew.from_preset("interpretable", cutoff=cutoff),
                 GaussianSymmFunc(),
             ]
         )
