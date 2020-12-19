@@ -60,7 +60,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(exclude=["test", "*.test", "*.test.*"]),
+    packages=find_packages(include=["oximachine_featurizer*"]),
     entry_points={
         "console_scripts": [
             "run_parsing=run.run_parsing:main",
