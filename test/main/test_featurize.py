@@ -55,14 +55,14 @@ def test_featurize():
     spga = SpacegroupAnalyzer(structure)
 
     spga = SpacegroupAnalyzer(structure)
-    x, indices, names = featurize(
+    x, indices, names = featurize(  # pylint: disable=invalid-name
         spga.get_primitive_standard_structure()
-    )  # pylint: disable=invalid-name
+    )
     assert len(x) == len(indices) == len(names) == 2
 
-    x, indices, names = featurize(
+    x, indices, names = featurize(  # pylint: disable=invalid-name
         spga.get_conventional_standard_structure()
-    )  # pylint: disable=invalid-name
+    )
     assert len(x) == len(indices) == len(names) == 4
 
     structure = Structure.from_file(
@@ -72,18 +72,18 @@ def test_featurize():
     assert len(x) == len(indices) == len(names) == 3
 
     spga = SpacegroupAnalyzer(structure)
-    x, indices, names = featurize(
+    x, indices, names = featurize(  # pylint: disable=invalid-name
         spga.get_primitive_standard_structure()
     )  # pylint: disable=invalid-name
     assert len(x) == len(indices) == len(names) == 3
 
-    x, indices, names = featurize(
+    x, indices, names = featurize(  # pylint: disable=invalid-name
         spga.get_conventional_standard_structure()
-    )  # pylint: disable=invalid-name
+    )
     assert len(x) == len(indices) == len(names) == 9
 
     # Test Daniele's xyz file
-    m = Molecule.from_file(
+    m = Molecule.from_file(  # pylint: disable=invalid-name
         os.path.join(THIS_DIR, "..", "structure_data_files", "TSS03_structuredata.xyz")
     )
     lattice = np.array(
@@ -93,7 +93,9 @@ def test_featurize():
             [0.0, 0.0, 11.18087355],
         ]
     )
-    s = Structure(lattice, [s.specie for s in m], m.cart_coords)
+    s = Structure(
+        lattice, [s.specie for s in m], m.cart_coords
+    )  # pylint: disable=invalid-name
 
     x, indices, names = featurize(s)  # pylint: disable=invalid-name
     assert len(x) == len(indices) == len(names) == 2

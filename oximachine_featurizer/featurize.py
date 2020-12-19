@@ -410,11 +410,12 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
         """Chose a cutoff for a given structure"""
         try:
             return _choose_cutoff(self.structure)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             return self._cutoff
 
     @property
     def featurizer(self):
+        """Return the featurizer (with the suitable cutoff)"""
         cutoff = self.cutoff
         return MultipleFeaturizer(
             [

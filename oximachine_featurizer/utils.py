@@ -19,7 +19,8 @@ from tqdm import tqdm
 
 
 def read_pickle(filepath: str):
-    """Does what it says. Nothing more and nothing less. Takes a pickle file path and unpickles it"""
+    """Does what it says. Nothing more and nothing less.
+     Takes a pickle file path and unpickles it"""
     with open(filepath, "rb") as fh:  # pylint: disable=invalid-name
         result = pickle.load(fh)  # pylint: disable=invalid-name
     return result
@@ -42,7 +43,8 @@ def chunks(l, n):
 
 
 def diff_to_18e(nvalence):
-    """The number of electrons to donate to achieve 18 electrons might be an interesting descriptor,
+    """The number of electrons to donate to achieve 18 electrons might 
+    be an interesting descriptor,
     though there are more stable electron configurations"""
     return min(np.abs(nvalence - 18), nvalence)
 
@@ -83,7 +85,8 @@ def apricot_select(data, k, standardize=True, chunksize=20000):
                 num_except += 1
                 if num_except > 1:  # pylint:disable=no-else-return
                     warnings.warn(
-                        "Could not perform diverse set selection for two attempts, will perform random choice"
+                        "Could not perform diverse set selection for two attempts, \
+                            will perform random choice"
                     )
                     return np.random.choice(len(data), k, replace=False)
                 else:

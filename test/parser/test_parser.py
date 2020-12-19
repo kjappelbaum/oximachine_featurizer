@@ -4,7 +4,6 @@
 Test the parsing class
 """
 import numpy as np
-import pytest
 
 from oximachine_featurizer.parse import GetOxStatesCSD
 
