@@ -3,8 +3,9 @@
 into feature matrix and label file into label vector"""
 import os
 
+import numpy as np
 import pandas as pd
-from pymatgen import Structure
+from pymatgen import Molecule, Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from oximachine_featurizer.featurize import FeatureCollector, GetFeatures, featurize
@@ -80,6 +81,22 @@ def test_featurize():
         spga.get_conventional_standard_structure()
     )  # pylint: disable=invalid-name
     assert len(x) == len(indices) == len(names) == 9
+
+    # Test Daniele's xyz file
+    m = Molecule.from_file(
+        os.path.join(THIS_DIR, "..", "structure_data_files", "TSS03_structuredata.xyz")
+    )
+    lattice = np.array(
+        [
+            [6.4214088758454, 0.0, -2.0278718029537],
+            [-1.7281031033172, 9.4571070308166, -5.4721686991526],
+            [0.0, 0.0, 11.18087355],
+        ]
+    )
+    s = Structure(lattice, [s.specie for s in m], m.cart_coords)
+
+    x, indices, names = featurize(s)  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 2
 
 
 def test_make_labels_table(provide_label_dict):
