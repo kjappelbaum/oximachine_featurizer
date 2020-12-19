@@ -97,6 +97,8 @@ def test_featurize():
 
     x, indices, names = featurize(s)  # pylint: disable=invalid-name
     assert len(x) == len(indices) == len(names) == 2
+    assert indices[0] == 0
+    assert indices[1] == 1
 
 
 def test_make_labels_table(provide_label_dict):
