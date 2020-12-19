@@ -32,7 +32,17 @@ def test_featurize():
         )
     )
     x, indices, names = featurize(structure)  # pylint: disable=invalid-name
-    assert len(x) == len(indices) == len(names)
+    assert len(x) == len(indices) == len(names) == 2
+    assert indices[0] == 0
+    assert indices[1] == 1
+
+    structure = Structure.from_file(
+        os.path.join(THIS_DIR, "..", "..", "examples", "structures", "Mg_MOF_74.cif")
+    )
+    x, indices, names = featurize(structure)  # pylint: disable=invalid-name
+    assert len(x) == len(indices) == len(names) == 6
+    assert indices[0] == 0
+    assert indices[1] == 1
 
 
 def test_make_labels_table(provide_label_dict):

@@ -24,7 +24,6 @@ from skmultilearn.model_selection import IterativeStratification
 
 from .exclude import TO_EXCLUDE
 from .featurizer_local_property import LocalPropertyStatsNew
-from .space_group_analyzer import MySpacegroupAnalyzer
 from .utils import apricot_select, diff_to_18e, read_pickle
 
 collectorlogger = logging.getLogger("FeatureCollector")
@@ -326,7 +325,6 @@ def featurize(
     Returns:
         Union[np.array, list, list]: [description]
     """
-    structure = MySpacegroupAnalyzer(structure).get_conventional_standard_structure()
     get_feat = GetFeatures(structure, "")
     features = get_feat.return_features()
     metal_indices = get_feat.metal_indices
