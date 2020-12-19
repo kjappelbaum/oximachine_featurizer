@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.2.15](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.14...v0.2.15) (2020-12-19)
+
+
+### Miscellaneous
+
+* added test for number of atoms [#32](https://www.github.com/kjappelbaum/oximachine_featurizer/issues/32) ([13d945f](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/13d945f26f3e99ebd3e36b90fdbdf5df70a9c392))
+* adding tests ([2789164](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/2789164d16f233da3fddc5ef329b306fe603b682))
+
 ### [0.2.14](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.13...v0.2.14) (2020-12-18)
 
 
