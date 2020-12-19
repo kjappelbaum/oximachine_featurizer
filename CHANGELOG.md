@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.14...v0.3.0) (2020-12-19)
+
+
+### Features
+
+* making the nn search more robust ([37fbf07](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/37fbf0796f945f2ae730ed6158ab49c2bc19d771))
+
+
+### Miscellaneous
+
+* added test for metal ordering, [#36](https://www.github.com/kjappelbaum/oximachine_featurizer/issues/36) ([4b638b8](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/4b638b80c684dff7aeda15dd10385ce76d5a22a9))
+* added test for number of atoms [#32](https://www.github.com/kjappelbaum/oximachine_featurizer/issues/32) ([13d945f](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/13d945f26f3e99ebd3e36b90fdbdf5df70a9c392))
+* added test for the xyz file ([b7e89f4](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/b7e89f4cf42173e87b0149f0ea661df055e790e9))
+* adding tests ([2789164](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/2789164d16f233da3fddc5ef329b306fe603b682))
+* cleanup, removing unused modules ([a5b74f2](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/a5b74f21f92de18eb06d11f2dd95cf0994d73632))
+* cleanup, removing unused modules ([ffa42a2](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/ffa42a23502b733fd9172f5de7b35cb6ba13084b))
+* excluding test dir [#37](https://www.github.com/kjappelbaum/oximachine_featurizer/issues/37) ([b972c7a](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/b972c7abd363ea88868b48c13c4136221779fe95))
+* excluding test package/dir ([49a0fae](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/49a0fae5ae421e0b33557346760bf03af6f453bf))
+* linting ([8061393](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/8061393979374de33e75f9a15e7f2979c97cf5b3))
+* linting ([bbe7cb1](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/bbe7cb1cbbfb9d24c1e62feb7fbcf38e6688b237))
+* updated version classifier, updated author list ([5b48f12](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/5b48f12473daa9556699f98f9c60be5a4de0edc8))
+
 ### [0.2.14](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.13...v0.2.14) (2020-12-18)
 
 
