@@ -21,7 +21,6 @@ from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from skmultilearn.model_selection import IterativeStratification
-from spglib import standardize_cell
 
 from .exclude import TO_EXCLUDE
 from .featurizer_local_property import LocalPropertyStatsNew
@@ -408,6 +407,7 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
 
     @property
     def cutoff(self):
+        """Chose a cutoff for a given structure"""
         try:
             return _choose_cutoff(self.structure)
         except Exception:
