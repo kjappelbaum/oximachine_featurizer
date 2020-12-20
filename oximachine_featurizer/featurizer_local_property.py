@@ -91,7 +91,7 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         # Get the tessellation of a site
         nn = VoronoiNN(
             weight=self.weight,
-            tol=0.5,
+            tol=0.0,
             cutoff=self.cutoff,
             compute_adj_neighbors=False,
         ).get_nn_info(strc, idx)
