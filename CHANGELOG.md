@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.1](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.3.0...v0.3.1) (2020-12-20)
+
+
+### Bug Fixes
+
+* changing tolerance to old default ([e263dbc](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/e263dbcf1a97411ae39ca0e9aae0fb73704539ef))
+
 ## [0.3.0](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.2.14...v0.3.0) (2020-12-19)
 
 
