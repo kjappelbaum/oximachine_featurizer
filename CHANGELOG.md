@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.2](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.3.1...v0.3.2) (2021-04-30)
+
+
+### Bug Fixes
+
+* introduce upper limit on the pymatgen version ([337f55b](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/337f55b4947b72e726e7bade773c4e04d9792ad0))
+
 ### [0.3.1](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.3.0...v0.3.1) (2020-12-20)
 
 
