@@ -3,7 +3,7 @@ ase==3.*
 numeral==0.*
 apricot-select==0.*
 tqdm==4.*
-click==7.*
+click==8.*
 pandas
 scikit-learn<0.23>=0.22
 matminer<0.6.5>=0.6.3
