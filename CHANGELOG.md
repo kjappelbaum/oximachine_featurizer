@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.3.3](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.3.2...v0.3.3) (2021-07-27)
+
+
+### Miscellaneous
+
+* **deps:** update click requirement from ==7.* to ==8.* ([824ff7d](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/824ff7d64ee34f981f53e17c67ecac5b97a3e506))
+* add coverage badge ([3587a82](https://www.github.com/kjappelbaum/oximachine_featurizer/commit/3587a823ac3390db85989e86ff1dd411f7c5c37a))
+
 ### [0.3.2](https://www.github.com/kjappelbaum/oximachine_featurizer/compare/v0.3.1...v0.3.2) (2021-04-30)
 
 
