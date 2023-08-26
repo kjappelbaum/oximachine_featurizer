@@ -121,7 +121,6 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         return np.hstack([output, output_signed, output_max, output_min])
 
     def feature_labels(self):
-
         return (
             ["local difference in " + p for p in self.properties]
             + ["local signed difference in " + p for p in self.properties]

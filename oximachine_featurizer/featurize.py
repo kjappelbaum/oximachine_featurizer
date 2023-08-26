@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint:disable=invalid-name, logging-format-interpolation, logging-fstring-interpolation, line-too-long, dangerous-default-value, too-many-lines
 """Featurization functions for the oxidation state mining project. Wrapper around matminer"""
 import logging
 import os
@@ -526,7 +525,6 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
                 "iterating over {} metal sites".format(len(self.metal_sites))
             )
             for idx, metal_site in enumerate(self.metal_sites):
-
                 feat = None
                 equivalent_sites = self.symmetrized_structure.find_equivalent_sites(
                     metal_site

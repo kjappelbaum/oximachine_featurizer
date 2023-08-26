@@ -7,7 +7,6 @@ import os
 
 from setuptools import find_packages, setup
 
-import versioneer
 
 # Package meta-data.
 NAME = "oximachine_featurizer"
@@ -51,8 +50,7 @@ except FileNotFoundError:
 
 setup(
     name=NAME,
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    version="0.1.0",
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",

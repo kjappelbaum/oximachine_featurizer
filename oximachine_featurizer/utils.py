@@ -20,7 +20,7 @@ from tqdm import tqdm
 
 def read_pickle(filepath: str):
     """Does what it says. Nothing more and nothing less.
-     Takes a pickle file path and unpickles it"""
+    Takes a pickle file path and unpickles it"""
     with open(filepath, "rb") as fh:  # pylint: disable=invalid-name
         result = pickle.load(fh)  # pylint: disable=invalid-name
     return result
@@ -43,7 +43,7 @@ def chunks(l, n):
 
 
 def diff_to_18e(nvalence):
-    """The number of electrons to donate to achieve 18 electrons might 
+    """The number of electrons to donate to achieve 18 electrons might
     be an interesting descriptor,
     though there are more stable electron configurations"""
     return min(np.abs(nvalence - 18), nvalence)

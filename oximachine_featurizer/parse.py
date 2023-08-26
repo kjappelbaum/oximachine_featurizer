@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=relative-beyond-top-level
 """Parsing functions for the oxidation state mining project"""
 
 import concurrent.futures
@@ -8,7 +7,7 @@ from collections import defaultdict
 from typing import Dict, List, Tuple
 
 import numpy as np
-from ccdc import io  # pylint: disable=import-error
+from ccdc import io
 from numeral import roman2int
 from tqdm import tqdm
 
@@ -17,7 +16,7 @@ from .utils import SymbolNameDict
 __all__ = ["GetOxStatesCSD"]
 
 
-class GetOxStatesCSD:  # pylint:disable=too-many-instance-attributes
+class GetOxStatesCSD:
     """Main parsing class"""
 
     def __init__(self, cds_ids: List[str]) -> None:
