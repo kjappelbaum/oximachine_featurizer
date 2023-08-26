@@ -5,7 +5,7 @@ import os
 
 import numpy as np
 import pandas as pd
-from pymatgen import Molecule, Structure
+from pymatgen.core import Molecule, Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from oximachine_featurizer.featurize import FeatureCollector, GetFeatures, featurize

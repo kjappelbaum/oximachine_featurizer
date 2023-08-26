@@ -10,7 +10,7 @@ import os
 from itertools import product
 
 import pandas as pd
-from pymatgen import MPRester
+from pymatgen.ext.matproj import MPRester
 from tqdm import tqdm
 
 mp_api = MPRester(os.getenv("MP_API_KEY", None))  # pylint:disable=invalid-name

@@ -15,7 +15,7 @@ from ase.io import read
 from matminer.featurizers.base import MultipleFeaturizer
 from matminer.featurizers.site import CrystalNNFingerprint, GaussianSymmFunc
 from matminer.utils.data import MagpieData
-from pymatgen import Structure
+from pymatgen.core import Structure
 from pymatgen.core import Element
 from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
