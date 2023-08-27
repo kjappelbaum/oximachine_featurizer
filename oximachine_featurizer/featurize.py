@@ -20,11 +20,10 @@ from pymatgen.core import Element
 from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.cif import CifParser
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from skmultilearn.model_selection import IterativeStratification
 
 from .exclude import TO_EXCLUDE
 from .featurizer_local_property import LocalPropertyStatsNew
-from .utils import apricot_select, diff_to_18e, read_pickle
+from .utils import diff_to_18e, read_pickle
 
 collectorlogger = logging.getLogger("FeatureCollector")
 collectorlogger.setLevel(logging.INFO)
@@ -526,7 +525,6 @@ class GetFeatures:  # pylint:disable=too-many-instance-attributes
                 "iterating over {} metal sites".format(len(self.metal_sites))
             )
             for idx, metal_site in enumerate(self.metal_sites):
-
                 feat = None
                 equivalent_sites = self.symmetrized_structure.find_equivalent_sites(
                     metal_site
@@ -767,6 +765,9 @@ class FeatureCollector:  # pylint:disable=too-many-instance-attributes,too-many-
         Returns:
             Tuple[np.array, np.array, list] -- numpy arrays of features and labels and list of names
         """
+        from skmultilearn.model_selection import IterativeStratification
+        from .utils import apricot_select
+
         feature_list = FeatureCollector.create_feature_list(
             self.picklefiles, self.forbidden_list, self.old_format
         )
