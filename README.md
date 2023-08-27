@@ -3,8 +3,8 @@
 [![Actions Status](https://github.com/kjappelbaum/mof_oxidation_states/workflows/Python%20package/badge.svg)](https://github.com/kjappelbaum/mof_oxidation_states/actions)
 [![Documentation Status](https://readthedocs.org/projects/oximachine-featurizer/badge/?version=latest)](https://oximachine-featurizer.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3567274.svg)](https://doi.org/10.5281/zenodo.3567274)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kjappelbaum/oximachine_featurizer/master?filepath=examples%2Fexample.ipynb)
-[![codecov](https://codecov.io/gh/kjappelbaum/oximachine_featurizer/branch/master/graph/badge.svg)](https://codecov.io/gh/kjappelbaum/oximachine_featurizer)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kjappelbaum/oximachine_featurizer/main?filepath=examples%2Fexample.ipynb)
+[![codecov](https://codecov.io/gh/kjappelbaum/oximachine_featurizer/branch/main/graph/badge.svg)](https://codecov.io/gh/kjappelbaum/oximachine_featurizer)
 
 Mine oxidation states for structures from the (MOF) subset of the CSD and calculate features for them. Runscripts are automatically installed for the most important steps. Some of these runscripts contain hard coded paths, that would need to be updated.
 This code generates inputs that can be used with the [learnmofox package](https://github.com/kjappelbaum/learn_mof_ox_state.git) to replicate our work [1].
