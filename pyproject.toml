@@ -19,14 +19,13 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
 ]
 keywords = ['aiida', 'workflows']
-requires-python = '>=3.7'
+requires-python = '>=3.8'
 dependencies = [
     'ase~=3.0',
     'numeral~=0.1',
@@ -62,3 +61,15 @@ run_parsing = "run.run_parsing:main"
 run_parsing_reference = "run.run_parsing_reference:main"
 run_mine_mp = "run.run_mine_mp:main"
 run_featurization = "run.run_featurization:main"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist =
+    py{38, 39, 310, 311}
+
+[testenv]
+description = Run the pytest tests
+deps = pytest
+commands = pytest {posargs}
+"""
