@@ -24,7 +24,6 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
 ]
-keywords = ['aiida', 'workflows']
 requires-python = '>=3.8'
 dependencies = [
     'ase~=3.0',
@@ -45,7 +44,6 @@ dev = [
     "pre-commit~=2.6.0",
     "pylint~=2.5.3",
     "pytest~=7.4",
-    "versioneer~=0.18",
     "isort~=4.3.21",
     "black",
 ]
