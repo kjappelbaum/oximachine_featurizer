@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=relative-beyond-top-level
 """
 Test the parsing class
 """
@@ -8,12 +7,15 @@ import pytest
 
 try:
     from oximachine_featurizer.parse import GetOxStatesCSD
+
     skip_tests = False
 except ModuleNotFoundError:
     skip_tests = True
 
 
-@pytest.mark.skipif(skip_tests, reason="This test can only run if the CSD Python API is installed.")
+@pytest.mark.skipif(
+    skip_tests, reason="This test can only run if the CSD Python API is installed."
+)
 def test_parser():
     """Test with some hand-selected MOFs"""
     test_list = [
@@ -48,7 +50,9 @@ def test_parser():
     assert expected == result
 
 
-@pytest.mark.skipif(skip_tests, reason="This test can only run if the CSD Python API is installed.")
+@pytest.mark.skipif(
+    skip_tests, reason="This test can only run if the CSD Python API is installed."
+)
 def test_parse_name(get_oxidationstate_dict):
     names, excepted = get_oxidationstate_dict
     for name, expected_res in zip(names, excepted):
