@@ -3,7 +3,7 @@
 
 import click
 import numpy as np
-from pymatgen import Structure
+from pymatgen.core import Structure
 
 from oximachine_featurizer import featurize
 

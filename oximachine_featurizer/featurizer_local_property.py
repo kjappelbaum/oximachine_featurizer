@@ -5,7 +5,7 @@ from typing import List
 import numpy as np
 from matminer.featurizers.base import BaseFeaturizer
 from matminer.utils.data import MagpieData
-from pymatgen import Structure
+from pymatgen.core import Structure
 from pymatgen.analysis.local_env import VoronoiNN
 
 

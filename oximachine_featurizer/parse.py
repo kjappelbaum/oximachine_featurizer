@@ -8,7 +8,7 @@ from collections import defaultdict
 from typing import Dict, List, Tuple
 
 import numpy as np
-from ccdc import io  # pylint: disable=import-error
+from ccdc import io
 from numeral import roman2int
 from tqdm import tqdm
 

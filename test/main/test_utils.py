@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=relative-beyond-top-level
 """Test the utils module"""
 from oximachine_featurizer.utils import SymbolNameDict
 
