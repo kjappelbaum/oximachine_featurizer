@@ -19,15 +19,14 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
-    'Programming Language :: Python :: 3.8',
+    "Programming Language :: Python :: 3.8",
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
 ]
 keywords = ['aiida', 'workflows']
-requires-python = '>=3.6'
+requires-python = '>=3.7'
 dependencies = [
     'ase~=3.0',
     'numeral~=0.1',
@@ -46,7 +45,7 @@ Homepage = "https://github.com/kjappelbaum/oximachine_featurizer"
 dev = [
     "pre-commit~=2.6.0",
     "pylint~=2.5.3",
-    "pytest~=6.0.1",
+    "pytest~=7.4",
     "versioneer~=0.18",
     "isort~=4.3.21",
     "black",
