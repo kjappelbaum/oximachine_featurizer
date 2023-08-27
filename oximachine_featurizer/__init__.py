@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """Featurization tools for the oxiMachine"""
-from ._version import get_versions
 
-__version__ = get_versions()["version"]
-del get_versions
-
+__version__ = '0.3.2'
 
 from .featurize import FeatureCollector, GetFeatures, featurize

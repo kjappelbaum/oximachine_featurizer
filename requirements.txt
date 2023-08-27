@@ -1,8 +1,0 @@
-ase==3.*
-numeral==0.*
-apricot-select==0.*
-tqdm==4.*
-click==8.*
-matminer>=0.6.3
-scikit-multilearn==0.*
-numba==0.*
