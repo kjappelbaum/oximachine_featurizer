@@ -8,7 +8,8 @@ import pandas as pd
 from pymatgen.core import Molecule, Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from oximachine_featurizer.featurize import FeatureCollector, GetFeatures, featurize
+from oximachine_featurizer.featurize import (FeatureCollector, GetFeatures,
+                                             featurize)
 
 THIS_DIR = os.path.dirname(__file__)
 

@@ -5,8 +5,8 @@ from typing import List
 import numpy as np
 from matminer.featurizers.base import BaseFeaturizer
 from matminer.utils.data import MagpieData
-from pymatgen.core import Structure
 from pymatgen.analysis.local_env import VoronoiNN
+from pymatgen.core import Structure
 
 
 class LocalPropertyStatsNew(BaseFeaturizer):
@@ -121,7 +121,6 @@ class LocalPropertyStatsNew(BaseFeaturizer):
         return np.hstack([output, output_signed, output_max, output_min])
 
     def feature_labels(self):
-
         return (
             ["local difference in " + p for p in self.properties]
             + ["local signed difference in " + p for p in self.properties]

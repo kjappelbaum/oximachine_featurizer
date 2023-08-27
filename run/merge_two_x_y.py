@@ -37,7 +37,6 @@ class Merger:
         outdir_labels,
         outdir_names,
     ):
-
         self.features0 = features0
         self.features1 = features1
         # make sure that they have the same number of features
