@@ -30,7 +30,7 @@ project = "oximachine_featurizer"
 copyright = "2020, Kevin Maik Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit"
 author = "Kevin Maik Jablonka, Daniele Ongari, Mohamad Moosavi, Berend Smit"
 
-release = "0.4.0"
+release = "0.4.0-dev"
 
 # -- General configuration ---------------------------------------------------
 
